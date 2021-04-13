@@ -2,6 +2,7 @@
  * This module has the structure for declare
  * new commands
  * */
+const { prefix } = require('./config');
 
 module.exports = (client, aliases, callback) => {
   if (typeof aliases === 'string') {
