@@ -1,0 +1,23 @@
+{
+  "name": "eventioner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "command-handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/josegacode/eventioner.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/josegacode/eventioner/issues"
+  },
+  "homepage": "https://github.com/josegacode/eventioner#readme",
+  "dependencies": {
+    "discord.js": "^12.5.3"
+  }
+}
