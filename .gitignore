@@ -1,3 +1,6 @@
+eventioner-*
+*credentials*
+log.txt
 *.txt
 *.zip
 node_modules

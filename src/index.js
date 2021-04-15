@@ -4,8 +4,14 @@
  * */
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const config = require('./config.json');
+const config = require('./json/config');
 const actions = require('./actions');
+const app = require('./app');
+
+
+app.listen(3000, () => {
+  console.log(`Express is running on port ${app.port}`);
+})
 
 client.on('ready', () => {
   console.log('Eventioner is online! :D');
