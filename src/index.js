@@ -7,6 +7,7 @@ const client = new Discord.Client();
 const config = require('./json/config');
 const actions = require('./actions');
 const app = require('./app');
+const help = require('./help');
 
 
 app.listen(3000, () => {
@@ -20,6 +21,9 @@ client.on('ready', () => {
   // can perform through commands inside
   // discord
   actions(client);
+
+  // Help module
+  help(client);
 })
 
 // Loging the bot to the server
