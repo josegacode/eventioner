@@ -6,7 +6,9 @@
 
 // Handler for use the structure
 // predefined for declare commands
+'use strict';
 const command = require('./handler');
+const { MessageEmbed } = require('discord.js');
 
 // For lets perform Google Spreadsheet API 
 // operations
@@ -26,12 +28,22 @@ module.exports = client => {
     const request = message.content.replace('!mentor ', '');
     const action = request.split(' ')[0];
     const params = request.split(' ').slice(1);
-    //console.log(`request: ${request} \n action: ${action} \n params: ${params}`);
+    const username = message.author.username;
+
     switch(action) {
-      case 'validate-mail':
+      case 'enroll':
         // Await for spreadsheet api
         //spreadsheetHandler.getInfo(config.spreadsheets.mentors);
         spreadsheetHandler.saveMentorEmail(config.spreadsheets.mentors, params[0]);
+
+        const userFeedback = new MessageEmbed()
+          .setTitle(`Hey @${username}, you are now a Mentor! 👩‍🏫👨‍🏫`)
+          .setDescription(`Thanks, your email was registered successfully and Mentor
+            role was given to you, enjoy it ⚡`
+          )
+          .setColor(0x539BFF)
+
+        message.channel.send(userFeedback);
         break;
       default:
         break;
