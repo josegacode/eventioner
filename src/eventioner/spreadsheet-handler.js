@@ -2,33 +2,42 @@ const { GoogleSpreadsheet } = require('google-spreadsheet');
 
 // Gettings the auth keys for Google API
 const credentials = require('./json/credentials.json');
+//const config = require('./json/config');
 
-const spreadsheetId = '1rVFyNJ_rvexF-YcC38i0YU1CYZV76AM9BpdXWt0ynpA';
+let document;
 
-// Template for get basic doc info
-const accessToSpreadsheet = async () => {
-  const document = new GoogleSpreadsheet(spreadsheetId);
+const login = async (spreadsheetId) => {
+  // Template for get basic doc info
+  document = new GoogleSpreadsheet(spreadsheetId);
   await document.useServiceAccountAuth(credentials);
   await document.loadInfo();
-  const sheet = document.sheetsByIndex[0];
-  console.log(sheet);
+}
+
+const serviceAccountLoginCheck = (spreadsheetId) => {
+  if(typeof document == 'undefined') {
+    console.log(`Service account isn't logged, login in ...`);
+    login(spreadsheetId);
+    console.log(`Successfully login!`);
+  } else return;
 }
 
 // Template to get some value from sheet
-const getValue = async () => {
+const saveMentorEmail = async (spreadsheetId, email) => {
+  //serviceAccountLoginCheck(spreadsheetId);
   const document = new GoogleSpreadsheet(spreadsheetId);
   await document.useServiceAccountAuth(credentials);
   await document.loadInfo();
+
   const sheet = document.sheetsByIndex[0];
-  const rows = await sheet.getRows();
-  console.log(`# rows: ${rows.length}\n mentorKey: ${rows[0].mentorKey}`);
+  await sheet.loadCells('A:A');
+  //const cellA1 = sheet.getCell(0, 1);
+  const cell = sheet.getCellByA1('A2');
+  cell.value = email;
+  sheet.saveUpdatedCells()
 }
 
 // Template to get some value from sheet
 const validateMentorCode = async (mentorCode) => {
-  const document = new GoogleSpreadsheet(spreadsheetId);
-  await document.useServiceAccountAuth(credentials);
-  await document.loadInfo();
   const sheet = document.sheetsByIndex[0];
   //const rows = await sheet.getRows();
   const columns = await sheet.getColumns();
@@ -40,5 +49,6 @@ const validateMentorCode = async (mentorCode) => {
 // Register the accessToSpreadsheet funcion
 // in the module's exports
 module.exports = {
-  accessToSpreadsheet: accessToSpreadsheet,
+  login: login,
+  saveMentorEmail: saveMentorEmail,
 }

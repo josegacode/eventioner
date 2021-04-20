@@ -2,7 +2,7 @@
  * This module has the structure for declare
  * new commands
  * */
-const { prefix } = require('./json/config');
+const { prefix } = require('../json/config');
 
 module.exports = (client, aliases, callback) => {
   if (typeof aliases === 'string') {

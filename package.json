@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "eventioner-dev": "nodemon ./src/eventioner/index.js",
+    "legioner-dev": "nodemon ./src/legioner/index.js"
   },
   "repository": {
     "type": "git",
