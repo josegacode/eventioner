@@ -14,8 +14,9 @@ const { Command } = require('discord.js-commando');
 // For lets perform Google Spreadsheet API 
 // operations
 const spreadsheetHandler = require('../../spreadsheet-handler');
-const config = require('../../json/config');
-const spreadsheetNames = Object.keys(config.spreadsheets);
+//const config = require('../../json/config');
+const config = require('../../json/json-handler');
+//const spreadsheetNames = Object.keys(config.spreadsheets);
 
 module.exports = class EnrollCommand extends Command {
 	constructor(client) {
@@ -29,8 +30,9 @@ module.exports = class EnrollCommand extends Command {
 	}
 
   async run(message) {
-    console.log(JSON.stringify(message.content));
+    //console.log(JSON.stringify(message.content));
     // Type of action
+    console.log(`Config data in mentors.js: ${JSON.stringify(config, null, 4)}`);
     const request = message.content.replace('!enroll ', '');
 
     // Type of action that the user wants to perform
@@ -45,34 +47,21 @@ module.exports = class EnrollCommand extends Command {
     // User member 
     const member = message.guild.members.cache.find((member) => member.id === user.id);
 
-    // DEBUG
-    //console.log(JSON.stringify(member.roles, null, 4));
+    // Await for spreadsheet api
+    spreadsheetHandler.saveMentorEmail(
+      config.config.spreadsheets.mentors.id, 
+      params[0],
+      'A2'
+    );
 
-      /**
-        * Lets the member be a Mentor by giving 
-        * its e-mail
-        * */
-        // Await for spreadsheet api
-        //spreadsheetHandler.getInfo(config.spreadsheets.mentors);
-        spreadsheetHandler.saveMentorEmail(
-          config.spreadsheets.mentors.id, 
-          params[0],
-          config.spreadsheets.mentors.emailRow + 
-          config.spreadsheets.mentors.nextRowAvailable
-        );
+    member.roles.add('828742601137717290');
 
-        //console.log(`Roles of ${member}: ${member.roles}`);
-        member.roles.add('828742601137717290');
-
-        // Feedback to member in discord channel
-      /*
-        const userFeedback = new MessageEmbed()
-          .setTitle(`Hey @${user.username}, you are now a Mentor! 👩‍🏫👨‍🏫`)
-          .setDescription(`Thanks, your email was registered successfully and Mentor
-            role was given to you, enjoy it ⚡`
-          )
-          .setColor(0x539BFF)
-*/
-        return message.say('Role added');
+    return message.embed( 
+      new MessageEmbed()
+        .setTitle(`Hey @${user.username}, you are now a Mentor! 👩‍🏫👨‍🏫`)
+        .setDescription(`Thanks, your email was registered successfully and Mentor
+          role was given to you, enjoy it ⚡`)
+        .setColor(0x539BFF)
+    );
   };
 }

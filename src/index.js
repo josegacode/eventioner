@@ -4,6 +4,7 @@
  * */
 
 // Node modules
+// For manage system files
 const fs = require('fs');
 
 // User modules
@@ -14,7 +15,7 @@ const config = require('./json/config');
 const { CommandoClient } = require('discord.js-commando');
 const path = require('path');
 const client = new CommandoClient({
-	commandPrefix: '!',
+	commandPrefix: config.prefix, 
 	owner: config.owner,
 });
 
@@ -27,13 +28,13 @@ client.registry
 	.registerDefaultGroups()
   .registerDefaultCommands({
     // Disables built-in help command
-    help: false,
+    //help: false,
   })
 	.registerCommandsIn(path.join(__dirname, 'commands'));
 
 client.once('ready', () => {
 	console.log(`Logged in as ${client.user.tag}! (${client.user.id})`);
-	client.user.setActivity(`Managing hacker's events ⚡`);
+	client.user.setActivity(`Enrolled in hacker's events ⚡`);
 });
 
 client.on('error', console.error);
