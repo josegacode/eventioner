@@ -20,6 +20,7 @@
   "dependencies": {
     "discord.js": "^12.5.3",
     "discord.js-collector": "^1.8.9",
+    "discord.js-commando": "github:discordjs/Commando",
     "express": "^4.17.1",
     "google-spreadsheet": "^3.1.15"
   },

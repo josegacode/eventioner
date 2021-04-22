@@ -1,32 +1,7 @@
-const command = require('./handler');
+//const command = require('./handler');
 const Discord = require('discord.js');
 
 module.exports = (client) => {
-
-  // Shows a card in discord that
-  // tells to the user all available
-  // commands
-  command(client, ['help', 'h'], (message) => {
-     const embed = new Discord.MessageEmbed()
-      .setTitle('How can I help you Hacker? ⚡')
-      //.setAuthor(message.author.username)
-      .setColor('#00AAFF')
-      .addFields(
-        {
-          name: '!help | !h',
-          value: 'Shows a list of all commands available',
-          inline: false,
-        },
-        {
-          name: '!helpDev | !hd',
-          value: 'Commands which are in development and may be included in future versions',
-          inline: false,
-        },
-      )
-
-    message.channel.send(embed);
-  })
-
   command(client, 'helpDev', (message) => {
      const embed = new Discord.MessageEmbed()
       .setTitle('Funciones que pueden implementarse en futuras versiones! 🔜')

@@ -2,25 +2,41 @@
  * Entry point of the bot,
  * this is the driver module.
  * */
-const Discord = require('discord.js');
-const client = new Discord.Client();
+
+// Node modules
+const fs = require('fs');
 
 // User modules
 const config = require('./json/config');
 
-// Basic commands related to the bot
-const core = require('./commands/core');
+// Commando framework manages most
+// of the discordjs core
+const { CommandoClient } = require('discord.js-commando');
+const path = require('path');
+const client = new CommandoClient({
+	commandPrefix: '!',
+	owner: config.owner,
+});
 
-// Commands related with mentors
-const mentors = require('./commands/mentors');
+client.registry
+	.registerDefaultTypes()
+	.registerGroups([
+//		['core', 'Essentials Eventioner commands'],
+		['mentors', 'Commands related to mentors'],
+	])
+	.registerDefaultGroups()
+  .registerDefaultCommands({
+    // Disables built-in help command
+    help: false,
+  })
+	.registerCommandsIn(path.join(__dirname, 'commands'));
 
-client.on('ready', () => {
-  console.log('Eventioner is online! :D');
+client.once('ready', () => {
+	console.log(`Logged in as ${client.user.tag}! (${client.user.id})`);
+	client.user.setActivity(`Managing hacker's events ⚡`);
+});
 
-  // Command modules load
-  core(client);
-  mentors(client);
-})
+client.on('error', console.error);
 
 // Loging the bot to the server
 client.login(config.token);

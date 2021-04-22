@@ -3,6 +3,7 @@ const { GoogleSpreadsheet } = require('google-spreadsheet');
 // Gettings the auth keys for Google API
 const credentials = require('./json/credentials.json');
 //const config = require('./json/config');
+let config = require('./json/config');
 
 let document;
 
@@ -22,7 +23,7 @@ const serviceAccountLoginCheck = (spreadsheetId) => {
 }
 
 // Template to get some value from sheet
-const saveMentorEmail = async (spreadsheetId, email) => {
+const saveMentorEmail = async (spreadsheetId, email, cellId) => {
   //serviceAccountLoginCheck(spreadsheetId);
   const document = new GoogleSpreadsheet(spreadsheetId);
   await document.useServiceAccountAuth(credentials);
@@ -31,9 +32,16 @@ const saveMentorEmail = async (spreadsheetId, email) => {
   const sheet = document.sheetsByIndex[0];
   await sheet.loadCells('A:A');
   //const cellA1 = sheet.getCell(0, 1);
-  const cell = sheet.getCellByA1('A2');
+  const cell = sheet.getCellByA1(cellId);
   cell.value = email;
   sheet.saveUpdatedCells()
+
+  let nextRow = config.spreadsheets.mentors.nextRowAvailable;
+  // Updates next row available
+  Number.parseInt(nextRow);
+  console.log(`nextRowAvailable: ${nextRow}, ${typeof nextRow}`);
+  console.log(`nextRowAvailable: ${nextRow}, ${typeof nextRow}`);
+  //nextRowAvailable++;
 }
 
 // Template to get some value from sheet
