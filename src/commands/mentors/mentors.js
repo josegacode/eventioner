@@ -16,15 +16,16 @@ const { Command } = require('discord.js-commando');
 const spreadsheetHandler = require('../../spreadsheet-handler');
 //const config = require('../../json/config');
 const config = require('../../json/json-handler');
+//console.log(`typeof config: ${typeof config}`);
 //const spreadsheetNames = Object.keys(config.spreadsheets);
 
 module.exports = class EnrollCommand extends Command {
 	constructor(client) {
 		super(client, {
-			name: 'enroll',
-			aliases: ['enr'],
+			name: 'mentor',
+			aliases: ['mnt'],
 			group: 'mentors',
-			memberName: 'enroll',
+			memberName: 'mentor',
 			description: 'Gives to any user the Mentor role',
 		});
 	}
@@ -32,14 +33,15 @@ module.exports = class EnrollCommand extends Command {
   async run(message) {
     //console.log(JSON.stringify(message.content));
     // Type of action
-    console.log(`Config data in mentors.js: ${JSON.stringify(config, null, 4)}`);
-    const request = message.content.replace('!enroll ', '');
-
-    // Type of action that the user wants to perform
-    const action = request.split(' ')[0];
+    //console.log(`Config data in mentors.js: ${JSON.stringify(config, null, 4)}`);
+    const request = message.content.replace(`!mentor `, '');
+    
 
     // Params that will be used with the command
-    const params = request.split(' ').slice(1);
+    // [0] -> type of mentor requested
+    // [1] -> mentor email
+    const params = request.split(' ');
+    //console.log(`Params: ${params}`);
 
     // User who executed the message
     const user = message.author;
@@ -50,17 +52,37 @@ module.exports = class EnrollCommand extends Command {
     // Await for spreadsheet api
     spreadsheetHandler.saveMentorEmail(
       config.config.spreadsheets.mentors.id, 
-      params[0],
+      params[1],
       'A2'
     );
 
-    member.roles.add('828742601137717290');
+    // Base mentor role
+    member.roles.add('755528558838939648');
+
+    // Category of mentor
+    let mentorTypeName;
+    switch(params[0]) {
+      case 'branding':
+        member.roles.add('759996826493124608');
+        mentorTypeName = 'Mentor Branding';
+        break;
+      case 'capital':
+        member.roles.add('759996884135313459');
+        mentorTypeName = 'Mentor Capital';
+        break;
+      case 'tech':
+        member.roles.add('759996935154958366');
+        mentorTypeName = 'Mentor Tech';
+        break;
+    }
+    
+    //config.config.spreadsheets.mentors.nextRowAvailable++;
 
     return message.embed( 
       new MessageEmbed()
-        .setTitle(`Hey @${user.username}, you are now a Mentor! 👩‍🏫👨‍🏫`)
-        .setDescription(`Thanks, your email was registered successfully and Mentor
-          role was given to you, enjoy it ⚡`)
+        .setTitle(`Hey @${user.username}, you are now a ${mentorTypeName}! 👩‍🏫👨‍🏫`)
+        .setDescription(`Thanks, your email was registered successfully and ${mentorTypeName}
+        role was given to you, enjoy it ⚡`)
         .setColor(0x539BFF)
     );
   };

@@ -22,6 +22,10 @@ const getFileContent = async () => {
 let configRaw = fs.readFileSync(path.join(__dirname, 'config.json'));
 config = JSON.parse(configRaw);
 
+const updateJson = (newJson) => {
+  fs.writeFile(path.join(__dirname, 'config.json'), json, 'utf8', callback);
+}
+
 module.exports = {
   config: config,
 }
