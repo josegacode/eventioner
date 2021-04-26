@@ -22,7 +22,7 @@ const client = new CommandoClient({
 client.registry
 	.registerDefaultTypes()
 	.registerGroups([
-//		['core', 'Essentials Eventioner commands'],
+		['core', 'Essentials Eventioner commands'],
 		['mentors', 'Commands related to mentors'],
 	])
 	.registerDefaultGroups()
