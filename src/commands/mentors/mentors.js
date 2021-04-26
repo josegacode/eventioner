@@ -22,24 +22,17 @@ const config = require('../../json/json-handler');
 module.exports = class EnrollCommand extends Command {
 	constructor(client) {
 		super(client, {
-			name: 'mentor',
-			aliases: ['mnt'],
+			name: 'bementor',
+			aliases: ['bmnt'],
 			group: 'mentors',
-			memberName: 'mentor',
+			memberName: 'bementor',
 			description: 'Gives to any user the Mentor role',
       args: [
-        /*
-        {
-          key: 'typeOfMentor',
-          prompt: 'The type of mentor available in the server',
-          type: 'string',
-        },
         {
           key: 'email',
-          prompt: 'An email to validate your registration',
+          prompt: ` looks like you forgot to type your email, usage 👉 !bementor <EMAIL> ✅`,
           type: 'string',
         },
-        */
       ],
       guildOnly: true, // Only works inside a server
 
@@ -51,7 +44,7 @@ module.exports = class EnrollCommand extends Command {
 		});
 	}
 
-  async run(message/*, {typeOfMentor, email}*/) {
+  async run(message, {email}) {
 
     // User who executed the message
     const user = message.author;
@@ -75,7 +68,7 @@ module.exports = class EnrollCommand extends Command {
         message.channel.awaitMessages(filter, { max: 1, time: 30000, errors: ['time'] })
           .then(collected => {
             //message.channel.send(`${collected.first().author} got the correct answer!`);
-            console.log(`Colleted object: ${JSON.stringify(collected)}`);
+            //console.log(`Colleted object: ${JSON.stringify(collected)}`);
 
             // Base mentor role
             member.roles.add('755528558838939648');
