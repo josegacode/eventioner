@@ -23,7 +23,7 @@ const serviceAccountLoginCheck = (spreadsheetId) => {
 }
 
 // Template to get some value from sheet
-const saveMentorEmail = async (spreadsheetId, email, cellId) => {
+const saveMentorEmail = async (spreadsheetId, email) => {
   //serviceAccountLoginCheck(spreadsheetId);
   const document = new GoogleSpreadsheet(spreadsheetId);
   await document.useServiceAccountAuth(credentials);
@@ -31,16 +31,24 @@ const saveMentorEmail = async (spreadsheetId, email, cellId) => {
 
   const sheet = document.sheetsByIndex[0];
   await sheet.loadCells('A:A');
+  //console.log(`DEBUG: ${typeof sheet.cellStats.nonEmpty}, `);
   //const cellA1 = sheet.getCell(0, 1);
-  const cell = sheet.getCellByA1(cellId);
-  cell.value = email;
-  sheet.saveUpdatedCells()
+  //const cellToWrite = `A`
+  //par
+  
+  // Getting the next cell available
+  const cell = sheet.getCellByA1(`A${sheet.cellStats.nonEmpty + 1}`);
 
-  let nextRow = config.spreadsheets.mentors.nextRowAvailable;
+  // Assings the value to be set in which cell
+  cell.value = email;
+
+  // Write the changes in the doc
+  await sheet.saveUpdatedCells()
+
+  //let nextRow = config.spreadsheets.mentors.nextRowAvailable;
   // Updates next row available
-  Number.parseInt(nextRow);
-  console.log(`nextRowAvailable: ${nextRow}, ${typeof nextRow}`);
-  console.log(`nextRowAvailable: ${nextRow}, ${typeof nextRow}`);
+  //Number.parseInt(nextRow);
+  //console.log(`nextRowAvailable: ${nextRow}, ${typeof nextRow}`);
   //nextRowAvailable++;
 }
 

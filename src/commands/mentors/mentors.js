@@ -7,17 +7,16 @@
 // Handler for use the structure
 // predefined for declare commands
 'use strict';
-//const command = require('./handler');
+
 const { MessageEmbed } = require('discord.js');
 const { Command } = require('discord.js-commando');
 
 // For lets perform Google Spreadsheet API 
 // operations
 const spreadsheetHandler = require('../../spreadsheet-handler');
-//const config = require('../../json/config');
-const config = require('../../json/json-handler');
-//console.log(`typeof config: ${typeof config}`);
-//const spreadsheetNames = Object.keys(config.spreadsheets);
+
+// Info of usable spreadsheets
+const spreadsheets = require('../../json/spreadsheets');
 
 module.exports = class EnrollCommand extends Command {
 	constructor(client) {
@@ -30,7 +29,7 @@ module.exports = class EnrollCommand extends Command {
       args: [
         {
           key: 'email',
-          prompt: ` looks like you forgot to type your email, usage 👉 !bementor <EMAIL> ✅`,
+          prompt: ` looks like you forgot to type your email, usage 👉 !bementor | !bmnt <EMAIL> ✅`,
           type: 'string',
         },
       ],
@@ -45,12 +44,21 @@ module.exports = class EnrollCommand extends Command {
 	}
 
   async run(message, {email}) {
+    console.log(`email: ${email}`);
+    spreadsheetHandler.saveMentorEmail(
+      spreadsheets.mentorsRegistration.id, 
+      email
+    );
 
     // User who executed the message
     const user = message.author;
 
     // User member 
     const member = message.guild.members.cache.find((member) => member.id === user.id);
+
+    // Shows a embed message asking
+    // for a type of mentor that the
+    // member wants to be.
     const question = new MessageEmbed()
         .setTitle(`What kind of mentor do you want to be @${user.username}?`)
         .setDescription(
@@ -58,6 +66,8 @@ module.exports = class EnrollCommand extends Command {
         )
         .setColor(0x539BFF)
 
+    // Checks if the option choosed
+    // are listed.
     const options = ['1', '2', '3'];
     const filter = response => {
       return options.some(choose => choose.toLowerCase() === response.content.toLowerCase());
@@ -91,7 +101,10 @@ module.exports = class EnrollCommand extends Command {
             }
             
             //config.config.spreadsheets.mentors.nextRowAvailable++;
+            // Await for spreadsheet api
+            
 
+            
             return message.embed( 
               new MessageEmbed()
                 .setTitle(`Hey @${user.username}, you are now a ${mentorTypeName}! 👩‍🏫👨‍🏫`)
@@ -101,18 +114,10 @@ module.exports = class EnrollCommand extends Command {
             );
           })
           .catch(collected => {
-            message.channel.send(`Sorry, that isn't an option`);
+            message.channel.send(`Sorry, ${collected.first().content} isn't an option`);
           });
       })
 
-    // Await for spreadsheet api
-    /*
-    spreadsheetHandler.saveMentorEmail(
-      config.config.spreadsheets.mentors.id, 
-      email,
-      'A2'
-    );
-    */
 
   };
 }
