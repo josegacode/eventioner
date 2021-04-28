@@ -44,11 +44,18 @@ module.exports = class EnrollCommand extends Command {
 	}
 
   async run(message, {email}) {
-    console.log(`email: ${email}`);
+    //console.log(`email: ${email}`);
+    /*
     spreadsheetHandler.saveMentorEmail(
       spreadsheets.mentorsRegistration.id, 
-      email
+      {
+        email: email,
+        username: username,
+        typeOfMentor: typeOfMentor,
+        server: 'test',
+      } 
     );
+    */
 
     // User who executed the message
     const user = message.author;
@@ -73,6 +80,8 @@ module.exports = class EnrollCommand extends Command {
       return options.some(choose => choose.toLowerCase() === response.content.toLowerCase());
     };
 
+    let mentorTypeName;
+
     message.channel.send(question)
       .then(() => {
         message.channel.awaitMessages(filter, { max: 1, time: 30000, errors: ['time'] })
@@ -84,7 +93,6 @@ module.exports = class EnrollCommand extends Command {
             member.roles.add('755528558838939648');
 
             // Category of mentor
-            let mentorTypeName;
             switch(collected.first().content) {
               case '1':
                 member.roles.add('759996826493124608');
@@ -100,10 +108,6 @@ module.exports = class EnrollCommand extends Command {
                 break;
             }
             
-            //config.config.spreadsheets.mentors.nextRowAvailable++;
-            // Await for spreadsheet api
-            
-
             
             return message.embed( 
               new MessageEmbed()
@@ -112,6 +116,19 @@ module.exports = class EnrollCommand extends Command {
                 role was given to you, enjoy it ⚡`)
                 .setColor(0x539BFF)
             );
+          })
+          .then(() => {
+      // Await for spreadsheet api
+      spreadsheetHandler.saveMentorEmail(
+        spreadsheets.mentorsRegistration.id, 
+        {
+          email: email,
+          username: user.username,
+          typeOfMentor: mentorTypeName,
+          server: 'test',
+        } 
+      );
+
           })
           .catch(collected => {
             message.channel.send(`Sorry, ${collected.first().content} isn't an option`);

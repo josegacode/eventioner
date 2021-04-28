@@ -1,7 +1,6 @@
 {
   "mentorsRegistration": {
     "id":"1cjQkHfjqoLlxgytHOKvJeCnHPQim0L9-5yIIPWhXcdw",
-    "emailRow": "A",
-    "nextRowAvailable": 2
+    "columns": 4
   } 
 }
