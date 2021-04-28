@@ -24,6 +24,7 @@ client.registry
 	.registerGroups([
 		['core', 'Essentials Eventioner commands'],
 		['mentors', 'Commands related to mentors'],
+		['announces', 'Commands related to publish announces and events'],
 	])
 	.registerDefaultGroups()
   .registerDefaultCommands({

@@ -44,18 +44,6 @@ module.exports = class EnrollCommand extends Command {
 	}
 
   async run(message, {email}) {
-    //console.log(`email: ${email}`);
-    /*
-    spreadsheetHandler.saveMentorEmail(
-      spreadsheets.mentorsRegistration.id, 
-      {
-        email: email,
-        username: username,
-        typeOfMentor: typeOfMentor,
-        server: 'test',
-      } 
-    );
-    */
 
     // User who executed the message
     const user = message.author;
@@ -125,7 +113,7 @@ module.exports = class EnrollCommand extends Command {
           email: email,
           username: user.username,
           typeOfMentor: mentorTypeName,
-          server: 'test',
+          server: message.guild.name,
         } 
       );
 

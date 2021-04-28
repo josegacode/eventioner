@@ -2,5 +2,10 @@
   "mentorsRegistration": {
     "id":"1cjQkHfjqoLlxgytHOKvJeCnHPQim0L9-5yIIPWhXcdw",
     "columns": 4
-  } 
+  },
+
+  "announces": {
+    "id":"1cBeZZDtm7O0qJjPR5BQXqWBhEC5QFoudHabWYf6F8Jc",
+    "columns": 7
+  }
 }

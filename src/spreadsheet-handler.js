@@ -25,12 +25,14 @@ const serviceAccountLoginCheck = (spreadsheetId) => {
 
 // Template to get some value from sheet
 const saveMentorEmail = async (spreadsheetId, mentorData) => {
-  console.log(`mentortype: ${mentorData.typeOfMentor}`)
-  //serviceAccountLoginCheck(spreadsheetId);
+  
+  // Auth process with Google Spreadsheet API
   const document = new GoogleSpreadsheet(spreadsheetId);
   await document.useServiceAccountAuth(credentials);
   await document.loadInfo();
 
+  // Loading in cache the spreadsheets and cells 
+  // that we will use.
   const sheet = document.sheetsByIndex[0];
   await sheet.loadCells('A:D');
 
@@ -40,9 +42,8 @@ const saveMentorEmail = async (spreadsheetId, mentorData) => {
   // row available to write.
   const rowIndex = sheet.cellStats.nonEmpty / 
     spreadsheets.mentorsRegistration.columns;
-  console.log(`DEBUG: ${rowIndex}`);
 
-  //console.log(`DEBUG: ${typeof sheet.cellStats.nonEmpty}, `);
+  // Fullfils the cache cells locally
   const emailCell = sheet.getCell(rowIndex, 0);
   const usernameCell = sheet.getCell(rowIndex, 1);
   const typeOfMentorCell = sheet.getCell(rowIndex, 2);
@@ -54,8 +55,37 @@ const saveMentorEmail = async (spreadsheetId, mentorData) => {
   typeOfMentorCell.value = mentorData.typeOfMentor;
   serverCell.value = mentorData.server;
 
-  // Write the changes in the doc
+  // Write the changes in the remote doc
   await sheet.saveUpdatedCells()
+}
+
+/* 
+  * @param spreadsheetId The id of the spreadsheet
+  *   where the announce will be checked.
+  *
+  * Checks for announces in the spreadsheets 
+  * */
+const checkAutomatedAnnounces = async (spreadsheetId) => {
+  
+  // Auth process with Google Spreadsheet API
+  const document = new GoogleSpreadsheet(spreadsheetId);
+  await document.useServiceAccountAuth(credentials);
+  await document.loadInfo();
+
+  // Loading in cache the spreadsheets and cells 
+  // that we will use.
+  const sheet = document.sheetsByIndex[0];
+  await sheet.loadCells('A:G');
+
+  const rowIndex = sheet.cellStats.nonEmpty / 
+    spreadsheets.announces.columns;
+
+
+/*
+  return {
+    title: 
+  }
+  */
 }
 
 // Register the accessToSpreadsheet funcion
