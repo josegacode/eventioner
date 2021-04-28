@@ -35,6 +35,23 @@ module.exports = class Announce extends Command {
   }
 
   async run(message) {
-    message.author.send('Hi!');
+
+    // Channel filter
+    const options = ['1', '2'];
+    const channelFilter = response => {
+      return options.some(
+        choose => choose.toLowerCase() === response.content.toLowerCase()
+    );
+    };
+
+    message.author.send(
+      new MessageEmbed()
+        .setTitle(`Where do you like to publish the announce? 🤔`)
+        .setDescription(`1) Same channel where I executed the command \n
+          2) Another channel`)
+    ).then(() => {
+      message.author.dmChannel.awaitMessages(channelFilter, {max: 1, time: 60000, errors: ['time']})
+        .then( (collected) => message.author.send(`Got it!: ${collected.first().content}`) )
+    })
   }
 }

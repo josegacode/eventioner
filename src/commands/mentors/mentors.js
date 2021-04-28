@@ -65,7 +65,9 @@ module.exports = class EnrollCommand extends Command {
     // are listed.
     const options = ['1', '2', '3'];
     const filter = response => {
-      return options.some(choose => choose.toLowerCase() === response.content.toLowerCase());
+      return options.some(
+        choose => choose.toLowerCase() === response.content.toLowerCase()
+    );
     };
 
     let mentorTypeName;
