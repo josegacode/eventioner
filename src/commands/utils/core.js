@@ -11,7 +11,7 @@ module.exports = class ClearChannel extends Command {
 		super(client, {
 			name: 'clearchannel',
 			aliases: ['cc'],
-			group: 'core',
+			group: 'utils',
 			memberName: 'clearchannel',
 			description: 'Deletes all messages per day from the channel where is executed',
       guildOnly: true, // Only works inside a server

@@ -35,23 +35,49 @@ module.exports = class Announce extends Command {
   }
 
   async run(message) {
+    //const directMessage = message.author.dmChannel;
 
-    // Channel filter
-    const options = ['1', '2'];
-    const channelFilter = response => {
-      return options.some(
-        choose => choose.toLowerCase() === response.content.toLowerCase()
-    );
-    };
-
+    // Starts the announce wizard
     message.author.send(
       new MessageEmbed()
         .setTitle(`Where do you like to publish the announce? 🤔`)
         .setDescription(`1) Same channel where I executed the command \n
           2) Another channel`)
-    ).then(() => {
-      message.author.dmChannel.awaitMessages(channelFilter, {max: 1, time: 60000, errors: ['time']})
-        .then( (collected) => message.author.send(`Got it!: ${collected.first().content}`) )
-    })
-  }
-}
+    )
+      .then(botMessageSent => {
+        console.log(`Announce wizard started!`);
+
+        // Channel filter
+        const options = ['1', '2'];
+        const channelFilter = response => {
+          return options.some(
+            choose => choose.toLowerCase() === response.content.toLowerCase()
+          );
+        };
+
+        return message.author.dmChannel.awaitMessages(channelFilter, {max: 1, time: 10000, errors: ['time']})
+      })
+      .then(channelToPublish => {
+        message.author.send(`Channel: ${channelToPublish.first().content}`)
+
+        message.author.send(
+          new MessageEmbed()
+            .setTitle(`Title for the announce 🤔`)
+            .setDescription(`Limit to 200 characters`)
+        )
+
+        return message.author.dmChannel.awaitMessages(
+          response => response.length <= 200, 
+          {max: 1, time: 10000, errors: ['time']}
+        )
+      })
+      .then(title => {
+        message.author.send(`Title: ${title.first().content}`)
+      })
+      .catch(error => {
+        //console.log(`Error starting announce wizard: ${Object.toString(error)}`);
+        console.log(error);
+      })
+
+  } // End of run
+} // End of class

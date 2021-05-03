@@ -22,14 +22,19 @@ const client = new CommandoClient({
 client.registry
 	.registerDefaultTypes()
 	.registerGroups([
-		['core', 'Essentials Eventioner commands'],
+		['utils', 'Essentials Eventioner commands'],
 		['mentors', 'Commands related to mentors'],
 		['announces', 'Commands related to publish announces and events'],
 	])
 	.registerDefaultGroups()
   .registerDefaultCommands({
+
+    // To improve await message experience
+    // in dm.
+    unknownCommand: false,
+
     // Disables built-in help command
-    //help: false,
+    help: false,
   })
 	.registerCommandsIn(path.join(__dirname, 'commands'));
 
