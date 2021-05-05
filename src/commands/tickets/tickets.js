@@ -18,18 +18,21 @@ const spreadsheetHandler = require('../../spreadsheet-handler');
 // Info of usable spreadsheets
 const spreadsheets = require('../../json/spreadsheets');
 
+const {ping, retrieveEventInformation} = require('../../utils/eventbriteHandler');
+
 module.exports = class EnrollCommand extends Command {
 	constructor(client) {
 		super(client, {
-			name: 'bementor',
-			aliases: ['bmnt'],
-			group: 'mentors',
-			memberName: 'bementor',
-			description: 'Gives to any user the Mentor role',
+			name: 'enroll',
+			aliases: ['en'],
+			group: 'tickets',
+			memberName: 'enroll',
+			description: `Validates that the user already buy a ticket and then let it
+      choose a rol for the event`,
       args: [
         {
-          key: 'email',
-          prompt: ` looks like you forgot to type your email, usage 👉 !bementor | !bmnt <EMAIL> ✅`,
+          key: 'ticketId',
+          prompt: ` you forgot to provide your ticketId, usage 👉 !enroll| !enr <TICKET-ID> ✅`,
           type: 'string',
         },
       ],
@@ -43,7 +46,9 @@ module.exports = class EnrollCommand extends Command {
 		});
 	}
 
-  async run(message, {email}) {
+  async run(message, {ticketId}) {
+    //ping();
+    retrieveEventInformation('153653721417');
 
     // User who executed the message
     const user = message.author;
