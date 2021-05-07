@@ -18,7 +18,7 @@ const spreadsheetHandler = require('../../spreadsheet-handler');
 // Info of usable spreadsheets
 const spreadsheets = require('../../json/spreadsheets');
 
-const {ping, retrieveEventInformation} = require('../../utils/eventbriteHandler');
+const {ping, retrieveEventInformation, validateAttendee} = require('../../utils/eventbriteHandler');
 
 module.exports = class EnrollCommand extends Command {
 	constructor(client) {
@@ -48,14 +48,23 @@ module.exports = class EnrollCommand extends Command {
 
   async run(message, {ticketId}) {
     //ping();
-    retrieveEventInformation('153653721417');
 
+    // Getting the promise 
+    validateAttendee('153653721417', ticketId)
+      .then(response => {
+        // Destructs the attendees arrays
+        const { attendees } = response;
+
+        // Returning the profile which buy the ticket
+        return attendees.find(attendee => attendee.order_id == ticketId);
+      })
+      .then(attendee => {
+        if(attendee != undefined) {
     // User who executed the message
     const user = message.author;
 
     // User member 
     const member = message.guild.members.cache.find((member) => member.id === user.id);
-
     // Shows a embed message asking
     // for a type of mentor that the
     // member wants to be.
@@ -128,8 +137,18 @@ module.exports = class EnrollCommand extends Command {
           .catch(collected => {
             message.channel.send(`Sorry, ${collected.first().content} isn't an option`);
           });
+      }) // end of first then
+
+        } else {
+            return message.embed( 
+              new MessageEmbed()
+                .setTitle(`⚠ TICKER ORDER INS'T VALID ⚠`)
+                .setDescription(`If you already buy a ticket for the event, check if was 
+                  typed correctly 😁`)
+                .setColor(0x539BFF)
+            );
+
+        } // end of attendee ticket check
       })
-
-
-  };
-}
+  }; // End fo run()
+} // end of class definition
