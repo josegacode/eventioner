@@ -107,6 +107,13 @@ module.exports = class EnrollCommand extends Command {
             )
             .setColor(0x539BFF)
           ) 
+
+
+          // Awaits for type of mentor role
+          return message.channel.awaitMessages(
+            response => ['1', '2', '3'].some(element => element == response.content),
+            { max: 1, time: 30000, errors: ['time'] }
+          ) 
         } else {
           message.embed(new MessageEmbed()
             .setTitle(`Mentor isn't in our database`)
@@ -117,6 +124,39 @@ module.exports = class EnrollCommand extends Command {
             .setColor(0x539BFF)
           ) 
         } // if-else email validation
+      }) // email validation
+
+      .then(typeOfMentor => {
+         const user = message.author;
+         const member = message.guild.members.cache.find((member) => member.id === user.id);
+            // Base mentor role
+            member.roles.add('755528558838939648');
+
+            let mentorTypeName;
+
+            // Category of mentor
+            switch(typeOfMentor.first().content) {
+              case '1':
+                member.roles.add('759996826493124608');
+                mentorTypeName = 'Mentor Branding';
+                break;
+              case '2':
+                member.roles.add('759996884135313459');
+                mentorTypeName = 'Mentor Capital';
+                break;
+              case '3':
+                member.roles.add('759996935154958366');
+                mentorTypeName = 'Mentor Tech';
+                break;
+            }
+
+                   return message.embed( 
+              new MessageEmbed()
+                .setTitle(`Hey @${message.author.username}, you are now a ${mentorTypeName}! 👩‍🏫👨‍🏫`)
+                .setDescription(`Thanks, your email was registered successfully and ${mentorTypeName}
+                role was given to you, enjoy it ⚡`)
+                .setColor(0x539BFF)
+            );
       })
       
       // Type of mentor
