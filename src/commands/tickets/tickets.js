@@ -19,6 +19,7 @@ const spreadsheetHandler = require('../../spreadsheet-handler');
 const spreadsheets = require('../../json/spreadsheets');
 
 const {getAttendeeByTicket, retrieveEventInformation, validateAttendee} = require('../../utils/eventbriteHandler');
+const {validateMentorEmail} = require('../../spreadsheet-handler');
 
 module.exports = class EnrollCommand extends Command {
 	constructor(client) {
@@ -89,15 +90,36 @@ module.exports = class EnrollCommand extends Command {
       .then(typeOfAttendee => {
         switch(typeOfAttendee.first().content) {
           case '1':
-            // Validate mentor email
-            getAttendeeByTicket('153653721417', ticketId)
-              .then(attendee => {
-                console.log(`ATTENDE: ${attendee.profile.email}`);
-              })
-
-            // Ask for type of mentor
-        }
+            return getAttendeeByTicket('153653721417', ticketId)
+          case '2': console.log(`General attendee`);
+        } // Type of attende switch()
+      }) //type of attendee
+      .then(attendee => {
+        //console.log(`ATTENDE: ${attendee.profile.email}`);
+        return validateMentorEmail(attendee.profile.email);
+      }) // mentor validation
+      .then(emailValidated => {
+        if(emailValidated) {
+          message.embed(new MessageEmbed()
+            .setTitle(`What kind of mentor do you want to be @${message.author.username}?`)
+            .setDescription(
+              `1) Branding \n 2) Capital \n 3) Tech`
+            )
+            .setColor(0x539BFF)
+          ) 
+        } else {
+          message.embed(new MessageEmbed()
+            .setTitle(`Mentor isn't in our database`)
+            .setDescription(
+              `We sorry, buy apparently your aren't in our database
+              of mentors, contact the event organizer for help.`
+            )
+            .setColor(0x539BFF)
+          ) 
+        } // if-else email validation
       })
+      
+      // Type of mentor
       .catch(error => console.error(error))
   }; // End fo run()
 } // end of class definition
