@@ -18,7 +18,7 @@ const spreadsheetHandler = require('../../spreadsheet-handler');
 // Info of usable spreadsheets
 const spreadsheets = require('../../json/spreadsheets');
 
-const {ping, retrieveEventInformation, validateAttendee} = require('../../utils/eventbriteHandler');
+const {getAttendeeByTicket, retrieveEventInformation, validateAttendee} = require('../../utils/eventbriteHandler');
 
 module.exports = class EnrollCommand extends Command {
 	constructor(client) {
@@ -70,14 +70,7 @@ module.exports = class EnrollCommand extends Command {
               .setDescription(`1) Mentor \n 2) Attendee`)
               .setColor(0x539BFF)
             )
-          
-          /*
-          const typeOfAttendeeFilter = response => {
-            console.log(`response: ${response.content}`)
-              ['1', '2'].some(choose => choose == response.content)
-            }
 
-*/
             return message.channel.awaitMessages(
               //typeOfAttendeeFilter,
               response => response.content == '1' || response.content == '2',
@@ -94,7 +87,16 @@ module.exports = class EnrollCommand extends Command {
         }
       }) // End type of attendee validation
       .then(typeOfAttendee => {
-        console.log(`Type of attende: ${typeOfAttendee.first().content}`);
+        switch(typeOfAttendee.first().content) {
+          case '1':
+            // Validate mentor email
+            getAttendeeByTicket('153653721417', ticketId)
+              .then(attendee => {
+                console.log(`ATTENDE: ${attendee.profile.email}`);
+              })
+
+            // Ask for type of mentor
+        }
       })
       .catch(error => console.error(error))
   }; // End fo run()

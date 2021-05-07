@@ -69,12 +69,6 @@ const checkAutomatedAnnounces = async (spreadsheetId) => {
   const rowIndex = sheet.cellStats.nonEmpty / 
     spreadsheets.announces.columns;
 
-
-/*
-  return {
-    title: 
-  }
-  */
 }
 
 // Register the accessToSpreadsheet funcion

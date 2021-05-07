@@ -14,22 +14,27 @@ const auth = () => {
     .catch(error => console.log(error));
 }
 
+const getAttendeeByTicket = (eventId, ticketId) => {
+  return new Promise((resolve, reject) => {
+    fetch(`${API_URL}events/${eventId}/attendees/?${OAuth}`)
+      // Destructs an attendee
+      .then(response => response.json())
+      .then(eventInfo => {
+        //console.log(eventInfo);
+        const { attendees } = eventInfo;
+        //console.log(attendees);
+        return attendees;
+      }) 
+      .then(attendees => {
+        resolve(attendees.find(attendee => attendee.order_id == ticketId))
+      })
+  })
+}
+
 const retrieveEventInformation = (eventId, ticketId) => {
   return new Promise((resolve, reject) => {
     fetch(`${API_URL}events/${eventId}/attendees/?${OAuth}`)
       .then(response => resolve(response.json()))
-    /*
-      .then(responseJson => {
-        const { attendees } = responseJson;
-        //console.log(attendees);
-        const profile = attendees.find(attendee => attendee.order_id == ticketId);
-        //console.log(profile.profile);
-        checkIn = profile != undefined ? true : false;
-        console.log(`checkIn: ${checkIn}`);
-        return checkIn;
-      })
-      .catch(error => console.log(error));
-      */
   })
     
 }
@@ -43,4 +48,5 @@ const validateAttendee = (ticketId) async => {
 module.exports = {
   ping: auth,
   validateAttendee: retrieveEventInformation,
+  getAttendeeByTicket: getAttendeeByTicket,
 }
