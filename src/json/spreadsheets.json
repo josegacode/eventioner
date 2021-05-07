@@ -1,11 +1,11 @@
 {
-  "mentorsRegistration": {
-    "id":"1cjQkHfjqoLlxgytHOKvJeCnHPQim0L9-5yIIPWhXcdw",
-    "columns": 4
+  "mentorsdb": {
+    "id": "1cFJKHS0pX8VjA9T9rn-eBccybJr-G-fwJQhN13EvgpI",
+    "fields": 4
   },
 
   "announces": {
     "id":"1cBeZZDtm7O0qJjPR5BQXqWBhEC5QFoudHabWYf6F8Jc",
-    "columns": 7
+    "fields": 7
   }
 }

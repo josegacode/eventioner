@@ -4,7 +4,7 @@ const { GoogleSpreadsheet } = require('google-spreadsheet');
 const credentials = require('./json/credentials.json');
 //const config = require('./json/config');
 let config = require('./json/config');
-const spreadsheets = require('./json/spreadsheets.json');
+const {mentorsdb} = require('./json/spreadsheets.json');
 
 let document;
 
@@ -24,10 +24,10 @@ const serviceAccountLoginCheck = (spreadsheetId) => {
 }
 
 // Template to get some value from sheet
-const saveMentorEmail = async (spreadsheetId, mentorData) => {
+const validateMentorEmail = async (spreadsheetId, mentorData) => {
   
   // Auth process with Google Spreadsheet API
-  const document = new GoogleSpreadsheet(spreadsheetId);
+  const document = new GoogleSpreadsheet(mentorsdb.id);
   await document.useServiceAccountAuth(credentials);
   await document.loadInfo();
 
@@ -44,19 +44,8 @@ const saveMentorEmail = async (spreadsheetId, mentorData) => {
     spreadsheets.mentorsRegistration.columns;
 
   // Fullfils the cache cells locally
-  const emailCell = sheet.getCell(rowIndex, 0);
-  const usernameCell = sheet.getCell(rowIndex, 1);
-  const typeOfMentorCell = sheet.getCell(rowIndex, 2);
-  const serverCell = sheet.getCell(rowIndex, 3);
-
-  // Assings the value to be set in which cell
-  emailCell.value = mentorData.email;
-  usernameCell.value = mentorData.username;
-  typeOfMentorCell.value = mentorData.typeOfMentor;
-  serverCell.value = mentorData.server;
-
-  // Write the changes in the remote doc
-  await sheet.saveUpdatedCells()
+  const email = sheet.getCell(rowIndex-1, 3);
+  console.log(email);
 }
 
 /* 
@@ -92,5 +81,5 @@ const checkAutomatedAnnounces = async (spreadsheetId) => {
 // in the module's exports
 module.exports = {
   login: login,
-  saveMentorEmail: saveMentorEmail,
+  validateMentorEmail: validateMentorEmail,
 }
