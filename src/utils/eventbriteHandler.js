@@ -1,5 +1,5 @@
 // Holds the private token of eventbrite
-const {token} = require('../json/eventbriteCredentials.json');
+const { token, eventId } = require('../json/eventbriteCredentials.json');
 //const axios = require('axios');
 const fetch = require('node-fetch');
 const {response} = require('express');
@@ -14,7 +14,7 @@ const auth = () => {
     .catch(error => console.log(error));
 }
 
-const getAttendeeByTicket = (eventId, ticketId) => {
+const getAttendeeByTicket = (ticketId) => {
   return new Promise((resolve, reject) => {
     fetch(`${API_URL}events/${eventId}/attendees/?${OAuth}`)
       // Destructs an attendee
@@ -22,7 +22,7 @@ const getAttendeeByTicket = (eventId, ticketId) => {
       .then(eventInfo => {
         //console.log(eventInfo);
         const { attendees } = eventInfo;
-        //console.log(attendees);
+        console.log(attendees);
         return attendees;
       }) 
       .then(attendees => {
@@ -31,7 +31,7 @@ const getAttendeeByTicket = (eventId, ticketId) => {
   })
 }
 
-const retrieveEventInformation = (eventId, ticketId) => {
+const retrieveEventInformation = (ticketId) => {
   return new Promise((resolve, reject) => {
     fetch(`${API_URL}events/${eventId}/attendees/?${OAuth}`)
       .then(response => resolve(response.json()))

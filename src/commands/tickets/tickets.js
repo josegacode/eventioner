@@ -20,6 +20,7 @@ const spreadsheets = require('../../json/spreadsheets');
 
 const {getAttendeeByTicket, retrieveEventInformation, validateAttendee} = require('../../utils/eventbriteHandler');
 const {validateMentorEmail} = require('../../spreadsheet-handler');
+//const { getMentorByName } = require('../../utils/eventRolesManager')
 
 module.exports = class EnrollCommand extends Command {
 	constructor(client) {
@@ -51,13 +52,13 @@ module.exports = class EnrollCommand extends Command {
     //ping();
 
     // Getting the promise 
-    validateAttendee('153653721417', ticketId)
+    validateAttendee(ticketId)
       
       // Pucharse check
       .then(response => {
         // Destructs the attendees arrays
         const { attendees } = response;
-
+        console.log(response);
         // Returning the profile which buy the ticket
         return attendees.find(attendee => attendee.order_id == ticketId);
       })
@@ -80,9 +81,9 @@ module.exports = class EnrollCommand extends Command {
         } else {
             message.embed( 
               new MessageEmbed()
-                .setTitle(`⚠ TICKER ORDER INS'T VALID ⚠`)
-                .setDescription(`If you already buy a ticket for the event, check if was 
-                  typed correctly 😁`)
+                .setTitle(`⚠ BOLETO NO VALIDO ⚠`)
+                .setDescription(`Al parecer el ticket de Evenbrite que me diste
+                  no existe, verifica que lo has escrito correctamente 🤔`)
                 .setColor(0x539BFF)
             );
         }
@@ -90,8 +91,11 @@ module.exports = class EnrollCommand extends Command {
       .then(typeOfAttendee => {
         switch(typeOfAttendee.first().content) {
           case '1':
-            return getAttendeeByTicket('153653721417', ticketId)
-          case '2': console.log(`General attendee`);
+            return getAttendeeByTicket(ticketId)
+
+          // Gives Participante role and finishes
+          case '2':
+            console.log(`General attendee`);
         } // Type of attende switch()
       }) //type of attendee
       .then(attendee => {
@@ -101,7 +105,7 @@ module.exports = class EnrollCommand extends Command {
       .then(emailValidated => {
         if(emailValidated) {
           message.embed(new MessageEmbed()
-            .setTitle(`What kind of mentor do you want to be @${message.author.username}?`)
+            .setTitle(`Que tipo de mentorx quieres ser @${message.author.username}?`)
             .setDescription(
               `1) Branding \n 2) Capital \n 3) Tech`
             )
@@ -116,10 +120,11 @@ module.exports = class EnrollCommand extends Command {
           ) 
         } else {
           message.embed(new MessageEmbed()
-            .setTitle(`Mentor isn't in our database`)
+            .setTitle(`⚠ Mentorx no conocido ⚠`)
             .setDescription(
-              `We sorry, buy apparently your aren't in our database
-              of mentors, contact the event organizer for help.`
+              `Lo siento, al parecer no formas parte de la base de datos de
+              mentorxs conocidos, ponte en contacto con los organizadores del
+              evento para solicitar apoyo 😉`
             )
             .setColor(0x539BFF)
           ) 
@@ -130,23 +135,27 @@ module.exports = class EnrollCommand extends Command {
          const user = message.author;
          const member = message.guild.members.cache.find((member) => member.id === user.id);
             // Base mentor role
-            member.roles.add('755528558838939648');
+            member.roles.add(message.guild.roles.cache.find(guildRole => 
+                  guildRole.name == 'Mentorx'));
 
             let mentorTypeName;
 
             // Category of mentor
             switch(typeOfMentor.first().content) {
               case '1':
-                member.roles.add('759996826493124608');
-                mentorTypeName = 'Mentor Branding';
+                member.roles.add(message.guild.roles.cache.find(guildRole => 
+                  guildRole.name == 'Mentorx'));
+                mentorTypeName = 'Mentorx Branding';
                 break;
               case '2':
-                member.roles.add('759996884135313459');
-                mentorTypeName = 'Mentor Capital';
+                member.roles.add(message.guild.roles.cache.find(guildRole => 
+                  guildRole.name == 'Mentorx Capital'));
+                mentorTypeName = 'Mentorx Capital';
                 break;
               case '3':
-                member.roles.add('759996935154958366');
-                mentorTypeName = 'Mentor Tech';
+                member.roles.add(message.guild.roles.cache.find(guildRole => 
+                  guildRole.name == 'Mentorx Tech'));
+                mentorTypeName = 'Mentorx Tech';
                 break;
             }
 
@@ -161,5 +170,8 @@ module.exports = class EnrollCommand extends Command {
       
       // Type of mentor
       .catch(error => console.error(error))
+      .then(() => {
+        message.delete({ timeout: 5000 });
+      })
   }; // End fo run()
 } // end of class definition

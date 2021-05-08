@@ -31,7 +31,10 @@ module.exports = class PingRole extends Command {
         guildRole.name == roleName);
       if(roleFound != undefined) {
            message.reply(JSON.stringify(roleFound.permissions))
-            .then(feedback => feedback.delete({ timeout: 10000 }))
+          .then(feedback => {
+            feedback.delete({ timeout: 10000 })
+            message.delete({ timeout: 5000 });
+          })
       } else {
           message.reply(`\`@${roleName}\` role not exists ⚠`)
             .then(feedback => feedback.delete({ timeout: 10000 }))
