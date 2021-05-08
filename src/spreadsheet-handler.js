@@ -4,7 +4,7 @@ const { GoogleSpreadsheet } = require('google-spreadsheet');
 const credentials = require('./json/credentials.json');
 //const config = require('./json/config');
 let config = require('./json/config');
-const {mentorsdb} = require('./json/spreadsheets.json');
+const {mentorsdb, mentorsRedux} = require('./json/spreadsheets.json');
 
 let document;
 
@@ -27,14 +27,14 @@ const serviceAccountLoginCheck = (spreadsheetId) => {
 const validateMentorEmail = async (mentorData) => {
   
   // Auth process with Google Spreadsheet API
-  const document = new GoogleSpreadsheet(mentorsdb.id);
+  const document = new GoogleSpreadsheet(mentorsRedux.id);
   await document.useServiceAccountAuth(credentials);
   await document.loadInfo();
 
   // Loading in cache the spreadsheets and cells 
   // that we will use.
   const sheet = document.sheetsByIndex[0];
-  await sheet.loadCells('D:D');
+  await sheet.loadCells('B:B');
 
   // Calculates the next row available considering
   // that each register or row has a group of M values (or columns), so
@@ -44,9 +44,12 @@ const validateMentorEmail = async (mentorData) => {
 
   // Fullfils the cache cells locally
   return new Promise((resolve, rejected) => {
-    const email = sheet.getCellByA1(`D${sheet.cellStats.nonEmpty}`);
-    if(email.value == mentorData) resolve(true);
-    else rejected(false);
+    for(let i = 1; i <= sheet.cellStats.nonEmpty; i++) {
+      let email = sheet.getCellByA1(`B${i}`);
+      console.log(email.value);
+      if(email.value == mentorData) resolve(true);
+    }
+    rejected(false);
   })
 }
 

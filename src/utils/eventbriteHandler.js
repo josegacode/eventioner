@@ -22,10 +22,14 @@ const getAttendeeByTicket = (ticketId) => {
       .then(eventInfo => {
         //console.log(eventInfo);
         const { attendees } = eventInfo;
-        console.log(attendees);
+        //console.log(attendees);
         return attendees;
       }) 
+
+      // Check if the attendee exists
       .then(attendees => {
+        console.log(attendees);
+        console.log(ticketId);
         resolve(attendees.find(attendee => attendee.order_id == ticketId))
       })
   })

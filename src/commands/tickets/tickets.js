@@ -58,7 +58,8 @@ module.exports = class EnrollCommand extends Command {
       .then(response => {
         // Destructs the attendees arrays
         const { attendees } = response;
-        console.log(response);
+        attendees.forEach(attendee => console.log(attendee.profile));
+        //console.log(response);
         // Returning the profile which buy the ticket
         return attendees.find(attendee => attendee.order_id == ticketId);
       })
@@ -68,15 +69,15 @@ module.exports = class EnrollCommand extends Command {
         if(attendee != undefined) {
             message.embed(
               new MessageEmbed()
-              .setTitle(`What kind of attendee do you want to be? 🤔`)
-              .setDescription(`1) Mentor \n 2) Attendee`)
+              .setTitle(`Que tipo de participante quieres ser? 🤔`)
+              .setDescription(`1) Mentorx \n 2) Solo participante`)
               .setColor(0x539BFF)
             )
 
             return message.channel.awaitMessages(
               //typeOfAttendeeFilter,
               response => response.content == '1' || response.content == '2',
-              { max: 1, time: 5000, errors: ['time'] }
+              { max: 1, time: 30000, errors: ['time'] }
             )
         } else {
             message.embed( 
@@ -103,6 +104,8 @@ module.exports = class EnrollCommand extends Command {
         return validateMentorEmail(attendee.profile.email);
       }) // mentor validation
       .then(emailValidated => {
+        
+        console.log(`emailValidated ${emailValidated}`)
         if(emailValidated) {
           message.embed(new MessageEmbed()
             .setTitle(`Que tipo de mentorx quieres ser @${message.author.username}?`)
