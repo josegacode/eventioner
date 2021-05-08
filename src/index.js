@@ -25,6 +25,8 @@ client.registry
 		['utils', 'Essentials Eventioner commands'],
 		['tickets', 'Commands for validate the tickets for the events'],
 		['announces', 'Commands related to publish announces and events'],
+		['events', `Commands related to deploy, configure and manage
+      events environments`],
 	])
 	.registerDefaultGroups()
   .registerDefaultCommands({
