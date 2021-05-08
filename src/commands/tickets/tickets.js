@@ -95,8 +95,20 @@ module.exports = class EnrollCommand extends Command {
             return getAttendeeByTicket(ticketId)
 
           // Gives Participante role and finishes
+          break;
           case '2':
             console.log(`General attendee`);
+            message.member.roles.add(message.guild.roles.cache.find(guildRole => 
+                  guildRole.name == 'Participante'));
+             message.embed( 
+              new MessageEmbed()
+                .setTitle(`Registro validado ✅`)
+                .setDescription(`@${message.author.username} tu registro ha sido validado,
+                  y ahora tienes el rol de participante, gracias! 😄`)
+                .setColor(0x539BFF)
+            )
+              .then(attendeeFeedback => attendeeFeedback.delete({timeout: 10000}))
+            break;
         } // Type of attende switch()
       }) //type of attendee
       .then(attendee => {
