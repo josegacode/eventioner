@@ -14,43 +14,77 @@ const auth = () => {
     .catch(error => console.log(error));
 }
 
-const getAttendeeByTicket = (ticketId) => {
-  return new Promise((resolve, reject) => {
-    fetch(`${API_URL}events/${eventId}/attendees/?${OAuth}`)
-      // Destructs an attendee
-      .then(response => response.json())
-      .then(eventInfo => {
-        //console.log(eventInfo);
-        const { attendees } = eventInfo;
-        //console.log(attendees);
-        return attendees;
-      }) 
-
-      // Check if the attendee exists
-      .then(attendees => {
-        console.log(attendees);
-        console.log(ticketId);
-        resolve(attendees.find(attendee => attendee.order_id == ticketId))
-      })
-  })
-}
-
-const retrieveEventInformation = (ticketId) => {
+const getAttendees = async => {
   return new Promise((resolve, reject) => {
     fetch(`${API_URL}events/${eventId}/attendees/?${OAuth}`)
       .then(response => resolve(response.json()))
   })
-    
 }
 
-/*
-const validateAttendee = (ticketId) async => {
-
+const getAttendeesPage = async (pageNumber) => {
+  return new Promise((resolve, reject) => {
+    fetch(`${API_URL}events/${eventId}/attendees/?page=${pageNumber}&${OAuth}`)
+      .then(response => resolve(response.json()))
+  })
 }
-*/
+
+const validateTicket = async (ticketId) => {
+    // First call api
+    fetch(`${API_URL}events/${eventId}/attendees/${OAuth}`)
+      .then(firstCall => {
+
+        // First api response object
+        const { attendees } = firstCall;
+        console.log(`First response ${attendees}`);
+
+        // Check if there is more pages
+        if(!firstResponse.pagination.has_more_items) {
+          console.log('there is one page only');
+
+          // If not: Check if there is ticketid in the current page and return
+          const foundInFirstResponse = firstResponse.attendees.find(attendee => attendee.order_id == ticketId);
+          console.log(`found in first page only: ${foundInFirstResponse}`);
+
+          // Was found in the unique one page
+          if(foundInFirstResponse == undefined) resolve(true);
+
+          // Wasn't found in the unique first page
+          else resolve(false);
+        } else {
+          console.log('There is more pages');
+          let foundInPagination = false;
+          let moreItems = true;
+          let continuationToken = firstResponse.pagination.continuation;
+
+          // iterate over reach end page or found ticket exists
+          while(!foundInPagination || moreItems) {
+            console.log('call =>');
+            fetch(`${API_URL}events/${eventId}/attendees/?continuation=${continuationToken}`)
+              .then(iterativeResponse => {
+                const paginationResult = iterativeResponse.json();
+                const foundInResponse = paginationResult.attendees.find(attendee => attendee.order_id == ticketId);
+                console.log(`foundInRespone: ${foundInResponse}`);
+
+                if(foundInResponse != undefined) {
+                  foundInPagination = true;
+                  console.log(`FOUND: ${foundInResponse}`)
+                }
+
+                moreItems = response.pagination.has_more_items;
+                continuationToken = paginationResult.pagination.continuation;
+              })
+          }
+          console.log(`after while`);
+          
+          if(foundInPagination) resolve(true);
+          else resolve(false);
+        } // iterative calls
+      })
+}
 
 module.exports = {
   ping: auth,
-  validateAttendee: retrieveEventInformation,
-  getAttendeeByTicket: getAttendeeByTicket,
+  validateTicket: validateTicket,
+  getAttendees: getAttendees,
+  getAttendeesPage: getAttendeesPage,
 }

@@ -25,25 +25,25 @@ const serviceAccountLoginCheck = (spreadsheetId) => {
 
 // Template to get some value from sheet
 const validateMentorEmail = async (mentorData) => {
-  
-  // Auth process with Google Spreadsheet API
-  const document = new GoogleSpreadsheet(mentorsRedux.id);
-  await document.useServiceAccountAuth(credentials);
-  await document.loadInfo();
+    // Auth process with Google Spreadsheet API
+    const document = new GoogleSpreadsheet(mentorsRedux.id);
+    await document.useServiceAccountAuth(credentials);
+    await document.loadInfo();
 
-  // Loading in cache the spreadsheets and cells 
-  // that we will use.
-  const sheet = document.sheetsByIndex[0];
-  await sheet.loadCells('B:B');
+    // Loading in cache the spreadsheets and cells 
+    // that we will use.
+    const sheet = document.sheetsByIndex[0];
+    await sheet.loadCells('B:B');
 
-  // Calculates the next row available considering
-  // that each register or row has a group of M values (or columns), so
-  // (N values / M) will returns the next
-  // row available to write.
-  //  const rowIndex = sheet.cellStats.nonEmpty /  spreadsheets.mentorsRegistration.columns;
-
-  // Fullfils the cache cells locally
   return new Promise((resolve, rejected) => {
+
+    // Calculates the next row available considering
+    // that each register or row has a group of M values (or columns), so
+    // (N values / M) will returns the next
+    // row available to write.
+    //  const rowIndex = sheet.cellStats.nonEmpty /  spreadsheets.mentorsRegistration.columns;
+
+    // Fullfils the cache cells locally
     for(let i = 1; i <= sheet.cellStats.nonEmpty; i++) {
       let email = sheet.getCellByA1(`B${i}`);
       console.log(email.value);

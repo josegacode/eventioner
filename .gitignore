@@ -7,3 +7,4 @@ log.txt
 *.zip
 node_modules
 config.json
+*pem*
