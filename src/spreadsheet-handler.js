@@ -35,8 +35,6 @@ const validateMentorEmail = async (mentorData) => {
     const sheet = document.sheetsByIndex[0];
     await sheet.loadCells('B:B');
 
-  return new Promise((resolve, rejected) => {
-
     // Calculates the next row available considering
     // that each register or row has a group of M values (or columns), so
     // (N values / M) will returns the next
@@ -47,10 +45,9 @@ const validateMentorEmail = async (mentorData) => {
     for(let i = 1; i <= sheet.cellStats.nonEmpty; i++) {
       let email = sheet.getCellByA1(`B${i}`);
       console.log(email.value);
-      if(email.value == mentorData) resolve(true);
+      if(email.value == mentorData) return true;
+      else if(i == sheet.cellStats.nonEmpty) return false;
     }
-    rejected(false);
-  })
 }
 
 /* 

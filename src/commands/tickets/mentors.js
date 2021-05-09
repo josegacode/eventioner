@@ -41,34 +41,38 @@ module.exports = class BeMentor extends Command {
     //ping();
 
     // Getting the promise 
-    validateMentorEmail(ticketId)
+    validateMentorEmail(email)
       
       // Pucharse check
-      .then(ticketIsValid => {
-        console.log(`Final response in tickets: ${response}`);
-        if(ticketIsValid) {
+      .then(emailIsValid => {
+
+        console.log(`Final response in mentors: ${emailIsValid}`);
+        if(emailIsValid) {
+          console.log(`correo valido`)
            // Give atte role 
             message.member.roles.add(message.guild.roles.cache.find(guildRole => 
-                  guildRole.name == 'Participante'));
+                  guildRole.name == 'Mentorx'));
              return message.embed( 
               new MessageEmbed()
                 .setTitle(`Registro exitoso ✅`)
-                .setDescription(`@${message.author.username} tu registro ha sido validado,
-                  y ahora tienes el rol de participante, gracias! 😄`)
+                .setDescription(`@${message.author.username} tu registro como mentor ha sido validado,
+                  gracias! 😄`)
                 .setColor(0x539BFF)
             )
               //.then(attendeeFeedback => attendeeFeedback.delete({timeout: 10000}))
         } else {
+          console.log(`correo invalido`)
             return message.embed( 
               new MessageEmbed()
-                .setTitle(`⚠ BOLETO NO VALIDO ⚠`)
-                .setDescription(`Al parecer el ticket de Evenbrite que me diste
-                  no existe, verifica que lo has escrito correctamente 🤔`)
+                .setTitle(`⚠ MENTOR NO CONOCIDO ⚠`)
+                .setDescription(`Al parecer tu correo electronico no aparece
+                  en nuestra base de datos de mentores conocidos, ponte en contacto
+                  con los organizadores del evento para dar seguimiento a tu caso.`)
                 .setColor(0x539BFF)
             )
         }
       }) // End type of attendee validation
-      .then(ticketFeedback => ticketFeedback.delete({ timeout: 15000 }))
+      .then(mentorFeedback => mentorFeedback.delete({ timeout: 15000 }))
       .catch(error => console.error(error))
       .then(() => {
         message.delete({ timeout: 2000 });
