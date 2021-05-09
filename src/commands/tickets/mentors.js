@@ -45,11 +45,7 @@ module.exports = class BeMentor extends Command {
       
       // Pucharse check
       .then(emailIsValid => {
-
-        console.log(`Final response in mentors: ${emailIsValid}`);
         if(emailIsValid) {
-          console.log(`correo valido`)
-           // Give atte role 
             message.member.roles.add(message.guild.roles.cache.find(guildRole => 
                   guildRole.name == 'Mentorx'));
              return message.embed( 
@@ -59,9 +55,7 @@ module.exports = class BeMentor extends Command {
                   gracias! 😄`)
                 .setColor(0x539BFF)
             )
-              //.then(attendeeFeedback => attendeeFeedback.delete({timeout: 10000}))
         } else {
-          console.log(`correo invalido`)
             return message.embed( 
               new MessageEmbed()
                 .setTitle(`⚠ MENTOR NO CONOCIDO ⚠`)
@@ -72,7 +66,7 @@ module.exports = class BeMentor extends Command {
             )
         }
       }) // End type of attendee validation
-      .then(mentorFeedback => mentorFeedback.delete({ timeout: 15000 }))
+      .then(mentorFeedback => mentorFeedback.delete({timeout: 10000}))
       .catch(error => console.error(error))
       .then(() => {
         message.delete({ timeout: 2000 });

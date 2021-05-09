@@ -42,7 +42,6 @@ module.exports = class EnrollCommand extends Command {
     //ping();
 
     // Getting the promise 
-    //validateTicket(ticketId)
     getAttendees()
       
       // Pagination check 
@@ -64,29 +63,36 @@ module.exports = class EnrollCommand extends Command {
 
                 message.member.roles.add(message.guild.roles.cache.find(guildRole => 
                       guildRole.name == 'Participante'));
-                 return message.embed( 
+                 message.embed( 
                   new MessageEmbed()
                     .setTitle(`Registro exitoso ✅`)
-                    .setDescription(`@${message.author.username} tu registro ha sido validado,
-                      y ahora tienes el rol de participante, gracias! 😄`)
+                    .setDescription(`@${message.author.username} tu registro como participante ⚡ ha sido validado,
+                      y ahora tienes el rol de participante, gracias!`)
                     .setColor(0x539BFF)
                 )
+                  .then(attendeeFeedback => attendeeFeedback.delete({timeout: 10000}))
                 } 
                 else if(page == 4) {
-                  return message.embed( 
+                  message.embed( 
                     new MessageEmbed()
                       .setTitle(`⚠ BOLETO NO VALIDO ⚠`)
                       .setDescription(`Al parecer el ticket de Evenbrite que me diste
                         no existe, verifica que lo has escrito correctamente 🤔`)
                       .setColor(0x539BFF)
                   )
+                  .then(attendeeFeedback => attendeeFeedback.delete({timeout: 10000}))
 
                 } else console.log(`still searching, readed page ${page}`)
               }) // then
+            .then(finalFeedback => finalFeedback)
           }
         } else {
           console.log('just one page')
         } 
+      })
+      .catch(error => console.error(error))
+      .then(() => {
+        message.delete({ timeout: 2000 });
       })
   }; // End fo run()
 } // end of class definition
