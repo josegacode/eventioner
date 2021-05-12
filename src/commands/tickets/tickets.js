@@ -41,40 +41,59 @@ module.exports = class EnrollCommand extends Command {
   async run(message, {ticketId}) {
       getAttendeesTickets()
         .then(allTickets => {
-        console.log(`response tickets: ${allTickets.length}`);
-        //const ticketFound = allTickets.find(ticket => ticket == ticketId);
+          // Gets all pages [pagination{}, attendees[]]
 
-        let ticketFound = true;
-                // Ticket validation per page
-                if(ticketFound) {
-                  console.log(ticketFound);
+          let attendeeFound;
+          let pageArrayIndex = 0;
+          do {
+            if(allTickets[pageArrayIndex].attendees.some(attendee => attendee.order_id == ticketId)) {
+              attendeeFound = true; 
+              console.log(`found on page ${pageArrayIndex}`);
+            }
+            console.log(`on page #${pageArrayIndex}`)
+            pageArrayIndex++;
+          } while(!attendeeFound && pageArrayIndex < allTickets.length)
 
-                message.member.roles.add(message.guild.roles.cache.find(guildRole => 
-                      guildRole.name == 'Participante'));
-                 message.embed( 
-                  new MessageEmbed()
-                    .setTitle(`Registro exitoso ✅`)
-                    .setDescription(`@${message.author.username} tu registro como participante ⚡ ha sido validado,
-                      y ahora tienes el rol de participante, gracias!`)
-                    .setColor(0x539BFF)
-                )
-                  .then(attendeeFeedback => attendeeFeedback.delete({timeout: 10000}))
-                } 
-                else {
-                  message.embed( 
-                    new MessageEmbed()
-                      .setTitle(`⚠ BOLETO NO VALIDO ⚠`)
-                      .setDescription(`Al parecer el ticket de Evenbrite que me diste
-                        no existe, verifica que lo has escrito correctamente 🤔`)
-                      .setColor(0x539BFF)
-                  )
-                  .then(attendeeFeedback => attendeeFeedback.delete({timeout: 10000}))
+          // Ticket validation per page
+          // TODO: add role exists validation
+          if(attendeeFound) {
+          message.member.roles.add(message.guild.roles.cache.find(guildRole => 
+                guildRole.name == 'Participante'));
+           message.embed( 
+            new MessageEmbed()
+              .setTitle(`Registro exitoso ✅`)
+              .setDescription(`@${message.author.username} tu boleto ha sido confirmado con exito,
+                disfruta del evento! 🚀`)
+              .addField('\u200B', '\u200B')
+              .setColor(0x00AED6)
+              .setTimestamp()
+              .setFooter('Develop with 💙 by Legion Hack')
+          )
+            .then(attendeeFeedback => attendeeFeedback.delete({timeout: 15000}))
+          } 
+          else {
+            message.embed( 
+              new MessageEmbed()
+                .setTitle(`El registro ha fallado ⚠`)
+                .setDescription(`Tu boleto no se ha podido validar por las siguientes razones:
+                  
+                  👉  Lo has escrito incorrectamente
+                  👉  Ingresaste un boleto inexistente (debes registrate en Eventbrite previamente) 
+                  👉  Ingresaste un boleto que no corresponde a este evento 
+                  👉  Tu boleto ya fue registrado por otra persona 
+                  `)
+                .addField('\u200B', '\u200B')
+                .setColor(0xffd56b)
+                .setTimestamp()
+                .setFooter('Develop with 💙 by Legion Hack')
+            )
+            .then(attendeeFeedback => attendeeFeedback.delete({timeout: 20000}))
 
-                } 
+          } 
       })
       .catch(error => console.error(error))
       .then(() => {
-        message.delete({ timeout: 2000 });
+        message.delete({ timeout: 500});
       })
   }; // End fo run()
 } // end of class definition

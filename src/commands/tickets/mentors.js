@@ -48,28 +48,35 @@ module.exports = class BeMentor extends Command {
         if(emailIsValid) {
             message.member.roles.add(message.guild.roles.cache.find(guildRole => 
                   guildRole.name == 'Mentorx'));
-             return message.embed( 
+             message.embed( 
               new MessageEmbed()
-                .setTitle(`Registro exitoso ✅`)
-                .setDescription(`@${message.author.username} tu registro como mentor ha sido validado,
-                  gracias! 😄`)
-                .setColor(0x539BFF)
+                .setTitle(`Mentorx registradx ✅`)
+                .setDescription(`@${message.author.username} tu registro como mentorx ha sido validado,
+                  disfruta del evento! 🚀`)
+                .addField('\u200B', '\u200B')
+                .setColor(0x00AED6)
+                .setTimestamp()
+                .setFooter('Develop with 💙 by Legion Hack')
             )
+              .then(mentorFeedback => mentorFeedback.delete({timeout: 10000}))
         } else {
-            return message.embed( 
+            message.embed( 
               new MessageEmbed()
-                .setTitle(`⚠ MENTOR NO CONOCIDO ⚠`)
-                .setDescription(`Al parecer tu correo electronico no aparece
-                  en nuestra base de datos de mentores conocidos, ponte en contacto
+                .setTitle(`Mentorx desconocido ⚠`)
+                .setDescription(`@${message.author.username} al parecer tu correo electronico no aparece en nuestra
+                  base de datos de mentores conocidos, ponte en contacto
                   con los organizadores del evento para dar seguimiento a tu caso.`)
-                .setColor(0x539BFF)
+                .addField('\u200B', '\u200B')
+                .setColor(0xffd56b)
+                .setTimestamp()
+                .setFooter('Develop with 💙 by Legion Hack')
             )
+              .then(mentorFeedback => mentorFeedback.delete({timeout: 20000}))
         }
       }) // End type of attendee validation
-      .then(mentorFeedback => mentorFeedback.delete({timeout: 10000}))
       .catch(error => console.error(error))
       .then(() => {
-        message.delete({ timeout: 2000 });
+        message.delete({ timeout: 500});
       })
   }; // End fo run()
 } // end of class definition

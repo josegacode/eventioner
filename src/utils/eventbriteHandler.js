@@ -49,29 +49,16 @@ const getAttendeesTickets = () => {
       })
       .then(data => {
         // Store all attendees
-        let allOrders = [];
+        let apiCalls = [];
 
         // Gets all orders from all pages
         for(let page = 1; page <= data.pagination.page_count; page++) {
-          //console.log(`retrieving page #${page}`)
-          getAttendeesPage(page)
-            .then(pageResult => {
-              // No need to pageResult.json() 'cause
-              // its already converted in the same enviroment
-              // of this module.
-              const { attendees } = pageResult;
-              attendees.forEach(attendee => {
-                //console.log(`pushed: ${attendee.order_id}`)
-                allOrders.push(attendee.order_id)
-              })
-
-              if(page == data.pagination.page_count) {
-                //console.log(`allOrders on page #${page} = ${allOrders}`);
-                resolve(allOrders);
-              }
-            })
+          apiCalls.push(getAttendeesPage(page))
         }
-      })
+
+        Promise.all(apiCalls)
+          .then(allPages => resolve(allPages)) // .all 
+        }) // first call
       .catch(error => console.log(`error ${error}`));
   })
 }
