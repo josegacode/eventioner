@@ -10,7 +10,7 @@
 
 const { MessageEmbed } = require('discord.js');
 const { Command } = require('discord.js-commando');
-const {validateTicket, getAttendeesPage, getAttendees} = require('../../utils/eventbriteHandler');
+const {validateTicket, getAttendeesPage, getAttendees, getAttendeesPagesCount, getAttendeesTickets} = require('../../utils/eventbriteHandler');
 
 module.exports = class EnrollCommand extends Command {
 	constructor(client) {
@@ -39,24 +39,12 @@ module.exports = class EnrollCommand extends Command {
 	}
 
   async run(message, {ticketId}) {
-    //ping();
+      getAttendeesTickets()
+        .then(allTickets => {
+        console.log(`response tickets: ${allTickets.length}`);
+        //const ticketFound = allTickets.find(ticket => ticket == ticketId);
 
-    // Getting the promise 
-    getAttendees()
-      
-      // Pagination check 
-      .then(response => {
-        //const { attendees } = ticketIsValid;
-        const { pagination } = response;
-
-        //console.log(pagination.page_count);
-        if(pagination.has_more_items) {
-          for(let page = 1; page <= pagination.page_count; page++) {
-            getAttendeesPage(page)
-              .then(pageResult => {
-                const { attendees } = pageResult;
-                const ticketFound = attendees.find(attendee => attendee.order_id == ticketId);
-
+        let ticketFound = true;
                 // Ticket validation per page
                 if(ticketFound) {
                   console.log(ticketFound);
@@ -72,7 +60,7 @@ module.exports = class EnrollCommand extends Command {
                 )
                   .then(attendeeFeedback => attendeeFeedback.delete({timeout: 10000}))
                 } 
-                else if(page == 4) {
+                else {
                   message.embed( 
                     new MessageEmbed()
                       .setTitle(`⚠ BOLETO NO VALIDO ⚠`)
@@ -82,13 +70,7 @@ module.exports = class EnrollCommand extends Command {
                   )
                   .then(attendeeFeedback => attendeeFeedback.delete({timeout: 10000}))
 
-                } else console.log(`still searching, readed page ${page}`)
-              }) // then
-            .then(finalFeedback => finalFeedback)
-          }
-        } else {
-          console.log('just one page')
-        } 
+                } 
       })
       .catch(error => console.error(error))
       .then(() => {

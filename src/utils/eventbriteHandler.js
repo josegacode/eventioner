@@ -1,10 +1,11 @@
 // Holds the private token of eventbrite
-const { token, eventId } = require('../json/eventbriteCredentials.json');
+const { token, reduxId} = require('../json/eventbriteCredentials.json');
 //const axios = require('axios');
 const fetch = require('node-fetch');
-const {response} = require('express');
+//const {response} = require('express');
 const API_URL = 'https://www.eventbriteapi.com/v3/';
 const OAuth = `token=${token}`;
+const eventId = reduxId;
 
 const auth = () => {
   console.log(token)
@@ -14,6 +15,11 @@ const auth = () => {
     .catch(error => console.log(error));
 }
 
+/**
+  * Gets a paginated response
+  *
+  * @param pageNumber The index of paginated response that we want to retrieve
+  * */
 const getAttendees = async => {
   return new Promise((resolve, reject) => {
     fetch(`${API_URL}events/${eventId}/attendees/?${OAuth}`)
@@ -21,6 +27,12 @@ const getAttendees = async => {
   })
 }
 
+/**
+  * For paginated responses, this function
+  * lets get a specific page by its index.
+  *
+  * @param pageNumber The index of paginated response that we want to retrieve
+  * */
 const getAttendeesPage = async (pageNumber) => {
   return new Promise((resolve, reject) => {
     fetch(`${API_URL}events/${eventId}/attendees/?page=${pageNumber}&${OAuth}`)
@@ -28,63 +40,45 @@ const getAttendeesPage = async (pageNumber) => {
   })
 }
 
-const validateTicket = async (ticketId) => {
-    // First call api
-    fetch(`${API_URL}events/${eventId}/attendees/${OAuth}`)
-      .then(firstCall => {
+const getAttendeesTickets = () => {
+  return new Promise((resolve, rejected) => {
 
-        // First api response object
-        const { attendees } = firstCall;
-        console.log(`First response ${attendees}`);
-
-        // Check if there is more pages
-        if(!firstResponse.pagination.has_more_items) {
-          console.log('there is one page only');
-
-          // If not: Check if there is ticketid in the current page and return
-          const foundInFirstResponse = firstResponse.attendees.find(attendee => attendee.order_id == ticketId);
-          console.log(`found in first page only: ${foundInFirstResponse}`);
-
-          // Was found in the unique one page
-          if(foundInFirstResponse == undefined) resolve(true);
-
-          // Wasn't found in the unique first page
-          else resolve(false);
-        } else {
-          console.log('There is more pages');
-          let foundInPagination = false;
-          let moreItems = true;
-          let continuationToken = firstResponse.pagination.continuation;
-
-          // iterate over reach end page or found ticket exists
-          while(!foundInPagination || moreItems) {
-            console.log('call =>');
-            fetch(`${API_URL}events/${eventId}/attendees/?continuation=${continuationToken}`)
-              .then(iterativeResponse => {
-                const paginationResult = iterativeResponse.json();
-                const foundInResponse = paginationResult.attendees.find(attendee => attendee.order_id == ticketId);
-                console.log(`foundInRespone: ${foundInResponse}`);
-
-                if(foundInResponse != undefined) {
-                  foundInPagination = true;
-                  console.log(`FOUND: ${foundInResponse}`)
-                }
-
-                moreItems = response.pagination.has_more_items;
-                continuationToken = paginationResult.pagination.continuation;
-              })
-          }
-          console.log(`after while`);
-          
-          if(foundInPagination) resolve(true);
-          else resolve(false);
-        } // iterative calls
+    fetch(`${API_URL}events/${eventId}/attendees/?${OAuth}`)
+      .then(response => {
+        return response.json();
       })
+      .then(data => {
+        // Store all attendees
+        let allOrders = [];
+
+        // Gets all orders from all pages
+        for(let page = 1; page <= data.pagination.page_count; page++) {
+          //console.log(`retrieving page #${page}`)
+          getAttendeesPage(page)
+            .then(pageResult => {
+              // No need to pageResult.json() 'cause
+              // its already converted in the same enviroment
+              // of this module.
+              const { attendees } = pageResult;
+              attendees.forEach(attendee => {
+                //console.log(`pushed: ${attendee.order_id}`)
+                allOrders.push(attendee.order_id)
+              })
+
+              if(page == data.pagination.page_count) {
+                //console.log(`allOrders on page #${page} = ${allOrders}`);
+                resolve(allOrders);
+              }
+            })
+        }
+      })
+      .catch(error => console.log(`error ${error}`));
+  })
 }
 
 module.exports = {
   ping: auth,
-  validateTicket: validateTicket,
   getAttendees: getAttendees,
   getAttendeesPage: getAttendeesPage,
+  getAttendeesTickets: getAttendeesTickets 
 }
