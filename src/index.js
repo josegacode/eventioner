@@ -24,7 +24,8 @@ client.registry
 	.registerGroups([
 		['utils', 'Essentials Eventioner commands'],
 		['tickets', 'Commands for validate the tickets for the events'],
-		['announces', 'Commands related to publish announces and events'],
+		['teams', 'Commands related to make teams'],
+		['announces', 'Commands related to publish announces (dev)'],
 		['events', `Commands related to deploy, configure and manage
       events environments`],
 	])

@@ -48,7 +48,7 @@ module.exports = class BeMentor extends Command {
         if(emailIsValid) {
             message.member.roles.add(message.guild.roles.cache.find(guildRole => 
                   guildRole.name == 'Mentorx'));
-             message.embed( 
+             return message.embed( 
               new MessageEmbed()
                 .setTitle(`Mentorx registradx ✅`)
                 .setDescription(`@${message.author.username} tu registro como mentorx ha sido validado,
@@ -58,9 +58,8 @@ module.exports = class BeMentor extends Command {
                 .setTimestamp()
                 .setFooter('Develop with 💙 by Legion Hack')
             )
-              .then(mentorFeedback => mentorFeedback.delete({timeout: 10000}))
         } else {
-            message.embed( 
+            return message.embed( 
               new MessageEmbed()
                 .setTitle(`Mentorx desconocido ⚠`)
                 .setDescription(`@${message.author.username} al parecer tu correo electronico no aparece en nuestra
@@ -71,12 +70,12 @@ module.exports = class BeMentor extends Command {
                 .setTimestamp()
                 .setFooter('Develop with 💙 by Legion Hack')
             )
-              .then(mentorFeedback => mentorFeedback.delete({timeout: 20000}))
         }
       }) // End type of attendee validation
-      .catch(error => console.error(error))
-      .then(() => {
+      .then(mentorFeedback => {
         message.delete({ timeout: 500});
-      })
+        mentorFeedback.delete({timeout: 15000})
+      }) 
+      .catch(error => console.error(error))
   }; // End fo run()
 } // end of class definition

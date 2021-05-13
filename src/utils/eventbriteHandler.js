@@ -8,7 +8,6 @@ const OAuth = `token=${token}`;
 const eventId = reduxId;
 
 const auth = () => {
-  console.log(token)
   fetch(`${API_URL}users/me/?token=${token}`)
     .then(response => response.json())
     .then(apiOwnerData => console.log(apiOwnerData))
@@ -59,7 +58,7 @@ const getAttendeesTickets = () => {
         Promise.all(apiCalls)
           .then(allPages => resolve(allPages)) // .all 
         }) // first call
-      .catch(error => console.log(`error ${error}`));
+      .catch(error => console.error(error));
   })
 }
 

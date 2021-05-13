@@ -59,7 +59,7 @@ module.exports = class EnrollCommand extends Command {
           if(attendeeFound) {
           message.member.roles.add(message.guild.roles.cache.find(guildRole => 
                 guildRole.name == 'Participante'));
-           message.embed( 
+           return message.embed( 
             new MessageEmbed()
               .setTitle(`Registro exitoso ✅`)
               .setDescription(`@${message.author.username} tu boleto ha sido confirmado con exito,
@@ -67,12 +67,11 @@ module.exports = class EnrollCommand extends Command {
               .addField('\u200B', '\u200B')
               .setColor(0x00AED6)
               .setTimestamp()
-              .setFooter('Develop with 💙 by Legion Hack')
+              .setFooter('Made with 💙 by Legion Hack')
           )
-            .then(attendeeFeedback => attendeeFeedback.delete({timeout: 15000}))
           } 
           else {
-            message.embed( 
+            return message.embed( 
               new MessageEmbed()
                 .setTitle(`El registro ha fallado ⚠`)
                 .setDescription(`Tu boleto no se ha podido validar por las siguientes razones:
@@ -85,15 +84,15 @@ module.exports = class EnrollCommand extends Command {
                 .addField('\u200B', '\u200B')
                 .setColor(0xffd56b)
                 .setTimestamp()
-                .setFooter('Develop with 💙 by Legion Hack')
+                .setFooter('Made with 💙 by Legion Hack')
             )
-            .then(attendeeFeedback => attendeeFeedback.delete({timeout: 20000}))
 
           } 
       })
-      .catch(error => console.error(error))
-      .then(() => {
+      .then(attendeeFeedback => {
         message.delete({ timeout: 500});
-      })
+        attendeeFeedback.delete({timeout: 15000})
+      }) 
+      .catch(error => console.error(error))
   }; // End fo run()
 } // end of class definition
