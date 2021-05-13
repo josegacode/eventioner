@@ -98,21 +98,22 @@ module.exports = class Team extends Command {
       .then(finalFeedback => {
         message.client.channels.cache.get('842429651171278918').send(
           new MessageEmbed()
-            .setTitle(` Tu idea esta lista 🎉`)
-            .setDescription(`Tu idea ha sido publicada
-              en el canal correspondiente, ahora solo
-              espera a que alguien mas se integre a
-              tu equipo 🤩`)
-            .addField('\u200B', '\u200B')
-            .addFields([
-              {name: 'Equipo 🚀', value: team.title},
-              {name: 'Idea 💡', value: team.idea}
-            ])
+            .setTitle(`Se parte de "${team.title}" 🚀`)
+            .setDescription(team.idea)
             .addField('\u200B', '\u200B')
             .setColor(0x00AED6)
             .setTimestamp()
             .setFooter('Made with 💙 by Legion Hack')
-        );
+        )
+        .then(message => {
+          message.react('⚔');
+          const filter = (reaction, user) => true;
+          const collector = message.createReactionCollector(filter, { dispose: true});
+          collector.on('collect', (reaction, reactionCollector) => {
+            console.log(`response: ${reaction.emoji}`)
+               //do stuff
+          });
+        })
       })
       .catch(error => console.error(error))
   } // run
