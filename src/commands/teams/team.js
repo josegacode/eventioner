@@ -106,11 +106,34 @@ module.exports = class Team extends Command {
             .setFooter('Made with 💙 by Legion Hack')
         )
         .then(message => {
+          
+          // Only the lead is in the team
+          let teamMembers = 0;
+
           message.react('⚔');
-          const filter = (reaction, user) => true;
-          const collector = message.createReactionCollector(filter, { dispose: true});
-          collector.on('collect', (reaction, reactionCollector) => {
-            console.log(`response: ${reaction.emoji}`)
+          // Set a filter to ONLY grab those reactions & discard the reactions from the bot
+          const filter = (reaction, user) =>
+            '⚔' == reaction.emoji.name && !user.bot;
+
+          // Not listen after shutdown the bot
+          // dispose: true, lets members react at any time
+          const collector = message.createReactionCollector(
+            filter, 
+            {
+              max: 4,
+              //timeout: 5000,
+              //dispose: true
+            }
+          );
+
+          collector.on('collect', (reaction, user) => {
+            teamMembers++;
+            console.log(teamMembers);
+               //do stuff
+          });
+
+          collector.on('end', (reaction, user) => {
+            console.log('Recoleccion finalizada');
                //do stuff
           });
         })

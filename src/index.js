@@ -17,6 +17,7 @@ const path = require('path');
 const client = new CommandoClient({
 	commandPrefix: config.prefix, 
 	owner: config.owner,
+  partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
 client.registry
@@ -47,6 +48,30 @@ client.once('ready', () => {
 });
 
 client.on('error', console.error);
+
+client.on('messageReactionAdd', async (reaction, user) => { 
+  	// When a reaction is received, check if the structure is partial
+	if (reaction.message.partial || reaction.partial) {
+		// If the message this reaction belongs to was removed, the fetching might result in an API error which should be handled
+    try {
+			reaction.fetch()
+        .then(messageReaction => {
+          console.log(`Uncached: ${messageReaction.message.embeds[0].title}`)
+        })
+		} catch (error) {
+      reaction.message.channel.send('Error trying to recolect reactions')
+			// Return as `reaction.message.author` may be undefined/null
+			return;
+		}
+  } else {
+      console.log(`Cached: ${reaction.message.embeds[0].title}`)
+
+  }
+})
+
+
+// Global check for wrong commands typed
+//client.on('message', async () => {})
 
 // Loging the bot to the server
 client.login(config.token);
