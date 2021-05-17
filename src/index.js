@@ -8,7 +8,7 @@
 // Loads the environment variables
 require('dotenv').config();
 //const config = require('./json/config');
-const { buildTeamsEnvironment } = require('./utils/buildTeamsEnvironment');
+const { buildTeamsEnvironment, checkTeamCreationStatus } = require('./utils/buildTeamsEnvironment');
 
 // Commando framework manages most
 // of the discordjs core
@@ -19,6 +19,7 @@ const client = new CommandoClient({
 	owner: process.OWNER,
   partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
+const connection = require('./db/connection');
 
 client.registry
 	.registerDefaultTypes()
@@ -45,6 +46,7 @@ client.registry
 client.once('ready', () => {
 	console.log(`Logged in as ${client.user.tag}! (${client.user.id})`);
 	client.user.setActivity(`Enrolled in hacker's events ⚡`);
+
 });
 
 client.on('error', console.error);
@@ -59,25 +61,19 @@ client.on('messageReactionAdd', async (reaction, user) => {
     try {
 			reaction.fetch()
         .then(messageReaction => {
-          console.log(`${messageReaction.emoji}`)
-          if(messageReaction.emoji.name === `⚔`) {
-            console.log(`Uncached: ${messageReaction.message.embeds[0].title}`)
-            buildTeamsEnvironment(messageReaction);
+          switch(messageReaction.emoji.name) {
+            case `⚔`: checkTeamCreationStatus(messageReaction); break;
           }
-          //console.log(`Uncached: ${messageReaction.message.embeds[0].title}`)
+
         })
-		} catch (error) {
+    } catch (error) {
         reaction.message.channel.send('Error trying to recolect reactions')
         return;
 		}
   } else {
-    console.log(reaction.emoji.name)
-
-    // Already cached
-          if(reaction.emoji === '⚔') {
-            console.log(`Uncached: ${messageReaction.message.embeds[0].title}`)
-            buildTeamsEnvironment(messageReaction);
-          }
+      switch(reaction.emoji.name) {
+        case `⚔`: checkTeamCreationStatus(reaction); break;
+      }
   }
 })
 

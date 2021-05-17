@@ -52,9 +52,9 @@ module.exports = class Team extends Command {
 
         return message.author.send(
           new MessageEmbed()
-            .setTitle(`Paso 2: Cual es tu idea? 💡`)
-            .setDescription(`Describe brevemente la idea que
-              deseas desarrollar con tu equipo`)
+            .setTitle(`Paso 2: Que problematica atacaras? 💡`)
+            .setDescription(`Describe brevemente la problematica que
+              deseas solucionar con tu equipo`)
             .addField('\u200B', '\u200B')
             .setColor(0x00AED6)
             .setTimestamp()
