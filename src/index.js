@@ -3,20 +3,20 @@
  * this is the driver module.
  * */
 
-// Node modules
-// For manage system files
-const fs = require('fs');
-
 /** User modules */
-const config = require('./json/config');
+
+// Loads the environment variables
+require('dotenv').config();
+//const config = require('./json/config');
+const { buildTeamsEnvironment } = require('./utils/buildTeamsEnvironment');
 
 // Commando framework manages most
 // of the discordjs core
 const { CommandoClient } = require('discord.js-commando');
 const path = require('path');
 const client = new CommandoClient({
-	commandPrefix: config.prefix, 
-	owner: config.owner,
+	commandPrefix: process.env.PREFIX, 
+	owner: process.OWNER,
   partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
@@ -50,22 +50,34 @@ client.once('ready', () => {
 client.on('error', console.error);
 
 client.on('messageReactionAdd', async (reaction, user) => { 
-  	// When a reaction is received, check if the structure is partial
-	if (reaction.message.partial || reaction.partial) {
+
+  // When a reaction is received, check if the structure is partial
+  // (uncached locally) then get it from api call
+	if (reaction.message.partial) {
+
 		// If the message this reaction belongs to was removed, the fetching might result in an API error which should be handled
     try {
 			reaction.fetch()
         .then(messageReaction => {
-          console.log(`Uncached: ${messageReaction.message.embeds[0].title}`)
+          console.log(`${messageReaction.emoji}`)
+          if(messageReaction.emoji.name === `⚔`) {
+            console.log(`Uncached: ${messageReaction.message.embeds[0].title}`)
+            buildTeamsEnvironment(messageReaction);
+          }
+          //console.log(`Uncached: ${messageReaction.message.embeds[0].title}`)
         })
 		} catch (error) {
-      reaction.message.channel.send('Error trying to recolect reactions')
-			// Return as `reaction.message.author` may be undefined/null
-			return;
+        reaction.message.channel.send('Error trying to recolect reactions')
+        return;
 		}
   } else {
-      console.log(`Cached: ${reaction.message.embeds[0].title}`)
+    console.log(reaction.emoji.name)
 
+    // Already cached
+          if(reaction.emoji === '⚔') {
+            console.log(`Uncached: ${messageReaction.message.embeds[0].title}`)
+            buildTeamsEnvironment(messageReaction);
+          }
   }
 })
 
@@ -74,4 +86,4 @@ client.on('messageReactionAdd', async (reaction, user) => {
 //client.on('message', async () => {})
 
 // Loging the bot to the server
-client.login(config.token);
+client.login(process.env.TOKEN);

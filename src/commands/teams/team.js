@@ -96,7 +96,7 @@ module.exports = class Team extends Command {
         )
       })
       .then(finalFeedback => {
-        message.client.channels.cache.get('842429651171278918').send(
+        return message.client.channels.cache.get('842429651171278918').send(
           new MessageEmbed()
             .setTitle(`Se parte de "${team.title}" 🚀`)
             .setDescription(team.idea)
@@ -105,39 +105,8 @@ module.exports = class Team extends Command {
             .setTimestamp()
             .setFooter('Made with 💙 by Legion Hack')
         )
-        .then(message => {
-          
-          // Only the lead is in the team
-          let teamMembers = 0;
-
-          message.react('⚔');
-          // Set a filter to ONLY grab those reactions & discard the reactions from the bot
-          const filter = (reaction, user) =>
-            '⚔' == reaction.emoji.name && !user.bot;
-
-          // Not listen after shutdown the bot
-          // dispose: true, lets members react at any time
-          const collector = message.createReactionCollector(
-            filter, 
-            {
-              max: 4,
-              //timeout: 5000,
-              //dispose: true
-            }
-          );
-
-          collector.on('collect', (reaction, user) => {
-            teamMembers++;
-            console.log(teamMembers);
-               //do stuff
-          });
-
-          collector.on('end', (reaction, user) => {
-            console.log('Recoleccion finalizada');
-               //do stuff
-          });
-        })
       })
+      .then(message => { message.react('⚔') })
       .catch(error => console.error(error))
   } // run
 } // class

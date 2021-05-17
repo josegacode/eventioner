@@ -3,7 +3,7 @@ const { GoogleSpreadsheet } = require('google-spreadsheet');
 // Gettings the auth keys for Google API
 const credentials = require('./json/credentials.json');
 //const config = require('./json/config');
-let config = require('./json/config');
+//let config = require('./json/config');
 const {mentorsdb, mentorsRedux} = require('./json/spreadsheets.json');
 
 let document;
