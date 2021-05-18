@@ -28,6 +28,7 @@ client.registry
 		['tickets', 'Commands for validate the tickets for the events'],
 		['teams', 'Commands related to make teams'],
 		['announces', 'Commands related to publish announces (dev)'],
+		['server', 'Commands related to manage the server where the bot is enrolled'],
 		['events', `Commands related to deploy, configure and manage
       events environments`],
 	])

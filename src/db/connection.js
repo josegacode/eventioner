@@ -7,13 +7,22 @@ const connection = mysql.createConnection({
   database : process.env.DB_NAME 
 });
 
+const powerOn = () => {
+  connection.connect((error) => {
+    if(error) {
+      console.log('error setting connection to db');
+      return false;
+    } else {
+      console.log(`Connected to ${process.env.DB_NAME}!, thread id: ${connection.threadId}`);
+      return true;
+    } 
+  })
+}
+/*
 
-connection.connect((error) => {
-  if(error) {
-    console.log('error setting connection to db');
-    return;
-  } else console.log(`Connected to ${process.env.DB_NAME}!, thread id: ${connection.threadId}`);
-})
+*/
 
-
-module.exports = { connection: connection }
+module.exports = { 
+  connection: connection,
+  powerOn: powerOn
+}

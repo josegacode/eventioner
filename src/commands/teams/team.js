@@ -1,7 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { MessageEmbed } = require('discord.js');
-const { roles , permissions } = require('../../json/baseRoles');
-//const { getRoleByName } = require('../../utils/checkPermissions');
+const { logEvent } = require('../../utils/logger');
 
 module.exports = class Team extends Command {
 	constructor(client) {
@@ -19,6 +18,8 @@ module.exports = class Team extends Command {
   } // constructor
 
   async run(message) {
+    //logEvent(message.content);
+
     let team = {
       title: '',
       idea: '',
@@ -32,7 +33,6 @@ module.exports = class Team extends Command {
         .addField('\u200B', '\u200B')
         .setColor(0x00AED6)
         .setTimestamp()
-        .setFooter('Made with 💙 by Legion Hack')
     )
       // Waiting the team title (also it will be the role)
       .then(mdMessage => {
@@ -58,7 +58,6 @@ module.exports = class Team extends Command {
             .addField('\u200B', '\u200B')
             .setColor(0x00AED6)
             .setTimestamp()
-            .setFooter('Made with 💙 by Legion Hack')
         )
       })
 
@@ -92,7 +91,7 @@ module.exports = class Team extends Command {
             .addField('\u200B', '\u200B')
             .setColor(0x00AED6)
             .setTimestamp()
-            .setFooter('Made with 💙 by Legion Hack')
+            .setFooter(process.env.FOOTER_MESSAGE)
         )
       })
       .then(finalFeedback => {
