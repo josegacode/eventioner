@@ -30,9 +30,10 @@ module.exports = class AddServer extends Command {
     const serverName = message.guild.name;
     const botId = message.client.user.id;
 
-    console.log(`result: ${checkIfServerExists(serverId)}`);
+    let exists = await checkIfServerExists(serverId);
+    //console.log(`exists server: ${exists}`);
     // Query if exist in db
-    if(checkIfServerExists(serverId)) {
+    if(exists) {
       message.author.send(
         new MessageEmbed()
           .setTitle(`El servidor ya esta registrado 👀`)
@@ -45,7 +46,9 @@ module.exports = class AddServer extends Command {
     } else {
       // Not exists
       // Save server data in db
-      if(addNewServer(serverId, serverName)) {
+      let serverAdded = addNewServer(serverId, serverName);
+      //console.log(`agregando server: ${serverAdded}`);
+      if(serverAdded) {
         // Feedback
         message.author.send(
           new MessageEmbed()
