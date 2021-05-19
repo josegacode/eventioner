@@ -42,6 +42,7 @@ module.exports = class AddServer extends Command {
           // with the bot.
           checkIfServerIsLinkedWithBot(botId, serverId)
             .then(isLinked => {
+              console.log(isLinked);
 
               // Is linked, null value is returned
               if(isLinked) {
@@ -61,6 +62,7 @@ module.exports = class AddServer extends Command {
                 return linkBotWithServer(botId, serverId)
             })
             .then(linked => {
+              console.log(linked);
 
               // The server exists and also bot is linked
               // (null value was sent from the previous then)
