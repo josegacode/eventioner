@@ -7,11 +7,18 @@ const API_URL = 'https://www.eventbriteapi.com/v3/';
 const OAuth = `token=${token}`;
 const eventId = reduxId;
 
-const auth = () => {
-  fetch(`${API_URL}users/me/?token=${token}`)
-    .then(response => response.json())
-    .then(apiOwnerData => console.log(apiOwnerData))
-    .catch(error => console.log(error));
+/**
+  * Gets all available or coming soong (live)
+  * events from Redux agro organization.
+  *
+  * @param pageNumber The index of paginated response that we want to retrieve
+  * */
+const getAvailableEvents = async => {
+  return new Promise((resolve, reject) => {
+    fetch(`${API_URL}organizations/450438898208/events/?status=live&${OAuth}`)
+      .then(response => resolve(response.json()))
+      .catch(error => reject(error))
+  })
 }
 
 /**
@@ -63,8 +70,8 @@ const getAttendeesTickets = () => {
 }
 
 module.exports = {
-  ping: auth,
   getAttendees: getAttendees,
   getAttendeesPage: getAttendeesPage,
-  getAttendeesTickets: getAttendeesTickets 
+  getAttendeesTickets: getAttendeesTickets,
+  getAvailableEvents: getAvailableEvents
 }
