@@ -72,8 +72,7 @@ module.exports = class AddServer extends Command {
               message.author.send(
                 new MessageEmbed()
                   .setTitle(`Servidor registrado ✅`)
-                  .setDescription(`Ahora puedo ayudarte a gestionar los
-                    eventos en tu servidor 🤖`)
+                  .setDescription(`Parece que este servidor ya lo conocian mis colegas, y ahora yo tambien 😁`)
                   .addField('\u200B', '\u200B')
                   .setColor(process.env.PRIMARY)
                   .setTimestamp()

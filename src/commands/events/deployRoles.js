@@ -1,3 +1,4 @@
+// TODO: update with db user defined roles per event
 const { Command } = require('discord.js-commando');
 const { roles , permissions } = require('../../json/baseRoles');
 //const { getRoleByName } = require('../../utils/checkPermissions');

@@ -1,5 +1,34 @@
 const { pool } = require('./connection');
 
+const checkIfThereAreActiveEvents = serverId => {
+  const query = 
+    `SELECT EXISTS
+      (
+        SELECT * 
+        FROM events 
+        WHERE 
+          server=${serverId} AND 
+          is_active=true 
+      ) AS found`;
+
+  return new Promise((resolve, reject) => {
+    pool.query({
+        sql: query,
+        timeout: 40000, // ms
+        },
+        (error, results, fields) => {
+          if(!error) {
+            console.log('ok')
+            resolve(results[0].found > 0 ? true : false);
+          } 
+          else {
+            console.log(error)
+            reject(error);
+          } 
+        })
+  })
+}
+
 const checkIfServerExists = serverId => {
   // todo: avoid *
   const query = `SELECT EXISTS(SELECT * from servers WHERE guild_id=${serverId}) AS found`;
@@ -7,18 +36,11 @@ const checkIfServerExists = serverId => {
   return new Promise((resolve, reject) => {
     pool.query({
         sql: query,
-        timeout: 40000, // 40s
+        timeout: 40000, // ms
         },
         (error, results, fields) => {
-          // error will be an Error if one occurred during the query
-          if(!error) {
-            //console.log(`encontrado: ${results[0].found}`);
-            resolve(results[0].found > 0 ? true : false);
-          } else {
-            //console.log(`error in query of checkIfServerExists(): ${error}`);
-            reject(false);
-          }
-          // fields will contain information about the returned results fields (if any)
+          if(!error) resolve(results[0].found > 0 ? true : false);
+         else reject(false);
         })
   })
 }
@@ -49,5 +71,6 @@ const checkIfServerIsLinkedWithBot = (botId, serverId) => {
 }
 module.exports = {
   checkIfServerExists: checkIfServerExists,
-  checkIfServerIsLinkedWithBot: checkIfServerIsLinkedWithBot
+  checkIfServerIsLinkedWithBot: checkIfServerIsLinkedWithBot,
+  checkIfThereAreActiveEvents: checkIfThereAreActiveEvents 
 }
