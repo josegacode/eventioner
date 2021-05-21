@@ -33,16 +33,47 @@ module.exports = class StartEvent extends Command {
   } // constructor
 
   async run(message) {
-    const { channel } = message;
-    const serverId = message.guild.id;
-    const serverName = message.guild.name;
 
-    getAvailableEvents(serverId)
+    getAvailableEvents(message.guild.id)
       .then(eventsAvailable => {
         const { events } = eventsAvailable;
-        console.log(events[0].name.text);
-        channel.send(events[0].name.text);
+
+        const eventsList = [];
+        const dateRegex = /\d+-\d+-\d+/gm;
+        events.forEach((eventInfo, index) => {
+          eventsList.push({
+            name: `( ${index+1} )  ➡  ${eventInfo.name.text}`,
+            value: 
+            `
+              ${eventInfo.description.text}
+
+              🗓 Inicia: ${eventInfo.start.local.match(dateRegex)}
+              🗓 Termina: ${eventInfo.end.local.match(dateRegex)}
+            `
+          })
+        })
+
+        // Check if the event already was
+        // linked with another server (tempo-
+        // raly optinal)
+
+        // Select one:
+        // Build the embed
+        const eventsOptionsEmbed = new MessageEmbed()
+                .setTitle(`Eventos disponibles 🚀`)
+                .setDescription(`➡  Ingresa el numero que corresponda al evento que deseas activar en este servidor.`)
+                .addField('\u200B', '\u200B')
+                .addFields(eventsList)
+                .addField('\u200B', '\u200B')
+                .setColor(0x00AED6)
+                .setTimestamp()
+                .setFooter(process.env.FOOTER_MESSAGE)
+
+        // Link in db with current server
+
+        // Feedback
+        message.author.send(eventsOptionsEmbed)
       })
-      .catch((error) => channel.send(error));
+      .catch((error) => console.log(error));
   } // run
 }; // class
