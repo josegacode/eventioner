@@ -4,5 +4,5 @@
  * */
 
 const getTeamCreationChannel = () => {
-  return '842429651171278918';
-}
+  return "842429651171278918";
+};

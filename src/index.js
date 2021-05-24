@@ -6,35 +6,43 @@
 /** User modules */
 
 // Loads the environment variables
-require('dotenv').config();
+require("dotenv").config();
 //const config = require('./json/config');
-const { buildTeamsEnvironment, checkTeamCreationStatus } = require('./utils/buildTeamsEnvironment');
+const {
+  buildTeamsEnvironment,
+  checkTeamCreationStatus,
+} = require("./utils/buildTeamsEnvironment");
 
 // Commando framework manages most
 // of the discordjs core
-const { CommandoClient } = require('discord.js-commando');
-const path = require('path');
+const { CommandoClient } = require("discord.js-commando");
+const path = require("path");
 const client = new CommandoClient({
-	commandPrefix: process.env.PREFIX, 
-	owner: process.OWNER,
-  partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
+  commandPrefix: process.env.PREFIX,
+  owner: process.OWNER,
+  partials: ["MESSAGE", "CHANNEL", "REACTION"],
 });
-const connection = require('./db/connection');
+const connection = require("./db/connection");
 
 client.registry
-	.registerDefaultTypes()
-	.registerGroups([
-		['utils', 'Essentials Eventioner commands'],
-		['tickets', 'Commands for validate the tickets for the events'],
-		['teams', 'Commands related to make teams'],
-		['announces', 'Commands related to publish announces (dev)'],
-		['server', 'Commands related to manage the server where the bot is enrolled'],
-		['events', `Commands related to deploy, configure and manage
-      events environments`],
-	])
-	.registerDefaultGroups()
+  .registerDefaultTypes()
+  .registerGroups([
+    ["utils", "Essentials Eventioner commands"],
+    ["tickets", "Commands for validate the tickets for the events"],
+    ["teams", "Commands related to make teams"],
+    ["announces", "Commands related to publish announces (dev)"],
+    [
+      "server",
+      "Commands related to manage the server where the bot is enrolled",
+    ],
+    [
+      "events",
+      `Commands related to deploy, configure and manage
+      events environments`,
+    ],
+  ])
+  .registerDefaultGroups()
   .registerDefaultCommands({
-
     // To improve await message experience
     // in dm.
     unknownCommand: false,
@@ -42,42 +50,40 @@ client.registry
     // Disables built-in help command
     help: false,
   })
-	.registerCommandsIn(path.join(__dirname, 'commands'));
+  .registerCommandsIn(path.join(__dirname, "commands"));
 
-client.once('ready', () => {
-	console.log(`Logged in as ${client.user.tag}! (${client.user.id})`);
-	client.user.setActivity(`Enrolled in hacker's events ⚡`);
-
+client.once("ready", () => {
+  console.log(`Logged in as ${client.user.tag}! (${client.user.id})`);
+  client.user.setActivity(`Enrolled in hacker's events ⚡`);
 });
 
-client.on('error', console.error);
+client.on("error", console.error);
 
-client.on('messageReactionAdd', async (reaction, user) => { 
-
+client.on("messageReactionAdd", async (reaction, user) => {
   // When a reaction is received, check if the structure is partial
   // (uncached locally) then get it from api call
-	if (reaction.message.partial) {
-
-		// If the message this reaction belongs to was removed, the fetching might result in an API error which should be handled
+  if (reaction.message.partial) {
+    // If the message this reaction belongs to was removed, the fetching might result in an API error which should be handled
     try {
-			reaction.fetch()
-        .then(messageReaction => {
-          switch(messageReaction.emoji.name) {
-            case `⚔`: checkTeamCreationStatus(messageReaction); break;
-          }
-
-        })
+      reaction.fetch().then((messageReaction) => {
+        switch (messageReaction.emoji.name) {
+          case `⚔`:
+            checkTeamCreationStatus(messageReaction);
+            break;
+        }
+      });
     } catch (error) {
-        reaction.message.channel.send('Error trying to recolect reactions')
-        return;
-		}
+      reaction.message.channel.send("Error trying to recolect reactions");
+      return;
+    }
   } else {
-      switch(reaction.emoji.name) {
-        case `⚔`: checkTeamCreationStatus(reaction); break;
-      }
+    switch (reaction.emoji.name) {
+      case `⚔`:
+        checkTeamCreationStatus(reaction);
+        break;
+    }
   }
-})
-
+});
 
 // Global check for wrong commands typed
 //client.on('message', async () => {})
