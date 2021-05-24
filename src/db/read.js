@@ -26,7 +26,10 @@ const checkIfEventIsActive = (params) => {
       },
       (error, results, fields) => {
         if (!error) resolve(results[0].found > 0 ? true : false);
-        else reject(error);
+        else {
+          console.log(`error in checkIfEventIsActive()`);
+          reject(error);
+        }
       }
     );
   });
@@ -52,7 +55,7 @@ const checkIfThereAreActiveEvents = (serverId) => {
           console.log("ok");
           resolve(results[0].found > 0 ? true : false);
         } else {
-          console.log(error);
+          console.log("error" + error);
           reject(error);
         }
       }

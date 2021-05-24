@@ -34,13 +34,14 @@ module.exports = class StartEvent extends Command {
   } // constructor
 
   async run(message) {
-    // Info for register the choice
-    // of the user
-    const eventsList = [];
+    // Specific data from all
+    // events, like name, id, image,
+    // dates, etc.
+    let eventsList = [];
+    let eventSelectedIndex;
 
     // Info for embed message
     const eventsListEmbed = [];
-
 
     getAvailableEvents(message.guild.id)
       .then((eventsAvailable) => {
@@ -60,8 +61,11 @@ module.exports = class StartEvent extends Command {
 
           // List of events id
           // [0] -> <EVENT-ID>
-          eventsList.push(eventInfo.id);
-        });
+          eventsList.push({
+            id: eventInfo.id,
+            name: eventInfo.name.text,
+          });
+        }); // end foreach
 
         // Check if the event already was
         // linked with another server (tempo-
@@ -97,25 +101,34 @@ module.exports = class StartEvent extends Command {
       .then((eventSelected) => {
         // Checking if the event is
         // already active
-        const eventIndex = eventSelected.first().content - 1;
+        eventSelectedIndex = eventSelected.first().content - 1;
         return checkIfEventIsActive({
-          eventId: eventsList[eventIndex],
+          eventId: eventsList[eventSelectedIndex].id,
         });
       })
       .then((eventIsActive) => {
         // Saving into db if
         // the event isn't active
         if (!eventIsActive) {
-          message.author.send("no active");
           return linkEventWithServer({
-            eventId: eventsList[eventIndex],
+            eventId: eventsList[eventSelectedIndex].id,
             serverId: message.guild.id,
           });
         } else {
+          const eventAlreadyActiveEmbed = new MessageEmbed()
+            .setTitle(`Evento no registrado ⚠`)
+            .setDescription(
+            `
+              ➡  Parece que alguien mas ya ha registrado \`${eventsList[eventSelectedIndex].name}\`, intenta registra otro evento 😄 
+            `
+        )
+            .addField("\u200B", "\u200B")
+            .setColor(process.env.WARNING)
+            .setTimestamp()
+            .setFooter(process.env.FOOTER_MESSAGE);
           // Feedback
           message.author
-            .send(`Lo siento, el evento que intentas registrar ya se encuentra activo en uno de mis servidores, prueba con otro! 😄
-          `);
+            .send(eventAlreadyActiveEmbed);
 
           //TODO: let user choose another
           // event
@@ -123,26 +136,24 @@ module.exports = class StartEvent extends Command {
       })
       .then((eventLinked) => {
         if (eventLinked) {
-        const nextSteps = new MessageEmbed()
-          .setTitle(`Evento registrado ✅`)
-          .setDescription(
-            `➡  Has registrado `
-          )
-          .addField("\u200B", "\u200B")
-          .addFields(eventsListEmbed)
-          .addField("\u200B", "\u200B")
-          .setColor(0x00aed6)
-          .setTimestamp()
-          .setFooter(process.env.FOOTER_MESSAGE);
+          const nextSteps = new MessageEmbed()
+            .setTitle(`Evento registrado ✅`)
+            .setDescription(
+            `
+              ➡  Has registrado \`${eventsList[eventSelectedIndex].name}\` 
+            `
+        )
+            .addField("\u200B", "\u200B")
+            .setColor(0x00aed6)
+            .setTimestamp()
+            .setFooter(process.env.FOOTER_MESSAGE);
 
-        // Feedback
-        return message.author.send(eventsOptionsEmbed);
-          message.author.send("no active");
+          // Feedback
+          return message.author.send(nextSteps);
         } else {
           // Feedback
           message.author
-            .send(`Lo siento, el evento que intentas registrar ya se encuentra activo en uno de mis servidores, prueba con otro! 😄
-          `);
+            .send(``);
 
           //TODO: let user choose another
           // event
