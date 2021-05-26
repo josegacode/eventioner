@@ -18,21 +18,27 @@ module.exports = class Team extends Command {
   } // constructor
 
   async run(message) {
-    //logEvent(message.content);
-
-    let team = {
-      title: "",
-      idea: "",
-    };
+    let team = {};
 
     // Message asking for the title
     message.author
       .send(
         new MessageEmbed()
-          .setTitle(`Paso 1: Informacion sobre tu equipo 🚀`)
-          .setDescription(`Como deseas llamar a tu equipo?`)
+          .setTitle(`😄 Me encantaria conocerte!`)
+          .setDescription(
+            `
+              ➡ Instrucciones:
+
+              \> Hola, soy Eventioner y te ayudare a 
+              \> formar un equipo ⚔, comencemos por  
+              \> presentarte, escribe una breve descripcion sobre
+              \> sobre ti, quien eres, cual es tu trayectoria
+              \> profesional, etc. 
+            `
+          )
           .addField("\u200B", "\u200B")
-          .setColor(0x00aed6)
+          .setColor(process.env.PRIMARY)
+          .setFooter(process.env.FOOTER_MESSAGE)
           .setTimestamp()
       )
       // Waiting the team title (also it will be the role)
@@ -41,7 +47,7 @@ module.exports = class Team extends Command {
 
         return message.author.dmChannel.awaitMessages(filter, {
           max: 1,
-          time: 60000,
+          time: process.env.AWAIT_RESPONSE_TIMEOUT,
           errors: ["time"],
         });
       })
@@ -52,13 +58,57 @@ module.exports = class Team extends Command {
 
         return message.author.send(
           new MessageEmbed()
-            .setTitle(`Paso 2: Que problematica atacaras? 💡`)
+            .setTitle(`🦾 Invitacion al equipo`)
             .setDescription(
-              `Describe brevemente la problematica que
-              deseas solucionar con tu equipo`
+              `
+              ➡ Instrucciones:
+
+              \> Escribe la problematica que te gustaria
+              \> solucionar en este evento, de forma que
+              \> motive a los demas participantes a formar
+              \> parte de tu equipo! 
+            `
             )
             .addField("\u200B", "\u200B")
-            .setColor(0x00aed6)
+            .setColor(process.env.PRIMARY)
+            .setFooter(process.env.FOOTER_MESSAGE)
+            .setTimestamp()
+        );
+      })
+
+      // Waiting for the idea
+      .then((ideaMessage) => {
+        const filter = (idea) => idea.content.length <= 512;
+
+        return message.author.dmChannel.awaitMessages(filter, {
+          max: 1,
+          time: 60000,
+          errors: ["time"],
+        });
+      })
+
+      // Asking for the verticals
+      .then((title) => {
+        team.title = title.first().content;
+
+        return message.author.send(
+          new MessageEmbed()
+            .setTitle(`🔬 Verticales de tu problematica`)
+            .setDescription(
+              `
+              ➡ Instrucciones:
+
+              \> A continuacion te muestro la lista de  
+              \> verticales disponibles para el evento,
+              \> ingresa el numero que corresponda a la 
+              \> vertical relacionada con tu problematica
+              \> (puedes seleccionar varias problematicas
+              \> separandolas con una coma: 1, 4, 6)
+            `
+            )
+            .addField("\u200B", "\u200B")
+            .setColor(process.env.PRIMARY)
+            .setFooter(process.env.FOOTER_MESSAGE)
             .setTimestamp()
         );
       })

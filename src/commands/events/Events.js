@@ -1,6 +1,9 @@
 const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
-const { checkIfThereAreActiveEvents } = require("../../db/read");
+const {
+  checkIfThereAreActiveEvents,
+  getEventActiveInfo,
+} = require("../../db/read");
 
 module.exports = class Events extends Command {
   constructor(client) {
@@ -26,9 +29,60 @@ module.exports = class Events extends Command {
     checkIfThereAreActiveEvents(serverId)
       .then((thereAreActiveEvents) => {
         if (thereAreActiveEvents) {
-          channel.send("Fetching event info ...");
-          // Retrieve all information about it
-          // Show feedback of event infomation
+          // First, get data from db
+          getEventActiveInfo(message.guild.id).then((dbResult) => {
+            console.log(`result ${JSON.stringify(dbResult)}`);
+            const eventInfoEmbed = new MessageEmbed()
+              .setTitle(`Estado del evento en ${serverName} 🚀`)
+              .addField("\u200B", "\u200B")
+              .addField(`Evento`, ` No hay eventos activos 😪`)
+              .addFields([
+                {
+                  name: "Participantes 🦾",
+                  value: `\`\``,
+                  inline: true,
+                },
+                {
+                  name: "\u200B",
+                  value: "\u200B",
+                  inline: true,
+                },
+                {
+                  name: "Mentorxs  👩‍🏫",
+                  value: `\`| Categorias: ${dbResult.mentor_types}\``,
+                  inline: true,
+                },
+                {
+                  name: "Categorias de Mentorxs  👩‍🏫",
+                  value: "N/A",
+                  inline: true,
+                },
+                {
+                  name: "Equipos  🤜🤛",
+                  value: "N/A",
+                  inline: true,
+                },
+                {
+                  name: "\u200B",
+                  value: "\u200B",
+                  inline: true,
+                },
+                {
+                  name: "Verticales  🚀",
+                  value: "N/A",
+                  inline: true,
+                },
+              ])
+              .addField("\u200B", "\u200B")
+              .setColor(process.env.PRIMARY)
+              .setTimestamp();
+            message.embed(eventInfoEmbed);
+          });
+
+          // Next, call Eventbrite API
+
+          // Finally build, construct and
+          // show event info
         } else {
           //channel.send('No events');
 

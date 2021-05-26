@@ -1,10 +1,24 @@
 const { pool } = require("./connection");
 
-const linkEventWithServer = (values) => {
+const linkEventWithServer = (event) => {
+  //console.log(JSON.stringify(event, null, 4))
   const query = `
       INSERT INTO 
-        events(event_id, server)
-        values(${values.eventId}, ${values.serverId})`;
+        events(
+          event_id, 
+          server, 
+          verticals, 
+          members_per_team, 
+          mentor_types
+          )
+
+        values(
+          ${event.id}, 
+          ${event.server},
+          '${event.verticals}',
+          '${event.membersPerTeam}',
+          '${event.mentorsTypes}'
+      )`;
 
   return new Promise((resolve, reject) => {
     pool.query(

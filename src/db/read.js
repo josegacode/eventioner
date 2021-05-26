@@ -1,6 +1,46 @@
 const { pool } = require("./connection");
 
 /**
+ * @param a server id linked to event that we want
+ * to retrieve
+ * @returns Promise<boolean>
+ *
+ * Checks if the event
+ * is active by using its
+ * eventbrite id, no matters
+ * which server is linked to
+ * it.
+ * */
+const getEventActiveInfo = (serverId) => {
+  const query = `
+        SELECT 
+          event_id, 
+          verticals,
+          members_per_team,
+          mentor_types
+        FROM events 
+        WHERE server=${serverId}`;
+
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: query,
+        timeout: process.env.DB_QUERY_TIMEOUT,
+      },
+      (error, results, fields) => {
+        if (!error) {
+          //console.log(JSON.stringify(results, null, 4));
+          resolve(results[0]);
+        } else {
+          console.log(`error in getEventActiveInfo()`);
+          reject(error);
+        }
+      }
+    );
+  });
+};
+
+/**
  * @param eventId Eventbrite event id
  * @returns Promise<boolean>
  *
@@ -112,4 +152,5 @@ module.exports = {
   checkIfServerIsLinkedWithBot: checkIfServerIsLinkedWithBot,
   checkIfThereAreActiveEvents: checkIfThereAreActiveEvents,
   checkIfEventIsActive: checkIfEventIsActive,
+  getEventActiveInfo: getEventActiveInfo,
 };
