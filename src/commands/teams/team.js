@@ -1,6 +1,7 @@
 const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 const { logEvent } = require("../../utils/logger");
+const { getVerticals } = require("../../db/read");
 
 module.exports = class Team extends Command {
   constructor(client) {
@@ -19,6 +20,8 @@ module.exports = class Team extends Command {
 
   async run(message) {
     let team = {};
+    let verticalsArray = [];
+    let verticalsEmbedOptions = [];
 
     // Message asking for the title
     message.author
@@ -90,47 +93,62 @@ module.exports = class Team extends Command {
       // Asking for the verticals
       .then((title) => {
         team.title = title.first().content;
+        return getVerticals({ serverId: message.guild.id });
+      })
+      .then((verticals) => {
+        verticalsArray = verticals.verticals.split(",");
+        verticalsArray.forEach((vertical, index) => {
+          verticalsEmbedOptions.push({
+            name: `\> ${index + 1}`,
+            value: `${vertical}`,
+            inline: true,
+          });
+        });
 
-        return message.author.send(
+        message.author.send(
           new MessageEmbed()
             .setTitle(`🔬 Verticales de tu problematica`)
             .setDescription(
               `
               ➡ Instrucciones:
 
-              \> A continuacion te muestro la lista de  
-              \> verticales disponibles para el evento,
-              \> ingresa el numero que corresponda a la 
+              \> Ingresa el numero que corresponda a la 
               \> vertical relacionada con tu problematica
+              \> 
               \> (puedes seleccionar varias problematicas
               \> separandolas con una coma: 1, 4, 6)
             `
             )
             .addField("\u200B", "\u200B")
+            .addFields(verticalsEmbedOptions)
+            .addField("\u200B", "\u200B")
             .setColor(process.env.PRIMARY)
             .setFooter(process.env.FOOTER_MESSAGE)
             .setTimestamp()
         );
-      })
+      }) // verticals
 
       // Waiting for the idea
-      .then((ideaMessage) => {
-        const filter = (idea) => idea.content.length <= 512;
+      .then((verticalChoiceEmbed) => {
+        console.log("ok 2: " + verticalsArray);
+
+        const filter = (choice) => 
+          parseInt(choice) >= 0 && parseInt(choice)< verticalsArray.length;
 
         return message.author.dmChannel.awaitMessages(filter, {
           max: 1,
-          time: 60000,
+          time: process.env.AWAIT_RESPONSE_TIMEOUT,
           errors: ["time"],
         });
       })
 
       // Final feedback an publication of idea collector
-      .then((idea) => {
-        team.idea = idea.first().content;
+      .then((verticalChoice) => {
+        console.log("choice: " + verticalChoice.first().content - 1);
 
         return message.author.send(
           new MessageEmbed()
-            .setTitle(` Tu idea esta lista 🎉`)
+            .setTitle(`Tu idea esta lista 🎉`)
             .setDescription(
               `Tu idea ha sido publicada
               en el canal correspondiente, ahora solo

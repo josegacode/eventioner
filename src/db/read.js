@@ -11,6 +11,44 @@ const { pool } = require("./connection");
  * which server is linked to
  * it.
  * */
+const getVerticals = (params) => {
+  const query = `
+        SELECT verticals
+        FROM events 
+        WHERE 
+          server=${params.serverId} AND
+          is_active=true`;
+
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: query,
+        timeout: process.env.DB_QUERY_TIMEOUT,
+      },
+      (error, results, fields) => {
+        if (!error) {
+          //console.log(JSON.stringify(results, null, 4));
+          resolve(results[0]);
+        } else {
+          console.log(`error in getEventActiveInfo()`);
+          reject(error);
+        }
+      }
+    );
+  });
+};
+
+/**
+ * @param a server id linked to event that we want
+ * to retrieve
+ * @returns Promise<boolean>
+ *
+ * Checks if the event
+ * is active by using its
+ * eventbrite id, no matters
+ * which server is linked to
+ * it.
+ * */
 const getEventActiveInfo = (serverId) => {
   const query = `
         SELECT 
@@ -153,4 +191,5 @@ module.exports = {
   checkIfThereAreActiveEvents: checkIfThereAreActiveEvents,
   checkIfEventIsActive: checkIfEventIsActive,
   getEventActiveInfo: getEventActiveInfo,
+  getVerticals: getVerticals,
 };
