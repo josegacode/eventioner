@@ -27,7 +27,7 @@ const getTeams = (params) => {
       (error, results, fields) => {
         if (!error) {
           // undefined if there is no records
-          resolve(results[0]); 
+          resolve(results);
         } else {
           console.log(`error in getTeams()`);
           reject(error);
@@ -127,7 +127,7 @@ const getVerticals = (params) => {
  * it.
  * */
 const getEventActiveInfo = (params) => {
-  console.log(JSON.stringify(params, null, 4))
+  console.log(JSON.stringify(params, null, 4));
   const query = `
         SELECT 
           event_id, 
@@ -272,5 +272,5 @@ module.exports = {
   getEventActiveInfo: getEventActiveInfo,
   getVerticals: getVerticals,
   getMembersPerTeam: getMembersPerTeam,
-  getTeams: getTeams
+  getTeams: getTeams,
 };

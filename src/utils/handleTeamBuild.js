@@ -1,5 +1,5 @@
 const { getMembersPerTeam } = require("../db/read");
-const { createTeamRoles } = require("./buildTeamChannels");
+const { createTeamRoles } = require("./buildTeamRoles");
 
 /**
  * @params reaction The reaction object triggered in some server
@@ -24,7 +24,7 @@ const handleTeamBuild = (reaction) => {
         console.log("ready for team channels creation (no range)");
         createTeamRoles({
           reaction: reaction,
-          serverId: reaction.message.guild.id
+          serverId: reaction.message.guild.id,
         });
       } else
         console.log(
@@ -39,7 +39,7 @@ const handleTeamBuild = (reaction) => {
         console.log("ready for team channels creation (range)");
         createTeamRoles({
           reaction: reaction,
-          serverId: reaction.message.guild.id
+          serverId: reaction.message.guild.id,
         });
       } else
         console.log(
