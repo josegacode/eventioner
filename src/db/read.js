@@ -11,6 +11,83 @@ const { pool } = require("./connection");
  * which server is linked to
  * it.
  * */
+const getTeams = (params) => {
+  const query = `
+    SELECT * 
+    FROM teams 
+    WHERE event=${params.eventId}
+  `;
+
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: query,
+        timeout: process.env.DB_QUERY_TIMEOUT,
+      },
+      (error, results, fields) => {
+        if (!error) {
+          // undefined if there is no records
+          resolve(results[0]); 
+        } else {
+          console.log(`error in getTeams()`);
+          reject(error);
+        }
+      }
+    );
+  });
+};
+
+/**
+ * TODO: replace by getEventActiveInfo
+ * @param a server id linked to event that we want
+ * to retrieve
+ * @returns Promise<boolean>
+ *
+ * Checks if the event
+ * is active by using its
+ * eventbrite id, no matters
+ * which server is linked to
+ * it.
+ * */
+const getMembersPerTeam = (params) => {
+  const query = `
+        SELECT members_per_team 
+        FROM events 
+        WHERE 
+          server=${params.serverId} AND
+          is_active=true`;
+
+  return new Promise((resolve, reject) => {
+    pool.query(
+      {
+        sql: query,
+        timeout: process.env.DB_QUERY_TIMEOUT,
+      },
+      (error, results, fields) => {
+        if (!error) {
+          //console.log(JSON.stringify(results, null, 4));
+          resolve(results[0]);
+        } else {
+          console.log(`error in getMembersPerTeam()`);
+          reject(error);
+        }
+      }
+    );
+  });
+};
+
+/**
+ * TODO: replace by getEventActiveInfo
+ * @param a server id linked to event that we want
+ * to retrieve
+ * @returns Promise<boolean>
+ *
+ * Checks if the event
+ * is active by using its
+ * eventbrite id, no matters
+ * which server is linked to
+ * it.
+ * */
 const getVerticals = (params) => {
   const query = `
         SELECT verticals
@@ -49,7 +126,8 @@ const getVerticals = (params) => {
  * which server is linked to
  * it.
  * */
-const getEventActiveInfo = (serverId) => {
+const getEventActiveInfo = (params) => {
+  console.log(JSON.stringify(params, null, 4))
   const query = `
         SELECT 
           event_id, 
@@ -57,7 +135,7 @@ const getEventActiveInfo = (serverId) => {
           members_per_team,
           mentor_types
         FROM events 
-        WHERE server=${serverId}`;
+        WHERE server=${params.serverId}`;
 
   return new Promise((resolve, reject) => {
     pool.query(
@@ -185,6 +263,7 @@ const checkIfServerIsLinkedWithBot = (botId, serverId) => {
     );
   });
 };
+
 module.exports = {
   checkIfServerExists: checkIfServerExists,
   checkIfServerIsLinkedWithBot: checkIfServerIsLinkedWithBot,
@@ -192,4 +271,6 @@ module.exports = {
   checkIfEventIsActive: checkIfEventIsActive,
   getEventActiveInfo: getEventActiveInfo,
   getVerticals: getVerticals,
+  getMembersPerTeam: getMembersPerTeam,
+  getTeams: getTeams
 };

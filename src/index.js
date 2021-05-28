@@ -7,11 +7,6 @@
 
 // Loads the environment variables
 require("dotenv").config();
-//const config = require('./json/config');
-const {
-  buildTeamsEnvironment,
-  checkTeamCreationStatus,
-} = require("./utils/buildTeamsEnvironment");
 
 // Commando framework manages most
 // of the discordjs core
@@ -22,7 +17,7 @@ const client = new CommandoClient({
   owner: process.OWNER,
   partials: ["MESSAGE", "CHANNEL", "REACTION"],
 });
-const connection = require("./db/connection");
+const { handleTeamBuild } = require("./utils/handleTeamBuild");
 
 client.registry
   .registerDefaultTypes()
@@ -65,10 +60,10 @@ client.on("messageReactionAdd", async (reaction, user) => {
   if (reaction.message.partial) {
     // If the message this reaction belongs to was removed, the fetching might result in an API error which should be handled
     try {
-      reaction.fetch().then((messageReaction) => {
-        switch (messageReaction.emoji.name) {
+      reaction.fetch().then((reactionFetch) => {
+        switch (reactionFetch.emoji.name) {
           case `⚔`:
-            checkTeamCreationStatus(messageReaction);
+            handleTeamBuild(reactionFetch);
             break;
         }
       });
@@ -79,7 +74,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
   } else {
     switch (reaction.emoji.name) {
       case `⚔`:
-        checkTeamCreationStatus(reaction);
+        handleTeamBuild(reaction);
         break;
     }
   }

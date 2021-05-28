@@ -56,8 +56,8 @@ module.exports = class Team extends Command {
       })
 
       // Asking for the idea
-      .then((title) => {
-        team.title = title.first().content;
+      .then((leadInformation) => {
+        team.leadInformation = leadInformation.first().content;
 
         return message.author.send(
           new MessageEmbed()
@@ -91,8 +91,8 @@ module.exports = class Team extends Command {
       })
 
       // Asking for the verticals
-      .then((title) => {
-        team.title = title.first().content;
+      .then((idea) => {
+        team.idea = idea.first().content;
         return getVerticals({ serverId: message.guild.id });
       })
       .then((verticals) => {
@@ -132,8 +132,8 @@ module.exports = class Team extends Command {
       .then((verticalChoiceEmbed) => {
         console.log("ok 2: " + verticalsArray);
 
-        const filter = (choice) => 
-          parseInt(choice) >= 0 && parseInt(choice)< verticalsArray.length;
+        const filter = (choice) =>
+          parseInt(choice) >= 0 && parseInt(choice) < verticalsArray.length;
 
         return message.author.dmChannel.awaitMessages(filter, {
           max: 1,
@@ -144,7 +144,16 @@ module.exports = class Team extends Command {
 
       // Final feedback an publication of idea collector
       .then((verticalChoice) => {
-        console.log("choice: " + verticalChoice.first().content - 1);
+        // Gets each vertical choosed
+        // transforming its values in
+        // order to match with the
+        // verticalsArray indexes
+        const verticalsChoosed = verticalChoice
+          .first()
+          .content.split(",")
+          .map((vertical) => vertical - 1);
+
+        // Insert team
 
         return message.author.send(
           new MessageEmbed()
@@ -167,17 +176,20 @@ module.exports = class Team extends Command {
         );
       })
       .then((finalFeedback) => {
-        return message.client.channels.cache
-          .get("842429651171278918")
-          .send(
-            new MessageEmbed()
-              .setTitle(`Se parte de "${team.title}" 🚀`)
-              .setDescription(team.idea)
-              .addField("\u200B", "\u200B")
-              .setColor(0x00aed6)
-              .setTimestamp()
-              .setFooter("Made with 💙 by Legion Hack")
-          );
+        return message.client.channels.cache.get("842429651171278918").send(
+          new MessageEmbed()
+            .setTitle(
+              `
+                  Hey, \@${message.author.username} los invita a su equipo! 🚀
+                `
+            )
+            .setDescription(team.leadInformation)
+            .addField("\u200B", "\u200B")
+            .addFields([])
+            .setColor(process.env.PRIMARY)
+            .setTimestamp()
+            .setFooter(process.env.FOOTER_MESSAGE)
+        );
       })
       .then((message) => {
         message.react("⚔");
