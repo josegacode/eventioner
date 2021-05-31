@@ -12,6 +12,8 @@ require("dotenv").config();
 // of the discordjs core
 const { CommandoClient } = require("discord.js-commando");
 const path = require("path");
+const {getEventActiveInfo} = require("./db/read");
+const {createTeamRole} = require("./utils/createTeamRole");
 const client = new CommandoClient({
   commandPrefix: process.env.PREFIX,
   owner: process.OWNER,
@@ -57,28 +59,41 @@ client.on("error", console.error);
 client.on("messageReactionAdd", async (reaction, user) => {
   // When a reaction is received, check if the structure is partial
   // (uncached locally) then get it from api call
-  if (reaction.message.partial) {
     // If the message this reaction belongs to was removed, the fetching might result in an API error which should be handled
+  if (reaction.message.partial) {
     try {
-      reaction.fetch().then((reactionFetch) => {
-        switch (reactionFetch.emoji.name) {
-          case `⚔`:
-            handleTeamBuild(reactionFetch);
-            break;
+      reaction.fetch()
+        .then((reactionFetch) => {
+          switch (reaction.emoji.name) {
+            case `⚔`:
+              let teamInformation = {};
+              // Check if team is ready
+              handleTeamBuild(reaction)
+                .then((teamIsBuilt) => {
+                console.log("team is ready? (fetch): " + teamIsBuilt);
+                  if(teamIsBuilt) 
+                    // Creates and returns a team role
+                    return createTeamRole({
+                      serverId: reaction.message.guild.id,
+                      reaction: reaction
+                    })
+                })
+                .then(roleCreated => {
+                // Save into db
+                  teamInformation.role = roleCreated;
+                  return getEventActiveInfo({
+                    serverId: reaction.message.guild.id
+                  })
+                })
+              // Create its channels
+              break;
         }
-      });
-    } catch (error) {
-      reaction.message.channel.send("Error trying to recolect reactions");
-      return;
-    }
-  } else {
-    switch (reaction.emoji.name) {
-      case `⚔`:
-        handleTeamBuild(reaction);
-        break;
-    }
-  }
-});
+      }) // Fetch
+    } catch(e) {
+      console.error(e);
+    } // try-catch reaction partial
+  } // if partial
+}); // reaction event
 
 // Global check for wrong commands typed
 //client.on('message', async () => {})

@@ -157,10 +157,10 @@ module.exports = class Team extends Command {
 
         return message.author.send(
           new MessageEmbed()
-            .setTitle(`Tu idea esta lista 🎉`)
+            .setTitle(`Tu invitacion esta lista 🎉`)
             .setDescription(
-              `Tu idea ha sido publicada
-              en el canal correspondiente, ahora solo
+              `Tu invitacion ha sido publicada
+              en el canal de equipos, ahora solo
               espera a que alguien mas se integre a
               tu equipo 🤩`
             )
@@ -176,6 +176,7 @@ module.exports = class Team extends Command {
         );
       })
       .then((finalFeedback) => {
+        // TODO: Dinamically channel to make teams
         return message.client.channels.cache.get("842429651171278918").send(
           new MessageEmbed()
             .setTitle(

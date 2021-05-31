@@ -127,7 +127,6 @@ const getVerticals = (params) => {
  * it.
  * */
 const getEventActiveInfo = (params) => {
-  console.log(JSON.stringify(params, null, 4));
   const query = `
         SELECT 
           event_id, 
