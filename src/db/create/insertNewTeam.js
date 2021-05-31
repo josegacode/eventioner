@@ -1,36 +1,30 @@
-const { pool } = require("./connection");
+const { pool } = require("../connection");
 
 /**
- * @team An object which contains the team's
- * information
+ * @params An object which contains the team's
+ * information and server's event data
  *
  * Saves new team built in database
  * */
-const insertNewTeam = (team) => {
+const insertNewTeam = (params) => {
   //console.log(JSON.stringify(event, null, 4))
   const query = `
       INSERT INTO 
-        events(
-          event_id, 
-          server, 
-          verticals, 
-          members_per_team, 
-          mentor_types
+        teams(
+          name,
+          event
           )
 
         values(
-          ${event.id}, 
-          ${event.server},
-          '${event.verticals}',
-          '${event.membersPerTeam}',
-          '${event.mentorsTypes}'
+          '${params.team.role.name}', 
+          ${params.event.event_id}
       )`;
 
   return new Promise((resolve, reject) => {
     pool.query(
       {
         sql: query,
-        timeout: 40000, // 40s
+        timeout: process.env.DB_QUERY_TIMEOUT, // 40s
       },
       (error, results, fields) => {
         if (!error) {
@@ -41,3 +35,7 @@ const insertNewTeam = (team) => {
     );
   });
 };
+
+module.exports = {
+  insertNewTeam: insertNewTeam
+}; 

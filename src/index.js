@@ -14,6 +14,7 @@ const { CommandoClient } = require("discord.js-commando");
 const path = require("path");
 const {getEventActiveInfo} = require("./db/read");
 const {createTeamRole} = require("./utils/createTeamRole");
+const {insertNewTeam} = require("./db/create/insertNewTeam");
 const client = new CommandoClient({
   commandPrefix: process.env.PREFIX,
   owner: process.OWNER,
@@ -70,7 +71,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
               // Check if team is ready
               handleTeamBuild(reaction)
                 .then((teamIsBuilt) => {
-                console.log("team is ready? (fetch): " + teamIsBuilt);
+                //console.log("team is ready? (fetch): " + teamIsBuilt);
                   if(teamIsBuilt) 
                     // Creates and returns a team role
                     return createTeamRole({
@@ -85,6 +86,14 @@ client.on("messageReactionAdd", async (reaction, user) => {
                     serverId: reaction.message.guild.id
                   })
                 })
+                .then(eventInformation => {
+                // Save into db
+                insertNewTeam({
+                    event: eventInformation,
+                    team: teamInformation,
+                  })
+                })
+                
               // Create its channels
               break;
         }
