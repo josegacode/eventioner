@@ -7,21 +7,29 @@
 
 // Loads the environment variables
 require("dotenv").config();
+const path = require("path");
 
 // Commando framework manages most
 // of the discordjs core
 const { CommandoClient } = require("discord.js-commando");
-const path = require("path");
-const {getEventActiveInfo} = require("./db/read");
-const {createTeamRole} = require("./utils/createTeamRole");
-const {insertNewTeam} = require("./db/create/insertNewTeam");
+
+// User imports
+const { insertNewTeam } = require("./db/create/insertNewTeam");
+const { getEventActiveInfo } = require("./db/read");
+const { createTeamRole } = require("./utils/createTeamRole");
+const {
+  createTeamTextChannel,
+  createTeamVoiceChannel,
+} = require("./utils/createTeamChannels");
+const { handleTeamBuild } = require("./utils/handleTeamBuild");
+const { MessageEmbed } = require("discord.js");
+
+// Client setup
 const client = new CommandoClient({
   commandPrefix: process.env.PREFIX,
   owner: process.OWNER,
   partials: ["MESSAGE", "CHANNEL", "REACTION"],
 });
-const { handleTeamBuild } = require("./utils/handleTeamBuild");
-
 client.registry
   .registerDefaultTypes()
   .registerGroups([
@@ -60,45 +68,80 @@ client.on("error", console.error);
 client.on("messageReactionAdd", async (reaction, user) => {
   // When a reaction is received, check if the structure is partial
   // (uncached locally) then get it from api call
-    // If the message this reaction belongs to was removed, the fetching might result in an API error which should be handled
+  // If the message this reaction belongs to was removed, the fetching might result in an API error which should be handled
   if (reaction.message.partial) {
     try {
-      reaction.fetch()
-        .then((reactionFetch) => {
-          switch (reaction.emoji.name) {
-            case `⚔`:
-              let teamInformation = {};
-              // Check if team is ready
-              handleTeamBuild(reaction)
-                .then((teamIsBuilt) => {
+      reaction.fetch().then((reactionFetch) => {
+        switch (reaction.emoji.name) {
+          case `⚔`:
+            let teamInformation = {};
+            // Check if team is ready
+            handleTeamBuild(reaction)
+              .then((teamIsBuilt) => {
                 //console.log("team is ready? (fetch): " + teamIsBuilt);
-                  if(teamIsBuilt) 
-                    // Creates and returns a team role
-                    return createTeamRole({
-                      serverId: reaction.message.guild.id,
-                      reaction: reaction
-                    })
-                })
-                .then(roleCreated => {
-                // Save into db
-                  teamInformation.role = roleCreated;
-                  return getEventActiveInfo({
-                    serverId: reaction.message.guild.id
-                  })
-                })
-                .then(eventInformation => {
+                if (teamIsBuilt) {
+                  // Creates and returns a team role
+                  return createTeamRole({
+                    serverId: reaction.message.guild.id,
+                    reaction: reaction,
+                  });
+                }
+              })
+              .then((roleCreated) => {
+                // Save into db (once)
+                teamInformation.role = roleCreated;
+                return getEventActiveInfo({
+                  serverId: reaction.message.guild.id,
+                });
+
+                // TODO: check if is first time
+                // team creation or just new
+                // team member joined (update
+                // member count).
+              })
+              .then((eventInformation) => {
                 // Save into db
                 insertNewTeam({
-                    event: eventInformation,
-                    team: teamInformation,
-                  })
-                })
-                
-              // Create its channels
-              break;
+                  event: eventInformation,
+                  team: teamInformation,
+                });
+
+                //console.log(JSON.stringify(teamInformation.role, null ,4))
+
+                // Create team's private channels
+                createTeamTextChannel({
+                  guild: reaction.message.guild,
+                  team: teamInformation,
+                });
+                /*
+                createTeamVoiceChannel({
+                  guild: reaction.message.guild,
+                  team: teamInformation,
+                });
+                */
+
+            // Updates team information message
+                reaction.message.edit(
+                  new MessageEmbed()
+                    .setTitle(
+                      `
+                  ${teamInformation.role.name} 
+                `
+                    )
+                    .setDescription("jkashflakjhf")
+                    .addField("\u200B", "\u200B")
+                    .addFields([])
+                    .setColor(process.env.PRIMARY)
+                    .setTimestamp()
+                    .setFooter(process.env.FOOTER_MESSAGE)
+                );
+              });
+
+
+            break;
         }
-      }) // Fetch
-    } catch(e) {
+      }); // Fetch
+    } catch (e) {
       console.error(e);
     } // try-catch reaction partial
   } // if partial

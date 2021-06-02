@@ -37,5 +37,5 @@ const insertNewTeam = (params) => {
 };
 
 module.exports = {
-  insertNewTeam: insertNewTeam
-}; 
+  insertNewTeam: insertNewTeam,
+};

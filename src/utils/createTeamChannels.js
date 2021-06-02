@@ -1,24 +1,43 @@
 /**
- * @params An object which contains the team's roles
+ * @params An object which contains the team's and
+ * guild data.
  *
  * Generates the team's channels
  * */
-const createTeamChannels = (params) => {
-  const everyoneRole = client.guilds
-    .get("SERVER ID")
-    .roles.find("name", "@everyone");
+const createTeamTextChannel = (params) => {
 
-  const name = message.author.username;
-  message.guild
-    .createChannel(name, "text")
-    .then((r) => {
-      r.overwritePermissions(message.author.id, { VIEW_CHANNEL: true });
-      r.overwritePermissions(client.id, { VIEW_CHANNEL: true });
-      r.overwritePermissions(everyoneRole, { VIEW_CHANNEL: false });
+  // Getting the mentor role
+  const mentorRole = params.guild.roles.cache
+    .find((guildRole) => guildRole.name == "Mentorx")
+  console.log(
+    'mentor role found:' +
+    JSON.stringify(mentorRole, null, 4)
+  )
+
+  params.guild.channels
+    .create(params.team.role.name, {
+      // TODO: change this channel in production
+      // or find category by name
+      type: 'text',
+      parent: "849309232871374878",
+      permissionOverwrites: [
+       {
+          id: params.guild.id,
+          deny: ["VIEW_CHANNEL"],
+        },
+       {
+          id: params.team.role.id,
+          allow: ["VIEW_CHANNEL"],
+        },
+       {
+          id: mentorRole.id,
+          allow: ["VIEW_CHANNEL"],
+        },
+      ],
     })
     .catch(console.error);
 };
 
 module.exports = {
-  createTeamChannels: createTeamChannels,
+  createTeamTextChannel: createTeamTextChannel,
 };
