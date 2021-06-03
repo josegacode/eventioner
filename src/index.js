@@ -20,7 +20,7 @@ const { buildTeams } = require("./utils/buildTeams");
 const client = new CommandoClient({
   commandPrefix: process.env.PREFIX,
   owner: process.OWNER,
-  partials: ["GUILD_MEMBER" ,"REACTION", "MESSAGE", "USER", "CHANNEL"],
+  partials: ["GUILD_MEMBER", "REACTION", "MESSAGE", "USER", "CHANNEL"],
 });
 client.registry
   .registerDefaultTypes()
@@ -74,19 +74,18 @@ client.on("messageReactionAdd", async (reaction, user) => {
     try {
       // TODO: we cant access to its value (users), only
       // after fetch but no in on it
-      await reaction.fetch()
-      await reaction.users.fetch()
+      await reaction.fetch();
+      await reaction.users.fetch();
     } catch (e) {
       console.error(e);
     }
   }
 
-    switch(reaction.emoji.name) {
-      case `⚔`:
-        buildTeams(reaction);
-        break;
-    }
-
+  switch (reaction.emoji.name) {
+    case `⚔`:
+      buildTeams(reaction);
+      break;
+  }
 }); // reaction event
 
 // Global check for wrong commands typed

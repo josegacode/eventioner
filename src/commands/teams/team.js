@@ -27,14 +27,13 @@ module.exports = class Team extends Command {
     message.author
       .send(
         new MessageEmbed()
-          .setTitle(`😄 Me encantaria conocerte!`)
+          .setTitle(`Presentate a los demas 😉`)
           .setDescription(
             `
               ➡ Instrucciones:
 
-              \> Hola, soy Eventioner y te ayudare a 
-              \> formar un equipo ⚔, comencemos por  
-              \> presentarte, escribe una breve descripcion sobre
+              \> Comencemos por presentarte, 
+              \> escribe una breve descripcion sobre
               \> sobre ti, quien eres, cual es tu trayectoria
               \> profesional, etc. 
             `
@@ -46,7 +45,7 @@ module.exports = class Team extends Command {
       )
       // Waiting the team title (also it will be the role)
       .then((mdMessage) => {
-        const filter = (title) => title.content.length <= 200;
+        const filter = (leadAbout) => leadAbout.content.length <= 200;
 
         return message.author.dmChannel.awaitMessages(filter, {
           max: 1,
@@ -154,29 +153,25 @@ module.exports = class Team extends Command {
           .first()
           .content.split(",")
           .map((vertical) => vertical - 1)
-          .forEach(verticalIndex => {
-            team.verticals.push(verticalsArray[verticalIndex])
-          })
-
-        console.log(JSON.stringify(team.verticals))
-
+          .forEach((verticalIndex) => {
+            team.verticals.push(verticalsArray[verticalIndex]);
+          });
 
         // Insert team
-
         return message.author.send(
           new MessageEmbed()
-            .setTitle(`Tu invitacion esta lista 🎉`)
+            .setTitle(`Invitacion publicada ✅`)
             .setDescription(
               `Tu invitacion ha sido publicada
               en el canal de equipos, ahora solo
-              espera a que alguien mas se integre a
-              tu equipo 🤩`
+              espera a que los talentos se integren
+              a tu equipo ⚔`
             )
             .addField("\u200B", "\u200B")
             .addFields([
-              { name: "Equipo 🚀", value: team.title },
-              { name: "Idea 💡", value: team.idea },
-              { name: "Verticales 💡", value: team.verticals},
+              { name: "Sobre ti 🚀", value: team.leadInformation },
+              { name: "Problematica 💥", value: team.idea },
+              { name: "Verticales 💡", value: team.verticals },
             ])
             .addField("\u200B", "\u200B")
             .setColor(process.env.PRIMARY)
@@ -195,22 +190,21 @@ module.exports = class Team extends Command {
                 `
             )
             .addField("\u200B", "\u200B")
-            .addFields(
-              [
-                {
-                  name: `¿Quien soy?`,
-                  value: team.leadInformation
-                },
-                {
-                  name: `¿Que problematica quiero solucionar?`,
-                  value: team.idea
-                },
-                {
-                  name: `¿Que verticales comprende mi problematica?`,
-                  value: team.verticals
-                },
-              ]
-            )
+            .addFields([
+              {
+                name: `¿Quien soy? 😉`,
+                value: team.leadInformation,
+              },
+              {
+                name: `¿Que problemática quiero solucionar? 💥`,
+                value: team.idea,
+              },
+              {
+                name: `¿Que verticales comprende mi problemática? 🧪`,
+                value: team.verticals,
+              },
+            ])
+            .addField("\u200B", "\u200B")
             .setColor(process.env.PRIMARY)
             .setTimestamp()
             .setFooter(process.env.FOOTER_MESSAGE)

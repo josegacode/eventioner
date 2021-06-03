@@ -27,7 +27,7 @@ const handleTeamBuild = (reaction) => {
           if (reaction.count - 1 == membersPerTeam[0]) {
             resolve(true);
             //console.log("ready for team channels creation (no range)");
-          }
+          } else resolve(false); // no more nor less members
         } else {
           // Range value for members per team
           if (
@@ -36,7 +36,7 @@ const handleTeamBuild = (reaction) => {
           ) {
             //console.log("ready for team channels creation (range)");
             resolve(true);
-          }
+          } else resolve(false);
         }
       })
       .catch((error) => console.error(error));
