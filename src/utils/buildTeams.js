@@ -7,12 +7,13 @@ const { handleTeamBuild } = require("./handleTeamBuild");
 const { MessageEmbed } = require("discord.js");
 
 const buildTeams = (reaction) => {
-  //console.log('reaction' + JSON.stringify(reaction, null, 4))
-          console.log(JSON.stringify(
-          reaction,
+  /*
+          console.log('reaction ->' + JSON.stringify(
+          reaction.users.cache,
             null,
             4
-        ))
+        ) + '------------------------------')
+        */
   switch (reaction.emoji.name) {
     case `⚔`:
       let teamInformation = {};
@@ -33,12 +34,11 @@ const buildTeams = (reaction) => {
           teamInformation.role = roleCreated;
 
           // Adding roles to team's members
-          reaction.users.reaction.users.forEach((userId) => {
-            const memberFound = reaction.message.guild.members.cache
-              .find(member => {
-                return member.userId == userId;
-              })
-            console.log(JSON.stringify(memberFound,null,4))
+          reaction.users.cache.forEach((user) => {
+            reaction.message.guild.members.cache
+              .get(user.id)
+              .roles
+              .add(teamInformation.role)
           })
 
           return getEventActiveInfo({
@@ -71,11 +71,13 @@ const buildTeams = (reaction) => {
                 */
 
           // Updates team information message
+          /*
           console.log(JSON.stringify(
           reaction.message.embeds,
             null,
             4
         ))
+        */
           // Extracting data from the
           // previous embed in oder to use it
           // to edit the new team invitation message.
