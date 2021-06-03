@@ -182,7 +182,9 @@ module.exports = class Team extends Command {
       .then((finalFeedback) => {
         // TODO: Dinamically channel to make teams
         // of find by name
-        return message.client.channels.cache.get("842429651171278918").send(
+        const teamBuildChannel = message.guild.channels.cache
+            .find((guildChannel) => guildChannel.name === 'arma-tu-equipo')
+        return teamBuildChannel.send(
           new MessageEmbed()
             .setTitle(
               `
@@ -213,6 +215,9 @@ module.exports = class Team extends Command {
       .then((message) => {
         message.react("⚔");
       })
-      .catch((error) => console.error(error));
+      .catch((error) => console.error(error))
+
+      // Cleans user command execution
+      .then(() => message.delete({timeout: 1000}))
   } // run
 }; // class
