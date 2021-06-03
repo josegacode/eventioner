@@ -130,7 +130,7 @@ module.exports = class Team extends Command {
 
       // Waiting for the idea
       .then((verticalChoiceEmbed) => {
-        console.log("ok 2: " + verticalsArray);
+        //console.log("ok 2: " + verticalsArray);
 
         const filter = (choice) =>
           parseInt(choice) >= 0 && parseInt(choice) < verticalsArray.length;
@@ -148,10 +148,18 @@ module.exports = class Team extends Command {
         // transforming its values in
         // order to match with the
         // verticalsArray indexes
-        const verticalsChoosed = verticalChoice
+
+        team.verticals = [];
+        verticalChoice
           .first()
           .content.split(",")
-          .map((vertical) => vertical - 1);
+          .map((vertical) => vertical - 1)
+          .forEach(verticalIndex => {
+            team.verticals.push(verticalsArray[verticalIndex])
+          })
+
+        console.log(JSON.stringify(team.verticals))
+
 
         // Insert team
 
@@ -168,15 +176,17 @@ module.exports = class Team extends Command {
             .addFields([
               { name: "Equipo 🚀", value: team.title },
               { name: "Idea 💡", value: team.idea },
+              { name: "Verticales 💡", value: team.verticals},
             ])
             .addField("\u200B", "\u200B")
-            .setColor(0x00aed6)
+            .setColor(process.env.PRIMARY)
             .setTimestamp()
             .setFooter(process.env.FOOTER_MESSAGE)
         );
       })
       .then((finalFeedback) => {
         // TODO: Dinamically channel to make teams
+        // of find by name
         return message.client.channels.cache.get("842429651171278918").send(
           new MessageEmbed()
             .setTitle(
@@ -184,9 +194,23 @@ module.exports = class Team extends Command {
                   Hey, \@${message.author.username} los invita a su equipo! 🚀
                 `
             )
-            .setDescription(team.leadInformation)
             .addField("\u200B", "\u200B")
-            .addFields([])
+            .addFields(
+              [
+                {
+                  name: `¿Quien soy?`,
+                  value: team.leadInformation
+                },
+                {
+                  name: `¿Que problematica quiero solucionar?`,
+                  value: team.idea
+                },
+                {
+                  name: `¿Que verticales comprende mi problematica?`,
+                  value: team.verticals
+                },
+              ]
+            )
             .setColor(process.env.PRIMARY)
             .setTimestamp()
             .setFooter(process.env.FOOTER_MESSAGE)

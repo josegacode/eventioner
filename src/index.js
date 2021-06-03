@@ -17,10 +17,7 @@ const { CommandoClient } = require("discord.js-commando");
 const { insertNewTeam } = require("./db/create/insertNewTeam");
 const { getEventActiveInfo } = require("./db/read");
 const { createTeamRole } = require("./utils/createTeamRole");
-const {
-  createTeamTextChannel,
-  createTeamVoiceChannel,
-} = require("./utils/createTeamChannels");
+const { createTeamPrivateChannels } = require("./utils/createTeamChannels");
 const { handleTeamBuild } = require("./utils/handleTeamBuild");
 const { MessageEmbed } = require("discord.js");
 
@@ -69,82 +66,120 @@ client.on("messageReactionAdd", async (reaction, user) => {
   // When a reaction is received, check if the structure is partial
   // (uncached locally) then get it from api call
   // If the message this reaction belongs to was removed, the fetching might result in an API error which should be handled
+
+  /*
+          console.log(JSON.stringify(
+          reaction,
+            null,
+            4
+        ))
+        */
+
   if (reaction.message.partial) {
     try {
-      reaction.fetch().then((reactionFetch) => {
-        switch (reaction.emoji.name) {
-          case `⚔`:
-            let teamInformation = {};
-            // Check if team is ready
-            handleTeamBuild(reaction)
-              .then((teamIsBuilt) => {
-                //console.log("team is ready? (fetch): " + teamIsBuilt);
-                if (teamIsBuilt) {
-                  // Creates and returns a team role
-                  return createTeamRole({
-                    serverId: reaction.message.guild.id,
-                    reaction: reaction,
-                  });
-                }
+      reaction.fetch();
+    } catch (e) {
+      console.error(e);
+    } // try-catch reaction partial
+  } // if partial
+
+  switch (reaction.emoji.name) {
+    case `⚔`:
+      let teamInformation = {};
+      // Check if team is ready
+      handleTeamBuild(reaction)
+        .then((teamIsBuilt) => {
+          //console.log("team is ready? (fetch): " + teamIsBuilt);
+          if (teamIsBuilt) {
+            // Creates and returns a team role
+            return createTeamRole({
+              serverId: reaction.message.guild.id,
+              reaction: reaction,
+            });
+          } else throw new Error('The team is not ready');
+        })
+        .then((roleCreated) => {
+          // Save into db (once)
+          teamInformation.role = roleCreated;
+
+          console.log('users' + JSON.stringify(reaction.users, null, 4))
+          // Adding roles to team's members
+          reaction.users.forEach((userId) => {
+            const memberFound = reaction.message.guild.members.cache
+              .find(member => {
+                return member.userId == userId;
               })
-              .then((roleCreated) => {
-                // Save into db (once)
-                teamInformation.role = roleCreated;
-                return getEventActiveInfo({
-                  serverId: reaction.message.guild.id,
-                });
+            console.log(JSON.stringify(memberFound,null,4))
+          })
 
-                // TODO: check if is first time
-                // team creation or just new
-                // team member joined (update
-                // member count).
-              })
-              .then((eventInformation) => {
-                // Save into db
-                insertNewTeam({
-                  event: eventInformation,
-                  team: teamInformation,
-                });
+          return getEventActiveInfo({
+            serverId: reaction.message.guild.id,
+          });
 
-                //console.log(JSON.stringify(teamInformation.role, null ,4))
 
-                // Create team's private channels
-                createTeamTextChannel({
-                  guild: reaction.message.guild,
-                  team: teamInformation,
-                });
-                /*
+          // TODO: check if is first time
+          // team creation or just new
+          // team member joined (update
+          // member count).
+        })
+        .then((eventInformation) => {
+          // Save into db
+          insertNewTeam({
+            event: eventInformation,
+            team: teamInformation,
+          });
+
+          // Create team's private channels
+          createTeamPrivateChannels({
+            guild: reaction.message.guild,
+            team: teamInformation,
+          });
+          /*
                 createTeamVoiceChannel({
                   guild: reaction.message.guild,
                   team: teamInformation,
                 });
                 */
 
-            // Updates team information message
-                reaction.message.edit(
-                  new MessageEmbed()
-                    .setTitle(
-                      `
-                  ${teamInformation.role.name} 
+          // Updates team information message
+          console.log(JSON.stringify(
+          reaction.message.embeds,
+            null,
+            4
+        ))
+          // Extracting data from the
+          // previous embed in oder to use it
+          // to edit the new team invitation message.
+          const problem =  
+            reaction.message.embeds[0].fields
+              .find((field) => field.name == '¿Que problematica quiero solucionar?')
+
+          reaction.message.edit(
+          new MessageEmbed()
+            .setTitle(
+              `
+                  Forma parte del equipo ${teamInformation.role.name}! 🚀
                 `
-                    )
-                    .setDescription("jkashflakjhf")
-                    .addField("\u200B", "\u200B")
-                    .addFields([])
-                    .setColor(process.env.PRIMARY)
-                    .setTimestamp()
-                    .setFooter(process.env.FOOTER_MESSAGE)
-                );
-              });
+            )
+            .addField("\u200B", "\u200B")
+            .addFields([
+                {
+                  name: `¿Que problematica quiero solucionar?`,
+                  value: problem
+                },
+                {
+                  name: `¿Que verticales comprende mi problematica?`,
+                  value: ''
+                },
+              ])
+            .setColor(process.env.PRIMARY)
+            .setTimestamp()
+            .setFooter(process.env.FOOTER_MESSAGE)
+          );
+        });
 
-
-            break;
-        }
-      }); // Fetch
-    } catch (e) {
-      console.error(e);
-    } // try-catch reaction partial
-  } // if partial
+      break;
+  }
 }); // reaction event
 
 // Global check for wrong commands typed
