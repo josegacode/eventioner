@@ -10,12 +10,17 @@ const createTeamPrivateChannels = (params) => {
     (guildRole) => guildRole.name == "Mentorx"
   );
 
+  const teamCategoryChannel = params.guild.channels.cache.find(
+    (guildChannel) => guildChannel.name === `equipos`
+  );
+  console.log("category to publish team channels: " + teamCategoryChannel);
+
   params.guild.channels
     .create(params.team.role.name, {
       // TODO: change this channel in production
       // or find category by name
       type: "text",
-      parent: "849309232871374878",
+      parent: teamCategoryChannel.id,
       permissionOverwrites: [
         {
           id: params.guild.id,
@@ -25,10 +30,6 @@ const createTeamPrivateChannels = (params) => {
           id: params.team.role.id,
           allow: ["VIEW_CHANNEL"],
         },
-        {
-          id: mentorRole.id,
-          allow: ["VIEW_CHANNEL"],
-        },
       ],
     })
     .catch(console.error);
@@ -36,10 +37,8 @@ const createTeamPrivateChannels = (params) => {
   // voice channel
   params.guild.channels
     .create(params.team.role.name, {
-      // TODO: change this channel in production
-      // or find category by name
       type: "voice",
-      parent: "849309232871374878",
+      parent: teamCategoryChannel.id,
       permissionOverwrites: [
         {
           id: params.guild.id,

@@ -23,19 +23,19 @@ module.exports = class Team extends Command {
     let verticalsArray = [];
     let verticalsEmbedOptions = [];
 
-    // Message asking for the title
+    // Message asking for the idea/challenge
     message.author
       .send(
         new MessageEmbed()
-          .setTitle(`Presentate a los demas 😉`)
+          .setTitle(`🦾 Invitacion al equipo`)
           .setDescription(
             `
               ➡ Instrucciones:
 
-              \> Comencemos por presentarte, 
-              \> escribe una breve descripcion sobre
-              \> sobre ti, quien eres, cual es tu trayectoria
-              \> profesional, etc. 
+              \> Escribe la problemática que te gustaría
+              \> solucionar en este evento, de forma que
+              \> motive a los demás participantes a formar
+              \> parte de tu equipo! ✅ 
             `
           )
           .addField("\u200B", "\u200B")
@@ -44,47 +44,13 @@ module.exports = class Team extends Command {
           .setTimestamp()
       )
       // Waiting the team title (also it will be the role)
-      .then((mdMessage) => {
-        const filter = (leadAbout) => leadAbout.content.length <= 200;
-
-        return message.author.dmChannel.awaitMessages(filter, {
-          max: 1,
-          time: process.env.AWAIT_RESPONSE_TIMEOUT,
-          errors: ["time"],
-        });
-      })
-
-      // Asking for the idea
-      .then((leadInformation) => {
-        team.leadInformation = leadInformation.first().content;
-
-        return message.author.send(
-          new MessageEmbed()
-            .setTitle(`🦾 Invitacion al equipo`)
-            .setDescription(
-              `
-              ➡ Instrucciones:
-
-              \> Escribe la problematica que te gustaria
-              \> solucionar en este evento, de forma que
-              \> motive a los demas participantes a formar
-              \> parte de tu equipo! 
-            `
-            )
-            .addField("\u200B", "\u200B")
-            .setColor(process.env.PRIMARY)
-            .setFooter(process.env.FOOTER_MESSAGE)
-            .setTimestamp()
-        );
-      })
-
       // Waiting for the idea
       .then((ideaMessage) => {
         const filter = (idea) => idea.content.length <= 512;
 
         return message.author.dmChannel.awaitMessages(filter, {
           max: 1,
-          time: 60000,
+          time: process.env.AWAIT_RESPONSE_TIMEOUT,
           errors: ["time"],
         });
       })
@@ -106,15 +72,15 @@ module.exports = class Team extends Command {
 
         message.author.send(
           new MessageEmbed()
-            .setTitle(`🔬 Verticales de tu problematica`)
+            .setTitle(`🔬 Verticales de tu problemática`)
             .setDescription(
               `
               ➡ Instrucciones:
 
               \> Ingresa el numero que corresponda a la 
-              \> vertical relacionada con tu problematica
+              \> vertical relacionada con tu problemática
               \> 
-              \> (puedes seleccionar varias problematicas
+              \> (puedes seleccionar varias problemáticas
               \> separandolas con una coma: 1, 4, 6)
             `
             )
@@ -169,9 +135,8 @@ module.exports = class Team extends Command {
             )
             .addField("\u200B", "\u200B")
             .addFields([
-              { name: "Sobre ti 🚀", value: team.leadInformation },
-              { name: "Problematica 💥", value: team.idea },
-              { name: "Verticales 💡", value: team.verticals },
+              { name: "Problemática 💥", value: team.idea },
+              { name: "Verticales 🧪", value: team.verticals },
             ])
             .addField("\u200B", "\u200B")
             .setColor(process.env.PRIMARY)
@@ -189,21 +154,17 @@ module.exports = class Team extends Command {
           new MessageEmbed()
             .setTitle(
               `
-                  Hey, \@${message.author.username} los invita a su equipo! 🚀
+                  \@${message.author.username} los invita a su equipo! 🚀
                 `
             )
             .addField("\u200B", "\u200B")
             .addFields([
               {
-                name: `¿Quien soy? 😉`,
-                value: team.leadInformation,
-              },
-              {
-                name: `¿Que problemática quiero solucionar? 💥`,
+                name: `¿Que problemática queremos solucionar? 💥`,
                 value: team.idea,
               },
               {
-                name: `¿Que verticales comprende mi problemática? 🧪`,
+                name: `¿Que verticales comprende nuestra problemática? 🧪`,
                 value: team.verticals,
               },
             ])

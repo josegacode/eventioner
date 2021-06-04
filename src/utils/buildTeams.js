@@ -61,18 +61,19 @@ const buildTeams = (reaction) => {
           // the maximum and minimum number of members
           // per team for the current event.
           reaction.users.cache.forEach((user) => {
-            const hasTeamRole = reaction.message.guild.members.cache
-              .get(user.id)
-              .roles.cache.find((memberRole) => memberRole === teamRole);
-            // Check if the member has already the role
-            // then skip it
-            if (!hasTeamRole) {
-              newMember = reaction.message.guild.members.cache
+            if (user.id != reaction.message.client.user.id) {
+              const hasTeamRole = reaction.message.guild.members.cache
                 .get(user.id)
-              newMember.roles.add(teamRole);
-              // Adding roles to new team
-              // members
-              console.log("new member joined!");
+                .roles.cache.find((memberRole) => memberRole === teamRole);
+              // Check if the member has already the role
+              // then skip it
+              if (!hasTeamRole) {
+                newMember = reaction.message.guild.members.cache.get(user.id);
+                newMember.roles.add(teamRole);
+                // Adding roles to new team
+                // members
+                console.log("new member joined!");
+              }
             }
           });
         } else {
@@ -81,12 +82,10 @@ const buildTeams = (reaction) => {
           /*
           return reaction.message.channel
             .send(
-             // `\<@${newMember.id}\>No puedes estar en mas de un equipo!`
-              `Los participantes no pueden estar en mas de un equipo!`
+              `Los participantes solo pueden estar en un equipo a la vez!`
             )
             // There is a max timeout?
             .then(feedback => { feedback.delete({timeout: process.env.FEEDBACK_TIMEOUT}) })
-
             */
         }
       } else {
@@ -114,9 +113,13 @@ const buildTeams = (reaction) => {
 
         // Adding roles to team's members
         reaction.users.cache.forEach((user) => {
-          reaction.message.guild.members.cache
-            .get(user.id)
-            .roles.add(teamInformation.role);
+          // Check fot no provide team
+          // role to the bot
+          if (user.id != reaction.message.client.user.id) {
+            reaction.message.guild.members.cache
+              .get(user.id)
+              .roles.add(teamInformation.role);
+          }
         });
 
         return getEventActiveInfo({

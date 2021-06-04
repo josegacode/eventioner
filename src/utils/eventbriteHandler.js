@@ -48,9 +48,9 @@ const getAttendeesPage = async (pageNumber) => {
   });
 };
 
-const getAttendeesTickets = () => {
+const getAttendeesTickets = (params) => {
   return new Promise((resolve, rejected) => {
-    fetch(`${API_URL}events/${eventId}/attendees/?${OAuth}`)
+    fetch(`${API_URL}events/${params.eventId}/attendees/?${OAuth}`)
       .then((response) => {
         return response.json();
       })

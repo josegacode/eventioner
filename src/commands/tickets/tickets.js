@@ -10,6 +10,7 @@
 
 const { MessageEmbed } = require("discord.js");
 const { Command } = require("discord.js-commando");
+const { getEventActiveInfo } = require("../../db/read");
 const {
   validateTicket,
   getAttendeesPage,
@@ -30,7 +31,7 @@ module.exports = class EnrollCommand extends Command {
       args: [
         {
           key: "ticketId",
-          prompt: ` you forgot to provide your ticketId, usage 👉 !enroll| !enr <TICKET-ID> ✅`,
+          prompt: ` olvidaste poner tu ticket de Eventbrite, el uso correcto del comando es 👉 !enroll| !enr <TICKET-ID> ✅`,
           type: "string",
         },
       ],
@@ -45,68 +46,75 @@ module.exports = class EnrollCommand extends Command {
   }
 
   async run(message, { ticketId }) {
-    getAttendeesTickets()
-      .then((allTickets) => {
-        // Gets all pages [pagination{}, attendees[]]
+    getEventActiveInfo({
+      serverId: message.guild.id,
+    })
+      .then((eventInformation) => {
+        getAttendeesTickets({
+          eventId: eventInformation.event_id
+        })
+          .then((allTickets) => {
+            // Gets all pages [pagination{}, attendees[]]
 
-        let attendeeFound;
-        let pageArrayIndex = 0;
-        do {
-          if (
-            allTickets[pageArrayIndex].attendees.some(
-              (attendee) => attendee.order_id == ticketId
-            )
-          ) {
-            attendeeFound = true;
-            console.log(`found on page ${pageArrayIndex}`);
-          }
-          console.log(`on page #${pageArrayIndex}`);
-          pageArrayIndex++;
-        } while (!attendeeFound && pageArrayIndex < allTickets.length);
+            let attendeeFound;
+            let pageArrayIndex = 0;
+            do {
+              if (
+                allTickets[pageArrayIndex].attendees.some(
+                  (attendee) => attendee.order_id == ticketId
+                )
+              ) {
+                attendeeFound = true;
+                //console.log(`found on page ${pageArrayIndex}`);
+              }
+              //console.log(`on page #${pageArrayIndex}`);
+              pageArrayIndex++;
+            } while (!attendeeFound && pageArrayIndex < allTickets.length);
 
-        // Ticket validation per page
-        // TODO: add role exists validation
-        if (attendeeFound) {
-          message.member.roles.add(
-            message.guild.roles.cache.find(
-              (guildRole) => guildRole.name == "Participante"
-            )
-          );
-          return message.embed(
-            new MessageEmbed()
-              .setTitle(`Registro exitoso ✅`)
-              .setDescription(
-                `@${message.author.username} tu boleto ha sido confirmado con exito,
+            // Ticket validation per page
+            // TODO: add role exists validation
+            if (attendeeFound) {
+              message.member.roles.add(
+                message.guild.roles.cache.find(
+                  (guildRole) => guildRole.name == "Participante"
+                )
+              );
+              return message.embed(
+                new MessageEmbed()
+                  .setTitle(`Registro exitoso ✅`)
+                  .setDescription(
+                    `@${message.author.username} tu boleto ha sido confirmado con éxito y tienes el rol de Participante,
                 disfruta del evento! 🚀`
-              )
-              .addField("\u200B", "\u200B")
-              .setColor(0x00aed6)
-              .setTimestamp()
-              .setFooter("Made with 💙 by Legion Hack")
-          );
-        } else {
-          return message.embed(
-            new MessageEmbed()
-              .setTitle(`El registro ha fallado ⚠`)
-              .setDescription(
-                `Tu boleto no se ha podido validar por las siguientes razones:
+                  )
+                  .addField("\u200B", "\u200B")
+                  .setColor(process.env.PRIMARY)
+                  .setTimestamp()
+                  .setFooter(process.env.FOOTER_MESSAGE)
+              );
+            } else {
+              return message.embed(
+                new MessageEmbed()
+                  .setTitle(`El registro ha fallado ⚠`)
+                  .setDescription(
+                    `Tu boleto no se ha podido validar por las siguientes razones:
                   
                   👉  Lo has escrito incorrectamente
                   👉  Ingresaste un boleto inexistente (debes registrate en Eventbrite previamente) 
                   👉  Ingresaste un boleto que no corresponde a este evento 
                   👉  Tu boleto ya fue registrado por otra persona 
                   `
-              )
-              .addField("\u200B", "\u200B")
-              .setColor(0xffd56b)
-              .setTimestamp()
-              .setFooter("Made with 💙 by Legion Hack")
-          );
-        }
-      })
-      .then((attendeeFeedback) => {
-        message.delete({ timeout: 500 });
-        attendeeFeedback.delete({ timeout: 15000 });
+                  )
+                  .addField("\u200B", "\u200B")
+                  .setColor(process.env.PRIMARY)
+                  .setTimestamp()
+                  .setFooter(process.env.FOOTER_MESSAGE)
+              );
+            }
+          })
+          .then((attendeeFeedback) => {
+            message.delete({ timeout: 500 });
+            attendeeFeedback.delete({ timeout: 50000});
+          });
       })
       .catch((error) => console.error(error));
   } // End fo run()

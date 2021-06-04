@@ -76,7 +76,11 @@ module.exports = class StartEvent extends Command {
         const eventsOptionsEmbed = new MessageEmbed()
           .setTitle(`Eventos disponibles 🚀`)
           .setDescription(
-            `➡  Ingresa el numero que corresponda al evento que deseas activar en este servidor.`
+            `
+               ➡ INSTRUCCIONES:
+               Ingresa el numero que corresponda al evento 
+               que deseas activar en este servidor.
+            `
           )
           .addField("\u200B", "\u200B")
           .addFields(eventsListEmbed)
@@ -111,10 +115,12 @@ module.exports = class StartEvent extends Command {
         // the event isn't active
         if (eventIsActive) {
           const eventAlreadyActiveEmbed = new MessageEmbed()
-            .setTitle(`Evento no registrado ⚠`)
+            .setTitle(`Fallo al registrar el evento ⚠`)
             .setDescription(
               `
-              ➡  Parece que alguien mas ya ha registrado \`${eventsList[eventSelectedIndex].name}\`, intenta registra otro evento 😄 
+              ➡ MOTIVO:
+              Parece que alguien mas ya ha registrado \`${eventsList[eventSelectedIndex].name}\`,
+              intenta registra otro evento 😄 
             `
             )
             .addField("\u200B", "\u200B")
@@ -131,16 +137,16 @@ module.exports = class StartEvent extends Command {
       .then((eventLinked) => {
         if (!eventLinked) {
           const nextSteps = new MessageEmbed()
-            .setTitle(`Evento seleccionado ✅`)
+            .setTitle(`Configurar las verticales 🧪`)
             .addField("\u200B", "\u200B")
             .setDescription(
               `
-              ➡  Evento elegido \`${eventsList[eventSelectedIndex].name}\` 
+              ➡  Evento elegido \`${eventsList[eventSelectedIndex].name}\` ✅
               🚀 Verticales: ❔
               ⚔ Integrantes por cada equipo: ❔
-              🤝 Canal para publicar ideas/armar equipos: ❔
               👩‍🏫 Categorias de mentores: ❔
 
+              ➡ INSTRUCCIONES:
               Ahora debes configurar unos detalles
               extras, comencemos por las verticales,
               escribelas separadas por una coma,
@@ -181,23 +187,29 @@ module.exports = class StartEvent extends Command {
       })
       .then((result) => {
         const membersPerTeamEmbed = new MessageEmbed()
-          .setTitle(`Evento seleccionado ✅`)
+          .setTitle(`Cantidad de miembros por cada equipo ⚔`)
           .addField("\u200B", "\u200B")
           .setDescription(
             `
               ➡  Evento elegido \`${eventsList[eventSelectedIndex].name}\`  ✅
               🚀 Verticales: \`${eventsList[eventSelectedIndex].verticals}\` ✅
               ⚔ Integrantes por cada equipo: ❔
-              🤝 Canal para publicar ideas/armar equipos: ❔
               👩‍🏫 Categorias de mentores: ❔
 
-              Cuantos integrantes debe tener cada
-              equipo? 🤔 (puedes definir un rango 😉)
+              ➡ INSTRUCCIONES:
+              Ingresa la cantidad de integrantes que debe tener cada
+              equipo, puedes definir un rango separando el minimo
+              y maximo con una coma \`,\`
 
               Ejemplos:
-              ➡ 3 ✅
-              ➡ 3, 5 ✅ 
-              ➡ 3,5 ✅
+
+              Cantidad fija 
+                ➡ 3 ✅
+
+              Minimo y maximo 
+                ➡ 3, 5 ✅ 
+                ➡ 3,5 ✅
+
 
               ➡ 3.4 ❌
               ➡ n ❌
@@ -223,60 +235,20 @@ module.exports = class StartEvent extends Command {
       .then((membersPerTeam) => {
         eventsList[eventSelectedIndex].membersPerTeam =
           membersPerTeam.first().content;
-        const teamBuildChannel = new MessageEmbed()
-          .setTitle(`Configura el canal para armar equipos ✅`)
-          .addField("\u200B", "\u200B")
-          .setDescription(
-            `
-              ➡  Evento elegido \`${eventsList[eventSelectedIndex].name}\`  ✅
-              🚀 Verticales: \`${eventsList[eventSelectedIndex].verticals}\` ✅
-              ⚔ Integrantes por cada equipo: \`${eventsList[eventSelectedIndex].membersPerTeam}\` ✅
-              🤝 Canal para publicar ideas/armar equipos: ❔
-              👩‍🏫 Categorias de mentores: ❔
 
-              Cual es el id del canal donde
-              los equipos se formaran? 🤔 
-
-              Ejemplos:
-              ➡ 8927345028947520987
-              ➡ arma-tu-equipo ✅ 
-
-              ➡ arma-tu-equipo 1289374018934708 ❌
-              ➡ 179649781643921 arma-tu-equipo ❌
-              
-              `
-          )
-          .addField("\u200B", "\u200B")
-          .setColor(process.env.PRIMARY)
-          .setTimestamp()
-          .setFooter(process.env.FOOTER_MESSAGE);
-
-        // Feedback
-        return message.embed(teamBuildChannel);
-      })
-      .then((result) => {
-        return message.channel.awaitMessages((input) => true, {
-          max: 1,
-          time: process.env.AWAIT_RESPONSE_TIMEOUT,
-          errors: ["time"],
-        });
-      })
-      .then((teamBuildChannel) => {
-        eventsList[eventSelectedIndex].teamBuildChannel =
-          teamBuildChannel.first().content;
         const mentorsTypesEmbed = new MessageEmbed()
-          .setTitle(`Configura los tipos de mentores ✅`)
+          .setTitle(`Configurar los tipos de mentorxs 📚`)
           .addField("\u200B", "\u200B")
           .setDescription(
             `
               ➡  Evento elegido \`${eventsList[eventSelectedIndex].name}\`  ✅
               🚀 Verticales: \`${eventsList[eventSelectedIndex].verticals}\` ✅
               ⚔ Integrantes por cada equipo: \`${eventsList[eventSelectedIndex].membersPerTeam}\` ✅
-              🤝 Canal para publicar ideas/armar equipos: \`${eventsList[eventSelectedIndex].teamBuildChannel}\` ✅
               👩‍🏫 Categorias de mentores: ❔
 
-              Cuales son las categorias de mentores
-              que participaran en este evento? 🤔
+              ➡ INSTRUCCIONES:
+              Ingresa los diferentes tipos de mentores para este evento
+              separados por una coma \`,\`
 
               Ejemplos:
               ➡ Mentorx Capital, Mentorx Tech, ... ✅ 
