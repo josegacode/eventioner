@@ -22,11 +22,8 @@ const buildTeams = (reaction) => {
   // (members per team has been reached or
   // are in range)
   if (reaction.message.embeds[0].title.includes("Equipo")) {
-    console.log('new team member request')
     handleTeamBuild(reaction).then((teamStillAcceptingMembers) => {
-      console.log(teamStillAcceptingMembers)
       if (teamStillAcceptingMembers != null) {
-    console.log('new team member request: OK')
         // This code is executed many times
         // once the team was built, just adding
         // the team role to the new members
@@ -47,28 +44,53 @@ const buildTeams = (reaction) => {
           (guildRole) => guildRole.name === teamRoleName
         );
 
-        // Check if we can still providing roles
-        // by checking the member who belongs
-        // to the team role and comparing with
-        // the maximum and minimum number of members
-        // per team for the current event.
-        reaction.users.cache.forEach((user) => {
-          const hasTeamRole = reaction.message.guild.members.cache
-            .get(user.id)
-            .roles.cache.find((memberRole) => memberRole === teamRole);
-          // Check if the member has already the role
-          // then skip it
-          if (!hasTeamRole) {
-          reaction.message.guild.members.cache
-            .get(user.id)
-            .roles.add(teamRole);
-            // Adding roles to new team
-            // members
-            console.log("new member joined!");
-          }
-        });
+        // Checking if the user is already
+        // member of another team
+        const otherTeamRole = reaction.message.guild.members.cache
+          .get(reaction.users.cache.first().id)
+          .roles.cache.find((memberRole) => {
+            return memberRole.name.startsWith("Equipo");
+          });
+
+        //let newMember;
+        if (otherTeamRole == null) {
+          // This member has no team
+          // Check if we can still providing roles
+          // by checking the member who belongs
+          // to the team role and comparing with
+          // the maximum and minimum number of members
+          // per team for the current event.
+          reaction.users.cache.forEach((user) => {
+            const hasTeamRole = reaction.message.guild.members.cache
+              .get(user.id)
+              .roles.cache.find((memberRole) => memberRole === teamRole);
+            // Check if the member has already the role
+            // then skip it
+            if (!hasTeamRole) {
+              newMember = reaction.message.guild.members.cache
+                .get(user.id)
+              newMember.roles.add(teamRole);
+              // Adding roles to new team
+              // members
+              console.log("new member joined!");
+            }
+          });
+        } else {
+          // The member is in another team
+          // TODO: add feedback
+          /*
+          return reaction.message.channel
+            .send(
+             // `\<@${newMember.id}\>No puedes estar en mas de un equipo!`
+              `Los participantes no pueden estar en mas de un equipo!`
+            )
+            // There is a max timeout?
+            .then(feedback => { feedback.delete({timeout: process.env.FEEDBACK_TIMEOUT}) })
+
+            */
+        }
       } else {
-        console.log('new team member request: TEAM FULL!')
+        console.log("new team member request: TEAM FULL!");
       }
     });
   } else {

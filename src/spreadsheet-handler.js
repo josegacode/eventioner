@@ -17,9 +17,9 @@ const login = async (spreadsheetId) => {
 
 const serviceAccountLoginCheck = (spreadsheetId) => {
   if (typeof document == "undefined") {
-    console.log(`Service account isn't logged, login in ...`);
+    //console.log(`Service account isn't logged, login in ...`);
     login(spreadsheetId);
-    console.log(`Successfully login!`);
+    //console.log(`Successfully login!`);
   } else return;
 };
 
@@ -44,7 +44,7 @@ const validateMentorEmail = async (mentorData) => {
   // Fullfils the cache cells locally
   for (let i = 1; i <= sheet.cellStats.nonEmpty; i++) {
     let email = sheet.getCellByA1(`B${i}`);
-    console.log(email.value);
+    //console.log(email.value);
     if (email.value == mentorData) return true;
     else if (i == sheet.cellStats.nonEmpty) return false;
   }

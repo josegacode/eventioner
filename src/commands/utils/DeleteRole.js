@@ -30,9 +30,7 @@ module.exports = class DeployRoles extends Command {
         guildRole
           .delete()
           .then((roleDeteled) => {
-            return message.channel.send(
-              `Role -> <@${roleDeletedName}> deleted ✔`
-            );
+            return message.channel.send(`Role -> ${roleDeletedName} deleted ✔`);
           })
           .then((feedback) =>
             feedback.delete({ timeout: process.env.FEEDBACK_TIMEOUT })
