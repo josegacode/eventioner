@@ -11,7 +11,9 @@ const createTeamPrivateChannels = (params) => {
   );
 
   const teamCategoryChannel = params.guild.channels.cache.find(
-    (guildChannel) => guildChannel.name.toLowerCase() === `equipos`
+    (guildChannel) => guildChannel.name
+      .trim()
+      .toLowerCase() === `equipos`
   );
   console.log("category to publish team channels: " + teamCategoryChannel);
 

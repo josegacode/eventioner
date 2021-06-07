@@ -21,7 +21,19 @@ const buildTeams = (reaction) => {
   // Check if team is ready
   // (members per team has been reached or
   // are in range)
+  
+  console.log('users ' + reaction.users.cache.last());
+  const memberOfAnotherTeam = reaction.message.guild.members.cache
+    .get(reaction.users.cache.last().id)
+    .roles.cache.find((memberRole) => {
+      return memberRole.name.startsWith("Equipo")
+      })
+
   if (reaction.message.embeds[0].title.includes("Equipo")) {
+    if(memberOfAnotherTeam) {
+      console.log('New member request, but is member of another team!');
+      return;
+    }
     handleTeamBuild(reaction).then((teamStillAcceptingMembers) => {
       if (teamStillAcceptingMembers) {
         // This code is executed many times
@@ -47,7 +59,7 @@ const buildTeams = (reaction) => {
         // Checking if the user is already
         // member of another team
         const otherTeamRole = reaction.message.guild.members.cache
-          .get(reaction.users.cache.first().id)
+          .get(reaction.users.cache.last().id)
           .roles.cache.find((memberRole) => {
             return memberRole.name.startsWith("Equipo");
           });
@@ -93,6 +105,11 @@ const buildTeams = (reaction) => {
       }
     });
   } else {
+    if(memberOfAnotherTeam) {
+      console.log('New member request, but is member of another team!');
+      return;
+    }
+
     // This code is executed only once
     // when the team is being building
     console.log("Creating a new team process");
