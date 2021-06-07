@@ -22,7 +22,7 @@ const buildTeams = (reaction) => {
   // (members per team has been reached or
   // are in range)
   
-  console.log('users ' + reaction.users.cache.last());
+  //console.log('users ' + reaction.users.cache.last());
   const memberOfAnotherTeam = reaction.message.guild.members.cache
     .get(reaction.users.cache.last().id)
     .roles.cache.find((memberRole) => {
@@ -31,7 +31,7 @@ const buildTeams = (reaction) => {
 
   if (reaction.message.embeds[0].title.includes("Equipo")) {
     if(memberOfAnotherTeam) {
-      console.log('New member request, but is member of another team!');
+      //console.log('New member request, but is member of another team!');
       return;
     }
     handleTeamBuild(reaction).then((teamStillAcceptingMembers) => {
@@ -84,7 +84,7 @@ const buildTeams = (reaction) => {
                 newMember.roles.add(teamRole);
                 // Adding roles to new team
                 // members
-                console.log("new member joined!");
+                //console.log("new member joined!");
               }
             }
           });
@@ -101,12 +101,12 @@ const buildTeams = (reaction) => {
             */
         }
       } else {
-        console.log("new team member request: TEAM FULL!");
+        //console.log("new team member request: TEAM FULL!");
       }
     });
   } else {
     if(memberOfAnotherTeam) {
-      console.log('New member request, but is member of another team!');
+      //console.log('New member request, but is member of another team!');
       return;
     }
 
@@ -175,12 +175,16 @@ const buildTeams = (reaction) => {
             .addField("\u200B", "\u200B")
             .addFields([
               {
-                name: `💥 Nuestra problemática`,
+                name: `Líder de equipo 🐺`,
                 value: reaction.message.embeds[0].fields[1].value,
               },
               {
-                name: `🧪 Verticales`,
+                name: `Nuestra problemática / idea 💥`,
                 value: reaction.message.embeds[0].fields[2].value,
+              },
+              {
+                name: `Verticales de nuestra problemática 🧪`,
+                value: reaction.message.embeds[0].fields[3].value,
               },
             ])
             .addField("\u200B", "\u200B")

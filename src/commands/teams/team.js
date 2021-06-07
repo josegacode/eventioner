@@ -128,10 +128,12 @@ module.exports = class Team extends Command {
           new MessageEmbed()
             .setTitle(`Invitación publicada ✅`)
             .setDescription(
-              `Tu invitación ha sido publicada
+              `
+              Tu invitación ha sido publicada
               en el canal de equipos, ahora solo
-              espera a que los talentos se integren
-              a tu equipo ⚔`
+              reacciona a ella con el emoji de ⚔
+              y espera a que más personas se unan.
+              `
             )
             .addField("\u200B", "\u200B")
             .addFields([
@@ -160,11 +162,15 @@ module.exports = class Team extends Command {
             .addField("\u200B", "\u200B")
             .addFields([
               {
-                name: `¿Que problemática queremos solucionar? 💥`,
+                name: `Líder de equipo 🐺`,
+                value: message.author.username,
+              },
+              {
+                name: `Problemática o idea 💥`,
                 value: team.idea,
               },
               {
-                name: `¿Que verticales comprende nuestra problemática? 🧪`,
+                name: `Verticales de nuestra problemática 🧪`,
                 value: team.verticals,
               },
               {
@@ -180,8 +186,8 @@ module.exports = class Team extends Command {
 			mínimos yo me encargaré de crear:
 
 			👉 Un rol especial para el equipo
-			👉 Un canal de texto exclusivo para el equipo
-			👉 Un canal de audio exclusivo para el equipo
+			👉 Un canal de texto para el equipo
+			👉 Un canal de audio para el equipo
 		      `
               },
             ])
