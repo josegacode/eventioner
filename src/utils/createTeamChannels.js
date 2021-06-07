@@ -11,7 +11,7 @@ const createTeamPrivateChannels = (params) => {
   );
 
   const teamCategoryChannel = params.guild.channels.cache.find(
-    (guildChannel) => guildChannel.name === `equipos`
+    (guildChannel) => guildChannel.name.toLowerCase() === `equipos`
   );
   console.log("category to publish team channels: " + teamCategoryChannel);
 
@@ -21,6 +21,7 @@ const createTeamPrivateChannels = (params) => {
       // or find category by name
       type: "text",
       parent: teamCategoryChannel.id,
+      //parent: "841372343926390837",
       permissionOverwrites: [
         {
           id: params.guild.id,
@@ -39,6 +40,7 @@ const createTeamPrivateChannels = (params) => {
     .create(params.team.role.name, {
       type: "voice",
       parent: teamCategoryChannel.id,
+      //parent: "841372343926390837",
       permissionOverwrites: [
         {
           id: params.guild.id,

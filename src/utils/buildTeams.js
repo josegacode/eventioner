@@ -23,7 +23,7 @@ const buildTeams = (reaction) => {
   // are in range)
   if (reaction.message.embeds[0].title.includes("Equipo")) {
     handleTeamBuild(reaction).then((teamStillAcceptingMembers) => {
-      if (teamStillAcceptingMembers != null) {
+      if (teamStillAcceptingMembers) {
         // This code is executed many times
         // once the team was built, just adding
         // the team role to the new members
@@ -152,18 +152,18 @@ const buildTeams = (reaction) => {
           new MessageEmbed()
             .setTitle(
               `
-              ⚔ Unete al ${teamInformation.role.name} ⚔ 
+              ⚔ Únete al ${teamInformation.role.name} ⚔ 
             `
             )
             .addField("\u200B", "\u200B")
             .addFields([
               {
                 name: `💥 Nuestra problemática`,
-                value: reaction.message.embeds[0].fields[2].value,
+                value: reaction.message.embeds[0].fields[1].value,
               },
               {
                 name: `🧪 Verticales`,
-                value: reaction.message.embeds[0].fields[3].value,
+                value: reaction.message.embeds[0].fields[2].value,
               },
             ])
             .addField("\u200B", "\u200B")

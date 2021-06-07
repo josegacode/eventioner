@@ -27,15 +27,15 @@ module.exports = class Team extends Command {
     message.author
       .send(
         new MessageEmbed()
-          .setTitle(`🦾 Invitacion al equipo`)
+          .setTitle(`🦾 Invitación al equipo`)
           .setDescription(
             `
               ➡ Instrucciones:
 
-              \> Escribe la problemática que te gustaría
-              \> solucionar en este evento, de forma que
-              \> motive a los demás participantes a formar
-              \> parte de tu equipo! ✅ 
+              \> Escribe la idea que quieres desarrollar
+              \> en este evento para dar solución a una
+	      \> problematica, recuerda motivar a los demás
+	      \> para que sean parte de tu equipo! ✅ 
             `
           )
           .addField("\u200B", "\u200B")
@@ -98,7 +98,7 @@ module.exports = class Team extends Command {
         //console.log("ok 2: " + verticalsArray);
 
         const filter = (choice) =>
-          parseInt(choice) >= 0 && parseInt(choice) < verticalsArray.length;
+          parseInt(choice) > 0 && parseInt(choice) <= verticalsArray.length;
 
         return message.author.dmChannel.awaitMessages(filter, {
           max: 1,
@@ -126,9 +126,9 @@ module.exports = class Team extends Command {
         // Insert team
         return message.author.send(
           new MessageEmbed()
-            .setTitle(`Invitacion publicada ✅`)
+            .setTitle(`Invitación publicada ✅`)
             .setDescription(
-              `Tu invitacion ha sido publicada
+              `Tu invitación ha sido publicada
               en el canal de equipos, ahora solo
               espera a que los talentos se integren
               a tu equipo ⚔`
@@ -166,6 +166,23 @@ module.exports = class Team extends Command {
               {
                 name: `¿Que verticales comprende nuestra problemática? 🧪`,
                 value: team.verticals,
+              },
+              {
+                name: "\u200B",
+                value: "\u200B",
+              },
+              {
+                name: `🤔 ¿Como me uno al equipo?`,
+                value: 
+		      `
+		      	Reacciona al emoji de ⚔ y cuando
+			el equipo cuente con los integrantes
+			mínimos yo me encargaré de crear:
+
+			👉 Un rol especial para el equipo
+			👉 Un canal de texto exclusivo para el equipo
+			👉 Un canal de audio exclusivo para el equipo
+		      `
               },
             ])
             .addField("\u200B", "\u200B")
