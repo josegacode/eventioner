@@ -15,6 +15,8 @@ const { CommandoClient } = require("discord.js-commando");
 
 // User imports
 const { buildTeams } = require("./utils/buildTeams");
+const {MessageEmbed} = require("discord.js");
+const { handleCommandIntent } = require('./utils/handleCommandIntent');
 
 // Client setup
 const client = new CommandoClient({
@@ -52,10 +54,11 @@ client.registry
 
 client.once("ready", () => {
   console.log(`Logged in as ${client.user.tag}! (${client.user.id})`);
-  client.user.setActivity(`Enrolled in hacker's events ⚡`);
+  client.user.setActivity(`Type !help evnt`);
 });
 
 client.on("error", console.error);
+
 
 client.on("messageReactionAdd", async (reaction, user) => {
   // When a reaction is received, check if the structure is partial
@@ -80,7 +83,11 @@ client.on("messageReactionAdd", async (reaction, user) => {
 }); // reaction event
 
 // Global check for wrong commands typed
-//client.on('message', async () => {})
+client.on('message', async (message) => {
+  if(!message.author.bot) {
+    handleCommandIntent(client, message);
+  }
+})
 
 // Loging the bot to the server
 client.login(process.env.TOKEN);

@@ -28,10 +28,16 @@ module.exports = class EnrollCommand extends Command {
       memberName: "enroll",
       description: `Validates that the user already buy a ticket and then let it
       choose a rol for the event`,
+      examples: [
+        `
+          ${client.commandPrefix}enroll [AQUI-TU-NUMERO-DE-TICKET] ✅
+          ${client.commandPrefix}enr [AQUI-TU-NUMERO-DE-TICKET] ✅
+        `
+      ], 
       args: [
         {
           key: "ticketId",
-          prompt: ` olvidaste poner tu ticket de Eventbrite, el uso correcto del comando es 👉 !enroll| !enr <TICKET-ID> ✅`,
+          prompt: ` olvidaste poner tu ticket de Eventbrite, `,
           type: "string",
         },
       ],
