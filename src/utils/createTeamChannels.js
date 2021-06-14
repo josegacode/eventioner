@@ -1,6 +1,6 @@
 /**
  * @params An object which contains the team's and
- * guild data.
+ * guild data that will be 
  *
  * Generates the team's channels
  * */
@@ -15,7 +15,7 @@ const createTeamPrivateChannels = (params) => {
       .trim()
       .toLowerCase() === `equipos`
   );
-  console.log("category to publish team channels: " + teamCategoryChannel);
+  console.log(JSON.stringify(teamCategoryChannel, null, 4));
 
   params.guild.channels
     .create(params.team.role.name, {

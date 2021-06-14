@@ -6,7 +6,7 @@ const { pool } = require("../connection");
  *
  * Saves new team built in database
  * */
-const insertNewTeam = (params) => {
+const insertNewTeam = async (event, roleName) => {
   //console.log(JSON.stringify(event, null, 4))
   const query = `
       INSERT INTO 
@@ -16,8 +16,8 @@ const insertNewTeam = (params) => {
           )
 
         values(
-          '${params.team.role.name}', 
-          ${params.event.event_id}
+          '${roleName}', 
+          ${event}
       )`;
 
   return new Promise((resolve, reject) => {

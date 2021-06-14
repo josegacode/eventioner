@@ -11,11 +11,11 @@ const { pool } = require("./connection");
  * which server is linked to
  * it.
  * */
-const getTeams = (params) => {
+const getTeams = (eventId) => {
   const query = `
     SELECT * 
     FROM teams 
-    WHERE event=${params.eventId}
+    WHERE event=${eventId}
   `;
 
   return new Promise((resolve, reject) => {

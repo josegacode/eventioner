@@ -10,13 +10,36 @@
 
 // User imports
 const { insertNewTeam } = require("../db/create/insertNewTeam");
-const { getEventActiveInfo } = require("../db/read");
-const { createTeamRole } = require("./createTeamRole");
+//const { createTeamRole } = require("./createTeamRole");
 const { createTeamPrivateChannels } = require("./createTeamChannels");
 const { handleTeamBuild } = require("./handleTeamBuild");
 const { MessageEmbed } = require("discord.js");
+const { getEventActiveInfo, getTeams } = require("../db/read");
 
-const buildTeams = (reaction) => {
+let event;
+const createTeamRole = async (reaction) => {
+  // Naming the team:
+  // Check if there is teams created
+  const { id } = reaction.message.guild;
+  event = await getEventActiveInfo({ serverId: id });
+  let teams = await getTeams(event.event_id);
+
+  // Dinamically generates
+  // the team's role name
+  if (teams && teams.length > 0) 
+    teamRoleName = `Equipo ${teams.length + 1}`;
+  else teamRoleName = `Equipo 1`;
+
+  return reaction.message.guild.roles.create({
+    data: {
+      name: teamRoleName,
+      color: process.env.PRIMARY,
+      permissions: ["VIEW_CHANNEL"],
+    },
+  })
+};
+
+const buildTeams = async (reaction) => {
   let teamInformation = {};
   // Check if team is ready
   // (members per team has been reached or
@@ -90,109 +113,77 @@ const buildTeams = (reaction) => {
           });
         } else {
           // The member is in another team
-          // TODO: add feedback
-          /*
-          return reaction.message.channel
-            .send(
-              `Los participantes solo pueden estar en un equipo a la vez!`
-            )
-            // There is a max timeout?
-            .then(feedback => { feedback.delete({timeout: process.env.FEEDBACK_TIMEOUT}) })
-            */
         }
       } else {
         //console.log("new team member request: TEAM FULL!");
       }
     });
   } else {
-    if(memberOfAnotherTeam) {
-      //console.log('New member request, but is member of another team!');
-      return;
-    }
+    // New team creation
+    if(memberOfAnotherTeam) return;
 
     // This code is executed only once
     // when the team is being building
-    console.log("Creating a new team process");
-    handleTeamBuild(reaction)
-      .then((teamIsReadyToBeBuilt) => {
-        if (teamIsReadyToBeBuilt) {
-          // Creates and returns a team role
-          return createTeamRole({
-            serverId: reaction.message.guild.id,
-            reaction: reaction,
-          });
-        }
-      })
-      .then((roleCreated) => {
-        // Save into db (from here, code needs
-        // to be executed once)
-        teamInformation.role = roleCreated;
+    const teamIsReadyToBeBuilt = await handleTeamBuild(reaction);
+    let teamRole;
+    if (teamIsReadyToBeBuilt) {
+      teamInformation.role = await createTeamRole(reaction);
+    }
 
-        // Adding roles to team's members
-        reaction.users.cache.forEach((user) => {
-          // Check fot no provide team
-          // role to the bot
-          if (user.id != reaction.message.client.user.id) {
-            reaction.message.guild.members.cache
-              .get(user.id)
-              .roles.add(teamInformation.role);
-          }
-        });
+    // Adding roles to team's members
+    reaction.users.cache.forEach((user) => {
+      // Check fot no provide team
+      // role to the bot
+      if (user.id != reaction.message.client.user.id) {
+        reaction.message.guild.members.cache
+          .get(user.id)
+          .roles.add(teamInformation.role);
+      }
+    });
 
-        return getEventActiveInfo({
-          serverId: reaction.message.guild.id,
-        });
+    // Save into db
+    await insertNewTeam(
+      event.event_id,
+      teamInformation.role.name,
+    );
 
-        // TODO: check if is first time
-        // team creation or just new
-        // team member joined (update
-        // member count).
-      })
-      .then((eventInformation) => {
-        // Save into db
-        insertNewTeam({
-          event: eventInformation,
-          team: teamInformation,
-        });
+    // Create team's private channels
+    createTeamPrivateChannels({
+      guild: reaction.message.guild,
+      team: teamInformation,
+    });
 
-        // Create team's private channels
-        createTeamPrivateChannels({
-          guild: reaction.message.guild,
-          team: teamInformation,
-        });
+    // Extracting data from the
+    // previous embed in oder to use it
+    // to edit the new team invitation message.
 
-        // Extracting data from the
-        // previous embed in oder to use it
-        // to edit the new team invitation message.
-
-        reaction.message.edit(
-          new MessageEmbed()
-            .setTitle(
-              `
-              ⚔ Únete al ${teamInformation.role.name} ⚔ 
-            `
-            )
-            .addField("\u200B", "\u200B")
-            .addFields([
-              {
-                name: `Líder de equipo 🐺`,
-                value: reaction.message.embeds[0].fields[1].value,
-              },
-              {
-                name: `Nuestra problemática / idea 💥`,
-                value: reaction.message.embeds[0].fields[2].value,
-              },
-              {
-                name: `Verticales de nuestra problemática 🧪`,
-                value: reaction.message.embeds[0].fields[3].value,
-              },
-            ])
-            .addField("\u200B", "\u200B")
-            .setColor(process.env.PRIMARY)
-            .setTimestamp()
-            .setFooter(process.env.FOOTER_MESSAGE)
-        );
-      });
+    reaction.message.edit(
+      new MessageEmbed()
+        .setTitle(
+          `
+          ⚔ Únete al ${teamInformation.role.name} ⚔ 
+        `
+        )
+        .addField("\u200B", "\u200B")
+        .addFields([
+          {
+            name: `Líder de equipo 🐺`,
+            value: reaction.message.embeds[0].fields[1].value,
+          },
+          {
+            name: `Nuestra problemática / idea 💥`,
+            value: reaction.message.embeds[0].fields[2].value,
+          },
+          {
+            name: `Verticales de nuestra problemática 🧪`,
+            value: reaction.message.embeds[0].fields[3].value,
+          },
+        ])
+        .addField("\u200B", "\u200B")
+        .setColor(process.env.PRIMARY)
+        .setTimestamp()
+        .setFooter(process.env.FOOTER_MESSAGE)
+    );
   }
 };
 

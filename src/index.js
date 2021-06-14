@@ -84,7 +84,10 @@ client.on("messageReactionAdd", async (reaction, user) => {
 
 // Global check for wrong commands typed
 client.on('message', async (message) => {
-  if(!message.author.bot) {
+  // Check if the message wasn't sent 
+  // by the bot or through a direct message
+  // channel
+  if(!message.author.bot && message.channel.type != 'dm') {
     handleCommandIntent(client, message);
   }
 })

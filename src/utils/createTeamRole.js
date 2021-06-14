@@ -7,7 +7,7 @@ const { getEventActiveInfo, getTeams } = require("../db/read");
  * team. These roles will be use
  * to create team's private channels.
  * */
-const createTeamRole = (params) => {
+const createTeamRole = async (params) => {
   // Naming the team:
   // Check if there is teams created
   let teamRoleName;
