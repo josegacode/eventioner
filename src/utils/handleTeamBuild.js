@@ -9,38 +9,33 @@ const { getEventActiveInfo } = require("../db/read");
  * of some team) and creating or not they
  * text and voice channels.
  * */
-const handleTeamBuild = (reaction) => {
-  //console.log(JSON.stringify(reaction.message, null ,4))
-  let eventInformation = {};
+const handleTeamBuild = async (reaction) => {
+  let event;
+  try {
+    event = await getEventActiveInfo(reaction.message.guild.id);
+  console.log(JSON.stringify(event, null ,4))
+  } catch(error) {
+    console.error(error);
+  }
+    let membersPerTeam = event.members_per_team.split(",");
 
-  return new Promise((resolve, reject) => {
-    getEventActiveInfo({
-      serverId: reaction.message.guild.id,
-    })
-      .then((event) => {
-        // Splits the min and max values from the string
-        eventInformation = event;
-        let membersPerTeam = event.members_per_team.split(",");
+    // Fix members per team value
+    if (membersPerTeam.length < 2) {
+      if (reaction.count - 1 == membersPerTeam[0]) {
+        //console.log("ready for team channels creation (no range)");
+        return true;
+      } else return false; // no more nor less members
+    } else {
+      // Range value for members per team
+      if (
+        reaction.count - 1 >= membersPerTeam[0] &&
+        reaction.count - 1 <= membersPerTeam[1]
+      ) {
+        //console.log("ready for team channels creation (range)");
+        return true;
+      } else return false;
+    }
 
-        // Fix members per team value
-        if (membersPerTeam.length < 2) {
-          if (reaction.count - 1 == membersPerTeam[0]) {
-            resolve(true);
-            //console.log("ready for team channels creation (no range)");
-          } else resolve(false); // no more nor less members
-        } else {
-          // Range value for members per team
-          if (
-            reaction.count - 1 >= membersPerTeam[0] &&
-            reaction.count - 1 <= membersPerTeam[1]
-          ) {
-            //console.log("ready for team channels creation (range)");
-            resolve(true);
-          } else resolve(false);
-        }
-      })
-      .catch((error) => console.error(error));
-  });
 };
 
 module.exports = {

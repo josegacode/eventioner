@@ -20,7 +20,6 @@ const insertNewTeam = async (event, roleName) => {
           ${event}
       )`;
 
-  return new Promise((resolve, reject) => {
     pool.query(
       {
         sql: query,
@@ -28,12 +27,14 @@ const insertNewTeam = async (event, roleName) => {
       },
       (error, results, fields) => {
         if (!error) {
-          if (results.affectedRows != 0) resolve(true);
-          else resolve(false);
-        } else return reject(error);
+          if (results.affectedRows != 0) 
+            return true;
+          else 
+            return false;
+        } else 
+          return error;
       }
     );
-  });
 };
 
 module.exports = {

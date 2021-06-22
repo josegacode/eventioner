@@ -156,7 +156,7 @@ module.exports = class Team extends Command {
           new MessageEmbed()
             .setTitle(
               `
-                  \@${message.author.username} los invita a su equipo! 🚀
+                  \@${message.author.username} formando un equipo! 🚀
                 `
             )
             .addField("\u200B", "\u200B")

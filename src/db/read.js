@@ -126,7 +126,7 @@ const getVerticals = (params) => {
  * which server is linked to
  * it.
  * */
-const getEventActiveInfo = (params) => {
+const getEventActiveInfo = async (serverId) => {
   const query = `
         SELECT 
           event_id, 
@@ -134,25 +134,27 @@ const getEventActiveInfo = (params) => {
           members_per_team,
           mentor_types
         FROM events 
-        WHERE server=${params.serverId}`;
+        WHERE server=${serverId} AND
+        is_active=true`;
 
-  return new Promise((resolve, reject) => {
-    pool.query(
-      {
-        sql: query,
-        timeout: process.env.DB_QUERY_TIMEOUT,
-      },
-      (error, results, fields) => {
-        if (!error) {
-          //console.log(JSON.stringify(results, null, 4));
-          resolve(results[0]);
-        } else {
-          console.log(`error in getEventActiveInfo()`);
-          reject(error);
-        }
+  let result = await pool.promise().query(
+    {
+      sql: query,
+      timeout: process.env.DB_QUERY_TIMEOUT,
+    },
+    (error, results, fields) => {
+      if (!error) {
+        console.log(JSON.stringify(results[0], null, 4));
+        return results[0];
+      } else {
+        console.log(`error in getEventActiveInfo()`);
+        return error;
       }
-    );
-  });
+    }
+  );
+
+  return result;
+
 };
 
 /**
