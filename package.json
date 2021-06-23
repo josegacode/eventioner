@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon ./src/index.js",
+    "compile": "tsc && node ./dist/index.js",
+    "dev": "nodemon -e ts --exec \"npm run compile\"",
+    "start": "nodemon --watch src/ --exec \"npm run compile\" --verbose -e ts",
     "docs": "jsdoc -c jsdoc.json",
     "pt": "prettier --write ./src"
   },
@@ -31,9 +33,13 @@
     "mysql": "^2.18.1",
     "mysql2": "^2.2.5",
     "node-fetch": "^2.6.1",
-    "string-similarity": "^4.0.4"
+    "reflect-metadata": "^0.1.13",
+    "string-similarity": "^4.0.4",
+    "typeorm": "^0.2.34"
   },
   "devDependencies": {
-    "nodemon": "^2.0.7"
+    "@types/node": "^15.12.4",
+    "nodemon": "^2.0.7",
+    "typescript": "^4.3.4"
   }
 }

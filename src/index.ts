@@ -11,17 +11,17 @@ const path = require("path");
 
 // Commando framework manages most
 // of the discordjs core
-const { CommandoClient } = require("discord.js-commando");
+import { CommandoClient } from "discord.js-commando";
 
 // User imports
-const { buildTeams } = require("./utils/buildTeams");
-const {MessageEmbed} = require("discord.js");
-const { handleCommandIntent } = require('./utils/handleCommandIntent');
+import { buildTeams } from "./utils/buildTeams";
+//import { handleCommandIntent } from './utils/handleCommandIntent';
+import 'reflect-metadata';
 
 // Client setup
-const client = new CommandoClient({
+const client: CommandoClient = new CommandoClient({
   commandPrefix: process.env.PREFIX,
-  owner: process.OWNER,
+  owner: process.env.OWNER,
   partials: ["GUILD_MEMBER", "REACTION", "MESSAGE", "USER", "CHANNEL"],
 });
 client.registry
@@ -53,7 +53,7 @@ client.registry
   .registerCommandsIn(path.join(__dirname, "commands"));
 
 client.once("ready", () => {
-  console.log(`Logged in as ${client.user.tag}! (${client.user.id})`);
+  console.log(`En linea ${client.user.tag}! (${client.user.id})`);
   client.user.setActivity(`Type !help evnt`);
 });
 
