@@ -1,10 +1,7 @@
-const { GoogleSpreadsheet } = require("google-spreadsheet");
-
+import { GoogleSpreadsheet } from "google-spreadsheet";
 // Gettings the auth keys for Google API
-const credentials = require("./json/credentials.json");
-//const config = require('./json/config');
-//let config = require('./json/config');
-const { mentorsdb, mentorsRedux } = require("./json/spreadsheets.json");
+import credentials from "./json/credentials.json");
+import { mentorsdb, mentorsRedux } from "./json/spreadsheets.json";
 
 let document;
 

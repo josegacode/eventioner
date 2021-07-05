@@ -9,12 +9,11 @@
  * */
 
 // User imports
-const { insertNewTeam } = require("../db/create/insertNewTeam");
-//const { createTeamRole } = require("./createTeamRole");
-const { createTeamPrivateChannels } = require("./createTeamChannels");
-const { handleTeamBuild } = require("./handleTeamBuild");
-const { MessageEmbed } = require("discord.js");
-const { getEventActiveInfo, getTeams } = require("../db/read");
+import { insertNewTeam } from "../db/create/insertNewTeam";
+import { createTeamPrivateChannels } from "./createTeamChannels";
+import { handleTeamBuild } from "./handleTeamBuild";
+import { MessageEmbed } from "discord.js";
+import { getEventActiveInfo, getTeams } from "../db/read";
 
 let event;
 const createTeamRole = async (reaction) => {

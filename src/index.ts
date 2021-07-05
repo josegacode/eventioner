@@ -7,7 +7,9 @@
 
 // Loads the environment variables
 require("dotenv").config();
-const path = require("path");
+import path from "path";
+
+import "reflect-metadata";
 
 // Commando framework manages most
 // of the discordjs core
