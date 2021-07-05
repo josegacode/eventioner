@@ -1,7 +1,7 @@
 // Holds the private token of eventbrite
 const { token, reduxId } = require("../json/eventbriteCredentials.json");
 //const axios = require('axios');
-const fetch = require("node-fetch");
+import fetch from "node-fetch";
 //const {response} = require('express');
 const API_URL = "https://www.eventbriteapi.com/v3/";
 const OAuth = `token=${token}`;
@@ -50,7 +50,7 @@ const getAttendeesPage = async (pageNumber) => {
 
 const getAttendeesTickets = (params) => {
   return new Promise((resolve, rejected) => {
-    fetch(`${API_URL}events/${params.eventId}/attendees/?${OAuth}`)
+    fetch(`${API_URL}events/${params.event_id}/attendees/?${OAuth}`)
       .then((response) => {
         return response.json();
       })

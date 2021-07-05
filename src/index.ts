@@ -23,7 +23,6 @@ import 'reflect-metadata';
 // Client setup
 const client: CommandoClient = new CommandoClient({
   commandPrefix: process.env.PREFIX,
-  owner: process.env.OWNER,
   partials: ["GUILD_MEMBER", "REACTION", "MESSAGE", "USER", "CHANNEL"],
 });
 client.registry

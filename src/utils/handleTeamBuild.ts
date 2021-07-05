@@ -1,4 +1,4 @@
-const { getEventActiveInfo } = require("../db/read");
+import { getEventActiveInfo } from "../db/read";
 
 /**
  * @params reaction The reaction object triggered in some server
@@ -9,7 +9,7 @@ const { getEventActiveInfo } = require("../db/read");
  * of some team) and creating or not they
  * text and voice channels.
  * */
-const handleTeamBuild = async (reaction) => {
+export const handleTeamBuild = async (reaction) => {
   let event;
   try {
     event = await getEventActiveInfo(reaction.message.guild.id);
@@ -38,6 +38,3 @@ const handleTeamBuild = async (reaction) => {
 
 };
 
-module.exports = {
-  handleTeamBuild: handleTeamBuild,
-};

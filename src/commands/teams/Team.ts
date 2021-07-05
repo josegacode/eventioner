@@ -1,5 +1,5 @@
 const { Command } = require("discord.js-commando");
-const { MessageEmbed } = require("discord.js");
+import { MessageEmbed } from "discord.js";
 const { logEvent } = require("../../utils/logger");
 const { getVerticals } = require("../../db/read");
 
@@ -19,7 +19,7 @@ module.exports = class Team extends Command {
   } // constructor
 
   async run(message) {
-    let team = {};
+    let team;
     let verticalsArray = [];
     let verticalsEmbedOptions = [];
 

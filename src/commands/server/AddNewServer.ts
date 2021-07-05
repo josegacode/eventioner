@@ -6,7 +6,7 @@
  * executes the command.
  * */
 const { Command } = require("discord.js-commando");
-const { MessageEmbed } = require("discord.js");
+import { MessageEmbed } from "discord.js";
 const { logEvent } = require("../../utils/logger");
 const {
   checkIfServerExists,
@@ -97,7 +97,8 @@ module.exports = class AddServer extends Command {
           .then((serverAdded) => {
             if (serverAdded)
               // Then generate its configuration
-              return generateServerDefaultConfiguration();
+							console.log('Generating default configuration for this server ...');
+              //return generateServerDefaultConfiguration();
           })
           .then((configurationGenerated) => {
             if (configurationGenerated)

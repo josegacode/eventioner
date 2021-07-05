@@ -16,6 +16,8 @@ import { MessageEmbed } from "discord.js";
 import { getEventActiveInfo, getTeams } from "../db/read";
 
 let event;
+let teamRoleName;
+
 const createTeamRole = async (reaction) => {
   // Naming the team:
   // Check if there is teams created
@@ -67,7 +69,7 @@ const checkDuplicateTeamRequest = (reaction) => {
 // > role creation / providing
 // > channels creation
 // > db insertion
-const buildTeams = async (reaction) => {
+export const buildTeams = async (reaction) => {
   let teamInformation = {};
   // Check if team is already built or are ready to be
   // (minimum members per team has been reached or
@@ -78,7 +80,7 @@ const buildTeams = async (reaction) => {
     if(!checkDuplicateTeamRequest(reaction))  {
       // Checker for valid miminum or in rage
       // members per team
-      if (await teamIsReadyToBeBuilt(reaction)) {
+      if (await handleTeamBuild(reaction)) {
           // This code is executed many times
           // once the team was built, just adding
           // the team role to the new members
@@ -88,7 +90,7 @@ const buildTeams = async (reaction) => {
           // Extracts the role name from the embed
           // TODO: improve the way of extraction
           // in order to be more scalable
-          const teamRoleName =
+          teamRoleName =
             titleSpplited[titleSpplited.length - 3] +
             " " +
             titleSpplited[titleSpplited.length - 2];
@@ -101,17 +103,21 @@ const buildTeams = async (reaction) => {
 
           // Providing the team role for each
           // team
+					let newMember;
           reaction.users.cache.forEach((user) => {
             if (user.id != reaction.message.client.user.id) {
-              const hasTeamRole = reaction.message.guild.members.cache
-                .get(user.id)
-                .roles.cache.find((memberRole) => memberRole === teamRole);
+							newMember = reaction.message.guild.members.cache
+                .get(user.id);
+
+							const hasTeamRole = newMember
+								.roles
+								.cache
+								.find((memberRole) => memberRole === teamRole);
+
               // Check if the member has already the role
               // then skip it
-              if (!hasTeamRole) {
-                newMember = reaction.message.guild.members.cache.get(user.id);
+              if (!hasTeamRole) 
                 newMember.roles.add(teamRole);
-              }
             }
           });
         } else {
@@ -124,6 +130,8 @@ const buildTeams = async (reaction) => {
     //console.log('formando')
     if(checkDuplicateTeamRequest(reaction)) 
       return;
+
+		let teamInformation;
 
     // This code is executed only once
     // when the team is being building

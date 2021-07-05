@@ -8,7 +8,7 @@
 // predefined for declare commands
 "use strict";
 
-const { MessageEmbed } = require("discord.js");
+import { MessageEmbed } from "discord.js";
 const { Command } = require("discord.js-commando");
 const { validateMentorEmail } = require("../../spreadsheet-handler");
 

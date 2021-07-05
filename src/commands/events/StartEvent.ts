@@ -8,7 +8,7 @@
  * */
 
 const { Command } = require("discord.js-commando");
-const { MessageEmbed } = require("discord.js");
+import { MessageEmbed } from "discord.js";
 const { getAvailableEvents } = require("../../utils/eventbriteHandler");
 const { linkBotWithServer, linkEventWithServer } = require("../../db/create");
 const { checkIfEventIsActive } = require("../../db/read");

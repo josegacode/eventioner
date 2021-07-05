@@ -8,9 +8,9 @@
 // predefined for declare commands
 "use strict";
 
-const { MessageEmbed } = require("discord.js");
+import { MessageEmbed } from "discord.js";
 const { Command } = require("discord.js-commando");
-const { getEventActiveInfo } = require("../../db/read");
+import { getEventActiveInfo } from "../../db/read";
 const {
   validateTicket,
   getAttendeesPage,
@@ -57,7 +57,7 @@ module.exports = class EnrollCommand extends Command {
     })
       .then((eventInformation) => {
         getAttendeesTickets({
-          eventId: eventInformation.event_id
+          event: eventInformation
         })
           .then((allTickets) => {
             // Gets all pages [pagination{}, attendees[]]
