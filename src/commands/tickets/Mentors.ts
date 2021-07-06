@@ -10,7 +10,7 @@
 
 import { MessageEmbed } from "discord.js";
 const { Command } = require("discord.js-commando");
-const { validateMentorEmail } = require("../../spreadsheet-handler");
+import { validateMentorEmail } from "../../SpreadSheetHandler";
 
 module.exports = class BeMentor extends Command {
   constructor(client) {

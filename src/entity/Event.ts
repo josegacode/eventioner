@@ -19,5 +19,5 @@ export class Event {
     is_active: boolean;
 
 		@OneToMany(() => Team, team => team.event)
-		teamss: Team[];
+		teams: Team[];
 }

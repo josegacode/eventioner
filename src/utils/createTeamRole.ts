@@ -1,4 +1,4 @@
-const { getEventActiveInfo, getTeams } = require("../db/read");
+import { getEventActiveInfo, getTeams } from "../db/read";
 /**
  * @params reaction Any object which contains the reaction object
  * and the serverId.
@@ -13,7 +13,7 @@ const createTeamRole = async (params) => {
   let teamRoleName;
   return new Promise((resolve, reject) => {
     getEventActiveInfo({ serverId: params.serverId })
-      .then((result) => getTeams({ eventId: result.event_id }))
+      .then((result) => getTeams({ eventId: result}))
       .then((result) => {
         // Dinamically generates
         // the team's role name

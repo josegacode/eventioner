@@ -1,11 +1,11 @@
 // Holds the private token of eventbrite
-const { token, reduxId } = require("../json/eventbriteCredentials.json");
+//const { token, reduxId } = require("../json/eventbriteCredentials.json");
 //const axios = require('axios');
 import fetch from "node-fetch";
 //const {response} = require('express');
 const API_URL = "https://www.eventbriteapi.com/v3/";
-const OAuth = `token=${token}`;
-const eventId = reduxId;
+const OAuth = `token=${process.env.EVENTBRITE_KEY}`;
+const eventId = 'CURRENT-EVENT-FROM-DB';
 
 /**
  * Gets all available or coming soong (live)

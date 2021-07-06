@@ -4,7 +4,7 @@
  *
  * Generates the team's channels
  * */
-const createTeamPrivateChannels = (params) => {
+export const createTeamPrivateChannels = (params) => {
   // Getting the mentor role
   const mentorRole = params.guild.roles.cache.find(
     (guildRole) => guildRole.name == "Mentorx"
@@ -61,6 +61,3 @@ const createTeamPrivateChannels = (params) => {
     .catch(console.error);
 };
 
-module.exports = {
-  createTeamPrivateChannels: createTeamPrivateChannels,
-};

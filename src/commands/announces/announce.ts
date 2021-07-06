@@ -15,7 +15,7 @@ const { Command } = require("discord.js-commando");
 
 // For lets perform Google Spreadsheet API
 // operations
-const spreadsheetHandler = require("../../spreadsheet-handler");
+//const spreadsheetHandler = require("../../spreadsheet-handler");
 
 // Info of usable spreadsheets
 const spreadsheets = require("../../json/spreadsheets");

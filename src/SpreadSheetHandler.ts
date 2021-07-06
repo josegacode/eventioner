@@ -1,18 +1,18 @@
 import { GoogleSpreadsheet } from "google-spreadsheet";
-// Gettings the auth keys for Google API
-import credentials from "./json/credentials.json");
+// TODO: Paste your own Google API credentials here
+//import credentials from "./json/credentials.json";
 import { mentorsdb, mentorsRedux } from "./json/spreadsheets.json";
 
 let document;
 
-const login = async (spreadsheetId) => {
+export const login = async (spreadsheetId) => {
   // Template for get basic doc info
   document = new GoogleSpreadsheet(spreadsheetId);
-  await document.useServiceAccountAuth(credentials);
+  await document.useServiceAccountAuth('CREDENTIALS-HERE');
   await document.loadInfo();
 };
 
-const serviceAccountLoginCheck = (spreadsheetId) => {
+export const serviceAccountLoginCheck = (spreadsheetId) => {
   if (typeof document == "undefined") {
     //console.log(`Service account isn't logged, login in ...`);
     login(spreadsheetId);
@@ -21,10 +21,10 @@ const serviceAccountLoginCheck = (spreadsheetId) => {
 };
 
 // Template to get some value from sheet
-const validateMentorEmail = async (mentorData) => {
+export const validateMentorEmail = async (mentorData) => {
   // Auth process with Google Spreadsheet API
   const document = new GoogleSpreadsheet(mentorsRedux.id);
-  await document.useServiceAccountAuth(credentials);
+  await document.useServiceAccountAuth('CREDENTIALS-HERE');
   await document.loadInfo();
 
   // Loading in cache the spreadsheets and cells
@@ -53,10 +53,11 @@ const validateMentorEmail = async (mentorData) => {
  *
  * Checks for announces in the spreadsheets
  * */
+/*
 const checkAutomatedAnnounces = async (spreadsheetId) => {
   // Auth process with Google Spreadsheet API
   const document = new GoogleSpreadsheet(spreadsheetId);
-  await document.useServiceAccountAuth(credentials);
+  await document.useServiceAccountAuth('CREDENTIALS-HERE');
   await document.loadInfo();
 
   // Loading in cache the spreadsheets and cells
@@ -66,10 +67,6 @@ const checkAutomatedAnnounces = async (spreadsheetId) => {
 
   const rowIndex = sheet.cellStats.nonEmpty / spreadsheets.announces.columns;
 };
-
+*/
 // Register the accessToSpreadsheet funcion
 // in the module's exports
-module.exports = {
-  login: login,
-  validateMentorEmail: validateMentorEmail,
-};
