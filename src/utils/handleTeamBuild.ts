@@ -1,4 +1,4 @@
-import { getEventActiveInfo } from "../db/read";
+import { getEventActiveInfo } from "../db/read.js";
 
 /**
  * @params reaction The reaction object triggered in some server

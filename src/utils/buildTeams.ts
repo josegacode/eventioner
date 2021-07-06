@@ -9,11 +9,11 @@
  * */
 
 // User imports
-import { insertNewTeam } from "../db/create/insertNewTeam";
-import { createTeamPrivateChannels } from "./createTeamChannels";
-import { handleTeamBuild } from "./handleTeamBuild";
+import { insertNewTeam } from "../db/create/insertNewTeam.js";
+import { createTeamPrivateChannels } from "./createTeamChannels.js";
+import { handleTeamBuild } from "./handleTeamBuild.js";
 import { MessageEmbed } from "discord.js";
-import { getEventActiveInfo, getTeams } from "../db/read";
+import { getEventActiveInfo, getTeams } from "../db/read.js";
 
 let event;
 let teamRoleName;
@@ -23,7 +23,7 @@ const createTeamRole = async (reaction) => {
   // Check if there is teams created
   const { id } = reaction.message.guild;
   event = await getEventActiveInfo(id);
-  let teams = await getTeams(event.event_id);
+  let teams: Array<String>= await getTeams(event.event_id);
 
   // Dinamically generates
   // the team's role name
@@ -194,8 +194,4 @@ export const buildTeams = async (reaction) => {
       ); // Invitation edition
     } // new team build
   } // new team case
-};
-
-module.exports = {
-  buildTeams: buildTeams,
 };

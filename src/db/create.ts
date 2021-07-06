@@ -1,6 +1,6 @@
 const { pool } = require("./connection");
 
-const linkEventWithServer = (event) => {
+export const linkEventWithServer = (event) => {
   //console.log(JSON.stringify(event, null, 4))
   const query = `
       INSERT INTO 
@@ -36,7 +36,7 @@ const linkEventWithServer = (event) => {
   });
 };
 
-const addNewServer = (serverId, serverName) => {
+export const addNewServer = (serverId, serverName) => {
   const query = `INSERT INTO servers(guild_id, name) values(${serverId}, '${serverName}')`;
 
   return pool.query(
@@ -57,7 +57,7 @@ const addNewServer = (serverId, serverName) => {
   );
 };
 
-const linkBotWithServer = (serverId, botId) => {
+export const linkBotWithServer = (serverId, botId) => {
   const query = `INSERT INTO bots_servers(bot_id, guild_id) values(${serverId}, ${botId})`;
 
   return new Promise((resolve, reject) => {
@@ -75,9 +75,4 @@ const linkBotWithServer = (serverId, botId) => {
       }
     );
   });
-};
-module.exports = {
-  addNewServer: addNewServer,
-  linkBotWithServer: linkBotWithServer,
-  linkEventWithServer: linkEventWithServer,
 };

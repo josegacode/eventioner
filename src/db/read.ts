@@ -11,15 +11,14 @@ const { pool } = require("./connection");
  * which server is linked to
  * it.
  * */
-const getTeams = (event) => {
+export const getTeams = async (event): Promise<Array<String>> => {
   const query = `
     SELECT * 
     FROM teams 
     WHERE event=${event.event_id}
-  `;
+		`;
 
-  return new Promise((resolve, reject) => {
-    pool.query(
+    const result = pool.query(
       {
         sql: query,
         timeout: process.env.DB_QUERY_TIMEOUT,
@@ -27,14 +26,14 @@ const getTeams = (event) => {
       (error, results, fields) => {
         if (!error) {
           // undefined if there is no records
-          resolve(results);
+          return results;
         } else {
           console.log(`error in getTeams()`);
-          reject(error);
+          return error;
         }
-      }
-    );
-  });
+      })
+
+			return result;
 };
 
 /**
@@ -49,7 +48,7 @@ const getTeams = (event) => {
  * which server is linked to
  * it.
  * */
-const getMembersPerTeam = (params) => {
+export const getMembersPerTeam = (params) => {
   const query = `
         SELECT members_per_team 
         FROM events 
@@ -88,7 +87,7 @@ const getMembersPerTeam = (params) => {
  * which server is linked to
  * it.
  * */
-const getVerticals = (params) => {
+export const getVerticals = (params) => {
   const query = `
         SELECT verticals
         FROM events 
@@ -126,7 +125,7 @@ const getVerticals = (params) => {
  * which server is linked to
  * it.
  * */
-const getEventActiveInfo = async (serverId) => {
+export const getEventActiveInfo = async (serverId) => {
   const query = `
         SELECT 
           event_id, 
@@ -167,7 +166,7 @@ const getEventActiveInfo = async (serverId) => {
  * which server is linked to
  * it.
  * */
-const checkIfEventIsActive = (params) => {
+export const checkIfEventIsActive = (params) => {
   const query = `SELECT EXISTS
       (
         SELECT * 
@@ -192,7 +191,7 @@ const checkIfEventIsActive = (params) => {
   });
 };
 
-const checkIfThereAreActiveEvents = (serverId) => {
+export const checkIfThereAreActiveEvents = (serverId) => {
   const query = `SELECT EXISTS
       (
         SELECT * 
@@ -220,7 +219,7 @@ const checkIfThereAreActiveEvents = (serverId) => {
   });
 };
 
-const checkIfServerExists = (serverId) => {
+export const checkIfServerExists = (serverId) => {
   // todo: avoid *
   const query = `SELECT EXISTS(SELECT * from servers WHERE guild_id=${serverId}) AS found`;
 
@@ -238,7 +237,7 @@ const checkIfServerExists = (serverId) => {
   });
 };
 
-const checkIfServerIsLinkedWithBot = (botId, serverId) => {
+export const checkIfServerIsLinkedWithBot = (botId, serverId) => {
   // todo: avoid *
   //console.log(`server: ${serverId}, bot: ${botId}`);
   const query = `SELECT EXISTS(SELECT * FROM bots_servers WHERE bots_servers.bot_id=${botId} AND bots_servers.guild_id=${serverId}) AS found`;
@@ -263,15 +262,4 @@ const checkIfServerIsLinkedWithBot = (botId, serverId) => {
       }
     );
   });
-};
-
-module.exports = {
-  checkIfServerExists: checkIfServerExists,
-  checkIfServerIsLinkedWithBot: checkIfServerIsLinkedWithBot,
-  checkIfThereAreActiveEvents: checkIfThereAreActiveEvents,
-  checkIfEventIsActive: checkIfEventIsActive,
-  getEventActiveInfo: getEventActiveInfo,
-  getVerticals: getVerticals,
-  getMembersPerTeam: getMembersPerTeam,
-  getTeams: getTeams,
 };

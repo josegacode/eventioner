@@ -10,24 +10,26 @@ require("dotenv").config();
 import path from "path";
 
 import "reflect-metadata";
+import { connection } from 'ORMConnection';
 
 // Commando framework manages most
 // of the discordjs core
-import { CommandoClient } from "discord.js-commando";
+const { CommandoClient } = require("discord.js-commando");
 
 // User imports
-import { buildTeams } from "./utils/buildTeams";
+import { buildTeams } from "./utils/buildTeams.js";
 //import { handleCommandIntent } from './utils/handleCommandIntent';
 import 'reflect-metadata';
 
 // Client setup
-const client: CommandoClient = new CommandoClient({
+const client = new CommandoClient({
   commandPrefix: process.env.PREFIX,
   partials: ["GUILD_MEMBER", "REACTION", "MESSAGE", "USER", "CHANNEL"],
 });
 client.registry
   .registerDefaultTypes()
   .registerGroups([
+		/*
     ["utils", "Essentials Eventioner commands"],
     ["tickets", "Commands for validate the tickets for the events"],
     ["teams", "Commands related to make teams"],
@@ -41,6 +43,7 @@ client.registry
       `Commands related to deploy, configure and manage
       events environments`,
     ],
+		*/
   ])
   .registerDefaultGroups()
   .registerDefaultCommands({

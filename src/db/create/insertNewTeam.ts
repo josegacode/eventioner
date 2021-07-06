@@ -1,4 +1,4 @@
-const { pool } = require("../connection");
+import { pool } from "../connection.js";
 
 /**
  * @params An object which contains the team's
@@ -6,7 +6,7 @@ const { pool } = require("../connection");
  *
  * Saves new team built in database
  * */
-const insertNewTeam = async (event, roleName) => {
+export const insertNewTeam = async (event, roleName) => {
   //console.log(JSON.stringify(event, null, 4))
   const query = `
       INSERT INTO 
@@ -23,9 +23,9 @@ const insertNewTeam = async (event, roleName) => {
     pool.query(
       {
         sql: query,
-        timeout: process.env.DB_QUERY_TIMEOUT, // 40s
+        timeout: parseInt(process.env.DB_QUERY_TIMEOUT), // 40s
       },
-      (error, results, fields) => {
+      (error, results: String, fields) => {
         if (!error) {
           if (results.affectedRows != 0) 
             return true;
@@ -35,8 +35,4 @@ const insertNewTeam = async (event, roleName) => {
           return error;
       }
     );
-};
-
-module.exports = {
-  insertNewTeam: insertNewTeam,
 };
