@@ -11,7 +11,7 @@ import * as path from 'path';
 //import { dirname } from "path";
 //import { fileURLToPath } from 'url';
 import "reflect-metadata";
-//import { connection } from 'ORMConnection';
+import { connection } from 'ORMConnection';
 import { CommandoClient } from "discord.js-commando";
 import { buildTeams } from "./utils/buildTeams.js";
 //import { handleCommandIntent } from './utils/handleCommandIntent';
@@ -19,6 +19,9 @@ import { buildTeams } from "./utils/buildTeams.js";
 // Client setup
 //const { CommandoClient } = commandoClient;
 //const __dirname = dirname(fileURLToPath(import.meta.url));
+try {
+	await connection.runMigrations();
+}
 const client = new CommandoClient({
   commandPrefix: process.env.PREFIX,
   partials: ["GUILD_MEMBER", "REACTION", "MESSAGE", "USER", "CHANNEL"],

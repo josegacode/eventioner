@@ -1,6 +1,6 @@
 {
  "compilerOptions": {
- "module": "CommonJS",
+ "module": "ESNext",
 	"emitDecoratorMetadata": true,
 	"experimentalDecorators": true,
 	"moduleResolution": "node",
