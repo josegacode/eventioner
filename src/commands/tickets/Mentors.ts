@@ -9,7 +9,7 @@
 "use strict";
 
 import { MessageEmbed } from "discord.js";
-const { Command } = require("discord.js-commando");
+import { Command } from "discord.js-commando";
 import { validateMentorEmail } from "../../SpreadSheetHandler";
 
 module.exports = class BeMentor extends Command {
@@ -37,7 +37,7 @@ module.exports = class BeMentor extends Command {
     });
   }
 
-  async run(message, { email }) {
+  async run(message, { email }): Promise<any> {
     //ping();
 
     // Getting the promise

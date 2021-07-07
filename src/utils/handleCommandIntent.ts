@@ -1,5 +1,5 @@
-const stringEvaluator = require('string-similarity');
-const { MessageEmbed } = require('discord.js');
+import stringEvaluator from 'string-similarity';
+import { MessageEmbed } from 'discord.js';
 
 const includesPrefix = async (client, message) => {
   const { content } = message;

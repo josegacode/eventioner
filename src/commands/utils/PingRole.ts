@@ -1,12 +1,12 @@
 //const command = require('./handler');
-const { Command } = require("discord.js-commando");
+import { Command } from "discord.js-commando";
 
 /**
  *  Fetch all users with mentor role and save its data
  *  in a spreadsheet of Google.
  * @param client - The client where the bot is on
  * */
-module.exports = class PingRole extends Command {
+class PingRole extends Command {
   constructor(client) {
     super(client, {
       name: "pingrole",
@@ -26,7 +26,7 @@ module.exports = class PingRole extends Command {
     });
   }
 
-  async run(message, { roleName }) {
+  async run(message, { roleName }): Promise<any> {
     const roleFound = message.guild.roles.cache.find(
       (guildRole) => guildRole.name == roleName
     );

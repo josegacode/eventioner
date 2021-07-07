@@ -1,7 +1,7 @@
 // TODO: update with db user defined roles per event
-const { Command } = require("discord.js-commando");
+import { Command } from "discord.js-commando";
 
-module.exports = class DeployRoles extends Command {
+class DeployRoles extends Command {
   constructor(client) {
     super(client, {
       name: "delete-role",
@@ -22,7 +22,7 @@ module.exports = class DeployRoles extends Command {
     });
   } // constructor
 
-  async run(message, { roleName }) {
+  async run(message, { roleName }): Promise<any> {
     // Get all role names that matches
     message.guild.roles.cache.forEach((guildRole) => {
       if (guildRole.name.startsWith(roleName)) {

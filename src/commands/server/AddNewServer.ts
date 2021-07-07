@@ -5,14 +5,8 @@
  * and feedback is send to the user who
  * executes the command.
  * */
-const { Command } = require("discord.js-commando");
+import { Command } from "discord.js-commando";
 import { MessageEmbed } from "discord.js";
-//const { logEvent } = require("../../utils/logger");
-const {
-  checkIfServerExists,
-  checkIfServerIsLinkedWithBot,
-} = require("../../db/read");
-const { addNewServer, linkBotWithServer } = require("../../db/create");
 
 module.exports = class AddServer extends Command {
   constructor(client) {
@@ -27,12 +21,13 @@ module.exports = class AddServer extends Command {
     });
   } // constructor
 
-  async run(message) {
+  async run(message): Promise<any> {
     // Take server guild id
     const serverId = message.guild.id;
     const serverName = message.guild.name;
     const botId = message.client.user.id;
 
+		/*
     checkIfServerExists(serverId).then((exists) => {
       // Checks if another bot
       // registered the server.
@@ -127,6 +122,7 @@ module.exports = class AddServer extends Command {
           });
       }
     });
+	*/
     // Query if exist in db
   } // run
 }; // class

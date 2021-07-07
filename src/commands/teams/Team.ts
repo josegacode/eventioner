@@ -1,9 +1,7 @@
-const { Command } = require("discord.js-commando");
+import { Command } from "discord.js-commando";
 import { MessageEmbed } from "discord.js";
-//const { logEvent } = require("../../utils/logger");
-const { getVerticals } = require("../../db/read");
 
-module.exports = class Team extends Command {
+class Team extends Command {
   constructor(client) {
     super(client, {
       name: "team",
@@ -18,12 +16,13 @@ module.exports = class Team extends Command {
     });
   } // constructor
 
-  async run(message) {
+  async run(message): Promise<any> {
     let team;
     let verticalsArray = [];
     let verticalsEmbedOptions = [];
 
     // Message asking for the idea/challenge
+		/*
     message.author
       .send(
         new MessageEmbed()
@@ -204,5 +203,6 @@ module.exports = class Team extends Command {
 
       // Cleans user command execution
       .then(() => message.delete({ timeout: 1000 }));
+	*/
   } // run
 }; // class

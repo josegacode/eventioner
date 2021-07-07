@@ -7,13 +7,13 @@
  * is executed.
  * */
 
-const { Command } = require("discord.js-commando");
+import { Command, CommandoMessage } from "discord.js-commando";
 import { MessageEmbed } from "discord.js";
-const { getAvailableEvents } = require("../../utils/eventbriteHandler");
-const { linkBotWithServer, linkEventWithServer } = require("../../db/create");
-const { checkIfEventIsActive } = require("../../db/read");
+import { getAvailableEvents } from "../../utils/eventbriteHandler";
+//import { linkBotWithServer, linkEventWithServer } from "../../db/create";
+//import { checkIfEventIsActive } from "../../db/read";
 
-module.exports = class StartEvent extends Command {
+class StartEvent extends Command {
   constructor(client) {
     super(client, {
       name: "start-event",
@@ -33,7 +33,7 @@ module.exports = class StartEvent extends Command {
     });
   } // constructor
 
-  async run(message) {
+  async run(message): Promise<any> {
     // Specific data from all
     // events, like name, id, image,
     // dates, etc.
@@ -44,7 +44,7 @@ module.exports = class StartEvent extends Command {
     const eventsListEmbed = [];
 
     getAvailableEvents(message.guild.id)
-      .then((eventsAvailable) => {
+      .then((eventsAvailable: any) => {
         const { events } = eventsAvailable;
 
         const dateRegex = /\d+-\d+-\d+/gm;
@@ -106,9 +106,13 @@ module.exports = class StartEvent extends Command {
         // Checking if the event is
         // already active
         eventSelectedIndex = eventSelected.first().content - 1;
+				return true;
+				/*
+				 * todo: orm
         return checkIfEventIsActive({
           eventId: eventsList[eventSelectedIndex].id,
         });
+				*/
       })
       .then((eventIsActive) => {
         // Saving into db if
@@ -280,9 +284,10 @@ module.exports = class StartEvent extends Command {
           mentorsTypes.first().content;
         eventsList[eventSelectedIndex].server = message.guild.id;
 
-        return linkEventWithServer(eventsList[eventSelectedIndex]);
+				// todo: orm 
+        //return linkEventWithServer(eventsList[eventSelectedIndex]);
       })
-      .then((eventInserted) => {
+      .then((eventInserted: any) => {
         if (eventInserted) {
           const eventStartedFeedback = new MessageEmbed()
             .setTitle(`Evento iniciado ✅`)

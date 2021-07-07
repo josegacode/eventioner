@@ -1,4 +1,4 @@
-import { getEventActiveInfo } from "../db/read.js";
+//import { getEventActiveInfo } from "../db/read.js";
 
 /**
  * @params reaction The reaction object triggered in some server
@@ -12,7 +12,9 @@ import { getEventActiveInfo } from "../db/read.js";
 export const handleTeamBuild = async (reaction) => {
   let event;
   try {
-    event = await getEventActiveInfo(reaction.message.guild.id);
+		// todo: orm
+    //event = await getEventActiveInfo(reaction.message.guild.id);
+		event = [];
   console.log(JSON.stringify(event, null ,4))
   } catch(error) {
     console.error(error);

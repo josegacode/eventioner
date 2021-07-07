@@ -9,17 +9,15 @@
 "use strict";
 
 import { MessageEmbed } from "discord.js";
-const { Command } = require("discord.js-commando");
-import { getEventActiveInfo } from "../../db/read";
-const {
-  validateTicket,
+import { Command } from "discord.js-commando";
+//import { getEventActiveInfo } from "../../db/read";
+import {
   getAttendeesPage,
   getAttendees,
-  getAttendeesPagesCount,
   getAttendeesTickets,
-} = require("../../utils/eventbriteHandler");
+} from "../../utils/eventbriteHandler";
 
-module.exports = class EnrollCommand extends Command {
+class EnrollCommand extends Command {
   constructor(client) {
     super(client, {
       name: "enroll",
@@ -51,7 +49,8 @@ module.exports = class EnrollCommand extends Command {
     });
   }
 
-  async run(message, { ticketId }) {
+  async run(message, { ticketId }): Promise<any> {
+		/*
     getEventActiveInfo({
       serverId: message.guild.id,
     })
@@ -123,5 +122,6 @@ module.exports = class EnrollCommand extends Command {
           });
       })
       .catch((error) => console.error(error));
+			*/
   } // End fo run()
 }; // end of class definition

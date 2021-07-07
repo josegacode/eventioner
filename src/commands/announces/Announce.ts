@@ -11,16 +11,16 @@
 "use strict";
 
 import { MessageEmbed } from "discord.js";
-const { Command } = require("discord.js-commando");
+import { Command } from "discord.js-commando";
 
 // For lets perform Google Spreadsheet API
 // operations
 //const spreadsheetHandler = require("../../spreadsheet-handler");
 
 // Info of usable spreadsheets
-const spreadsheets = require("../../json/spreadsheets");
+//import spreadsheets from "../../json/spreadsheets.json";
 
-module.exports = class Announce extends Command {
+class Announce extends Command {
   constructor(client) {
     super(client, {
       name: "announce",
@@ -32,7 +32,7 @@ module.exports = class Announce extends Command {
     });
   }
 
-  async run(message) {
+  async run(message): Promise<any> {
     //const directMessage = message.author.dmChannel;
 
     // Starts the announce wizard

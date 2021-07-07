@@ -13,7 +13,7 @@ const eventId = 'CURRENT-EVENT-FROM-DB';
  *
  * @param pageNumber The index of paginated response that we want to retrieve
  * */
-const getAvailableEvents = (async) => {
+export const getAvailableEvents = (async) => {
   return new Promise((resolve, reject) => {
     fetch(`${API_URL}organizations/450438898208/events/?status=live&${OAuth}`)
       .then((response) => resolve(response.json()))
@@ -26,7 +26,7 @@ const getAvailableEvents = (async) => {
  *
  * @param pageNumber The index of paginated response that we want to retrieve
  * */
-const getAttendees = (async) => {
+export const getAttendees = (async) => {
   return new Promise((resolve, reject) => {
     fetch(`${API_URL}events/${eventId}/attendees/?${OAuth}`).then((response) =>
       resolve(response.json())
@@ -40,7 +40,7 @@ const getAttendees = (async) => {
  *
  * @param pageNumber The index of paginated response that we want to retrieve
  * */
-const getAttendeesPage = async (pageNumber) => {
+export const getAttendeesPage = async (pageNumber) => {
   return new Promise((resolve, reject) => {
     fetch(
       `${API_URL}events/${eventId}/attendees/?page=${pageNumber}&${OAuth}`
@@ -48,7 +48,7 @@ const getAttendeesPage = async (pageNumber) => {
   });
 };
 
-const getAttendeesTickets = (params) => {
+export const getAttendeesTickets = (params) => {
   return new Promise((resolve, rejected) => {
     fetch(`${API_URL}events/${params.event_id}/attendees/?${OAuth}`)
       .then((response) => {
@@ -69,9 +69,3 @@ const getAttendeesTickets = (params) => {
   });
 };
 
-module.exports = {
-  getAttendees: getAttendees,
-  getAttendeesPage: getAttendeesPage,
-  getAttendeesTickets: getAttendeesTickets,
-  getAvailableEvents: getAvailableEvents,
-};

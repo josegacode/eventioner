@@ -1,12 +1,12 @@
 //const command = require('./handler');
-const { Command } = require("discord.js-commando");
+import { Command } from "discord.js-commando";
 
 /**
  *  Fetch all users with mentor role and save its data
  *  in a spreadsheet of Google.
  * @param client - The client where the bot is on
  * */
-module.exports = class ClearChannel extends Command {
+class ClearChannel extends Command {
   constructor(client) {
     super(client, {
       name: "clearchannel",
@@ -20,7 +20,7 @@ module.exports = class ClearChannel extends Command {
     });
   }
 
-  async run(message) {
+  async run(message): Promise<any> {
     message.channel.messages.fetch().then((results) => {
       message.channel.bulkDelete(results);
     });

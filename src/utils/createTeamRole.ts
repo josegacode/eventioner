@@ -1,4 +1,4 @@
-import { getEventActiveInfo, getTeams } from "../db/read";
+//import { getEventActiveInfo, getTeams } from "../db/read";
 /**
  * @params reaction Any object which contains the reaction object
  * and the serverId.
@@ -11,6 +11,8 @@ const createTeamRole = async (params) => {
   // Naming the team:
   // Check if there is teams created
   let teamRoleName;
+	/*
+	 * todo: orm
   return new Promise((resolve, reject) => {
     getEventActiveInfo({ serverId: params.serverId })
       .then((result) => getTeams({ eventId: result}))
@@ -31,6 +33,7 @@ const createTeamRole = async (params) => {
         );
       });
   });
+	*/
 };
 
 module.exports = {

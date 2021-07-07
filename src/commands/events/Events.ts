@@ -1,11 +1,7 @@
-const { Command } = require("discord.js-commando");
+import { Command } from "discord.js-commando";
 import { MessageEmbed } from "discord.js";
-const {
-  checkIfThereAreActiveEvents,
-  getEventActiveInfo,
-} = require("../../db/read");
 
-module.exports = class Events extends Command {
+class Events extends Command {
   constructor(client) {
     super(client, {
       name: "events",
@@ -21,11 +17,12 @@ module.exports = class Events extends Command {
     });
   } // constructor
 
-  async run(message) {
+  async run(message): Promise<any> {
     const { channel } = message;
     const serverId = message.guild.id;
     const serverName = message.guild.name;
 
+		/* todo: orm
     checkIfThereAreActiveEvents(serverId)
       .then((thereAreActiveEvents) => {
         if (thereAreActiveEvents) {
@@ -148,5 +145,6 @@ module.exports = class Events extends Command {
         }
       })
       .catch((error) => channel.send(error));
+			*/
   } // run
 }; // class
