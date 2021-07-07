@@ -1,7 +1,7 @@
 import { Command } from "discord.js-commando";
 import { MessageEmbed } from "discord.js";
 
-class Team extends Command {
+export class Team extends Command {
   constructor(client) {
     super(client, {
       name: "team",

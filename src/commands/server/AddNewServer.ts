@@ -8,7 +8,7 @@
 import { Command } from "discord.js-commando";
 import { MessageEmbed } from "discord.js";
 
-module.exports = class AddServer extends Command {
+export class AddServer extends Command {
   constructor(client) {
     super(client, {
       name: "addserver",

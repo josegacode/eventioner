@@ -17,7 +17,7 @@ import {
   getAttendeesTickets,
 } from "../../utils/eventbriteHandler";
 
-class EnrollCommand extends Command {
+export class EnrollCommand extends Command {
   constructor(client) {
     super(client, {
       name: "enroll",

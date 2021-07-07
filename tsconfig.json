@@ -1,16 +1,17 @@
 {
  "compilerOptions": {
-	 "module": "ESNext",
-		"emitDecoratorMetadata": true,
+ "module": "CommonJS",
+	"emitDecoratorMetadata": true,
 	"experimentalDecorators": true,
 	"moduleResolution": "node",
 	"resolveJsonModule": true,
-   "target": "esnext",
+   "target": "ESNext",
    "allowJs": true,
    "checkJs": false,
    "outDir": "dist",
    "rootDir": "src",
    "strict": false,
+	 "allowSyntheticDefaultImports": true,
    "esModuleInterop": true ,
    "forceConsistentCasingInFileNames": true,    
 	 "declaration": true, 
@@ -31,8 +32,6 @@
   "exclude": ["node_modules", "dist"],
   "include": [
     "./src",
-    "./test",
-    "./*",
-    "./config" 
+		"./*.ts"
   ]
 }

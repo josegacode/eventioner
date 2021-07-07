@@ -9,11 +9,11 @@
 
 import { Command, CommandoMessage } from "discord.js-commando";
 import { MessageEmbed } from "discord.js";
-import { getAvailableEvents } from "../../utils/eventbriteHandler";
+import { getAvailableEvents } from "../../utils/eventbriteHandler.js";
 //import { linkBotWithServer, linkEventWithServer } from "../../db/create";
 //import { checkIfEventIsActive } from "../../db/read";
 
-class StartEvent extends Command {
+export class StartEvent extends Command {
   constructor(client) {
     super(client, {
       name: "start-event",

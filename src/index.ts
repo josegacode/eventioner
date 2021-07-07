@@ -6,18 +6,19 @@
 // Loads the environment variables
 import dotenv from 'dotenv';
 dotenv.config();
-import path from "path";
-import { dirname } from "path";
-import { fileURLToPath } from 'url';
+import * as path from 'path';
+//import path = require("path");
+//import { dirname } from "path";
+//import { fileURLToPath } from 'url';
 import "reflect-metadata";
-import { connection } from 'ORMConnection';
-import commandoClient from "discord.js-commando";
+//import { connection } from 'ORMConnection';
+import { CommandoClient } from "discord.js-commando";
 import { buildTeams } from "./utils/buildTeams.js";
 //import { handleCommandIntent } from './utils/handleCommandIntent';
 
 // Client setup
-const { CommandoClient } = commandoClient;
-const __dirname = dirname(fileURLToPath(import.meta.url));
+//const { CommandoClient } = commandoClient;
+//const __dirname = dirname(fileURLToPath(import.meta.url));
 const client = new CommandoClient({
   commandPrefix: process.env.PREFIX,
   partials: ["GUILD_MEMBER", "REACTION", "MESSAGE", "USER", "CHANNEL"],
@@ -25,8 +26,6 @@ const client = new CommandoClient({
 client.registry
   .registerDefaultTypes()
   .registerGroups([
-		/*
-		*/
     ["utils", "Essentials Eventioner commands"],
     ["tickets", "Commands for validate the tickets for the events"],
     ["teams", "Commands related to make teams"],

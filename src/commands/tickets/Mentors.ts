@@ -6,13 +6,11 @@
 
 // Handler for use the structure
 // predefined for declare commands
-"use strict";
-
 import { MessageEmbed } from "discord.js";
 import { Command } from "discord.js-commando";
 import { validateMentorEmail } from "../../SpreadSheetHandler";
 
-module.exports = class BeMentor extends Command {
+export class BeMentor extends Command {
   constructor(client) {
     super(client, {
       name: "bementor",

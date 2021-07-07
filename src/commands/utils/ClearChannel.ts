@@ -1,12 +1,6 @@
-//const command = require('./handler');
 import { Command } from "discord.js-commando";
 
-/**
- *  Fetch all users with mentor role and save its data
- *  in a spreadsheet of Google.
- * @param client - The client where the bot is on
- * */
-class ClearChannel extends Command {
+export class ClearChannel extends Command {
   constructor(client) {
     super(client, {
       name: "clearchannel",

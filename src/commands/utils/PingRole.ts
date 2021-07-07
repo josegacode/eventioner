@@ -6,7 +6,7 @@ import { Command } from "discord.js-commando";
  *  in a spreadsheet of Google.
  * @param client - The client where the bot is on
  * */
-class PingRole extends Command {
+export class PingRole extends Command {
   constructor(client) {
     super(client, {
       name: "pingrole",

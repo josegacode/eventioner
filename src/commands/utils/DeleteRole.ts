@@ -1,7 +1,7 @@
 // TODO: update with db user defined roles per event
 import { Command } from "discord.js-commando";
 
-class DeployRoles extends Command {
+export class DeployRoles extends Command {
   constructor(client) {
     super(client, {
       name: "delete-role",

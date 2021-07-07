@@ -8,12 +8,11 @@
 
 // Handler for use the structure
 // predefined for declare commands
-"use strict";
 
 import { MessageEmbed } from "discord.js";
 import { Command } from "discord.js-commando";
 
-class Announce extends Command {
+export class Announce extends Command {
   constructor(client) {
     super(client, {
       name: "announce",

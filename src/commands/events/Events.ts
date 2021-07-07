@@ -1,7 +1,7 @@
 import { Command } from "discord.js-commando";
 import { MessageEmbed } from "discord.js";
 
-class Events extends Command {
+export class Events extends Command {
   constructor(client) {
     super(client, {
       name: "events",
