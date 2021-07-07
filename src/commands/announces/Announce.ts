@@ -13,13 +13,6 @@
 import { MessageEmbed } from "discord.js";
 import { Command } from "discord.js-commando";
 
-// For lets perform Google Spreadsheet API
-// operations
-//const spreadsheetHandler = require("../../spreadsheet-handler");
-
-// Info of usable spreadsheets
-//import spreadsheets from "../../json/spreadsheets.json";
-
 class Announce extends Command {
   constructor(client) {
     super(client, {

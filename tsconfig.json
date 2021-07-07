@@ -1,9 +1,11 @@
 {
  "compilerOptions": {
+	 "module": "ESNext",
 		"emitDecoratorMetadata": true,
 	"experimentalDecorators": true,
+	"moduleResolution": "node",
+	"resolveJsonModule": true,
    "target": "esnext",
-   "module": "esnext",
    "allowJs": true,
    "checkJs": false,
    "outDir": "dist",
@@ -13,8 +15,6 @@
    "forceConsistentCasingInFileNames": true,    
 	 "declaration": true, 
    "strictNullChecks": false,
-   "resolveJsonModule": true,
-	 "moduleResolution": "node",
    "sourceMap": true,
    "baseUrl": ".",
    "paths": {

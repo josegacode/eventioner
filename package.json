@@ -1,6 +1,5 @@
 {
 	"type": "module",
-  "name": "eventioner",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

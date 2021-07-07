@@ -1,6 +1,7 @@
 import { createConnection } from "typeorm";
 
-export const connection = await createConnection({
+export const connection = async () => {
+	return await createConnection({
     type: "mysql",
     host: "localhost",
     port: 3306,
@@ -11,7 +12,8 @@ export const connection = await createConnection({
         __dirname + "/entity/*.js"
     ],
     synchronize: true,
-}).then(connection => {
-    // here you can start to work with your entities
-		console.log('Connection status: ' + connection.isConnected);
-}).catch(error => console.log(error));
+	}).then(connection => {
+			// here you can start to work with your entities
+			console.log('Connection status: ' + connection.isConnected);
+	}).catch(error => console.log(error));
+}
