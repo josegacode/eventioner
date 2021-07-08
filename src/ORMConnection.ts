@@ -1,8 +1,12 @@
 import { Connection, createConnection } from "typeorm";
-import { Event } from './entity/Event';
-import { Team } from './entity/Team';
+import * as entities from './entity/barrelOfEntities.js';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-const connect = async (): Promise<Connection> => {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+export const connect = async (): Promise<Connection> => {
 	try {
 		return await createConnection({
 				type: "mysql",
@@ -12,15 +16,12 @@ const connect = async (): Promise<Connection> => {
 				password: process.env.DB_PASSWORD,
 				database: process.env.DB_NAME,
 				entities: [
-					//__dirname + "/entity/*.js",
-					Event,
-					Team
+					__dirname + "/entity/*.js",
 				],
-				migrations: ['./migration/*.js'],
+				migrations: ['/migration/*.js'],
 			})
 	} catch(error) {
 		 console.error(error);
 	}
 }
 
-export const connection: Promise<Connection> = connect();

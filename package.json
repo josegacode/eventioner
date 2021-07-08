@@ -1,13 +1,16 @@
 {
+	"type":"module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+		"dev": "node --loader ts-node/esm ./src/index.ts",
     "compile": "tsc && node ./dist/index.js",
-    "start": "nodemon --watch src/ --exec \"npm run compile\" --verbose -e ts",
+    "compileSecondary": "ts-node ./src/index.ts",
+    "start": "nodemon --watch src/ --exec \"npm run dev\" --verbose -e ts",
     "docs": "jsdoc -c jsdoc.json",
     "pt": "prettier --write ./src",
-		"typeorm": "ts-node ./node_modules/typeorm/cli -f ./ormconfig.json"
+    "typeorm": "ts-node ./node_modules/typeorm/cli -f ./ormconfig.json"
   },
   "repository": {
     "type": "git",
@@ -34,6 +37,7 @@
     "node-fetch": "^2.6.1",
     "reflect-metadata": "^0.1.13",
     "string-similarity": "^4.0.4",
+    "ts-node": "^10.0.0",
     "typeorm": "^0.2.34"
   },
   "devDependencies": {

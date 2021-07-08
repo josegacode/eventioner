@@ -4,24 +4,27 @@
  * */
 
 // Loads the environment variables
-import dotenv from 'dotenv';
-dotenv.config();
+import * as dotenv from 'dotenv';
 import * as path from 'path';
-//import path = require("path");
-//import { dirname } from "path";
-//import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import "reflect-metadata";
-import { connection } from 'ORMConnection';
-import { CommandoClient } from "discord.js-commando";
+import { connect } from './ORMConnection.js';
+import { Connection } from 'typeorm';
+import  commando from "discord.js-commando";
 import { buildTeams } from "./utils/buildTeams.js";
 //import { handleCommandIntent } from './utils/handleCommandIntent';
 
-// Client setup
-//const { CommandoClient } = commandoClient;
-//const __dirname = dirname(fileURLToPath(import.meta.url));
-try {
-	await connection.runMigrations();
-}
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+
+const connection: Connection = await connect();
+//connection.runMigrations();
+
+const { CommandoClient } = commando;
 const client = new CommandoClient({
   commandPrefix: process.env.PREFIX,
   partials: ["GUILD_MEMBER", "REACTION", "MESSAGE", "USER", "CHANNEL"],

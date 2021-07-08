@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryColumn, ManyToOne } from "typeorm";
-import { Event } from './Event';
+import { Event } from './Event.js';
 
 @Entity()
 export class Team {
