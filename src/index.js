@@ -17,6 +17,11 @@ const { CommandoClient } = require("discord.js-commando");
 const { buildTeams } = require("./utils/buildTeams");
 const {MessageEmbed} = require("discord.js");
 const { handleCommandIntent } = require('./utils/handleCommandIntent');
+const { api } = require('./api/index.js');
+
+api.listen(3000, () => {
+	console.log('API of Eventioner is online!');
+})
 
 // Client setup
 const client = new CommandoClient({

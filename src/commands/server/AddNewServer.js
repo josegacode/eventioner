@@ -7,7 +7,7 @@
  * */
 const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
-const { logEvent } = require("../../utils/logger");
+//const { logEvent } = require("../../utils/logger");
 const {
   checkIfServerExists,
   checkIfServerIsLinkedWithBot,
