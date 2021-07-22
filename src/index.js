@@ -15,13 +15,14 @@ const { CommandoClient } = require("discord.js-commando");
 
 // User imports
 const { buildTeams } = require("./utils/buildTeams");
-const {MessageEmbed} = require("discord.js");
-const { handleCommandIntent } = require('./utils/handleCommandIntent');
-const { api } = require('./api/index.js');
+//const { handleCommandIntent } = require('./utils/handleCommandIntent');
 
-api.listen(3000, () => {
-	console.log('API of Eventioner is online!');
-})
+ // _           _   
+// | |__   ___ | |_ 
+// | '_ \ / _ \| __|
+// | |_) | (_) | |_ 
+// |_.__/ \___/ \__|
+ 
 
 // Client setup
 const client = new CommandoClient({
@@ -88,14 +89,29 @@ client.on("messageReactionAdd", async (reaction, user) => {
 }); // reaction event
 
 // Global check for wrong commands typed
-client.on('message', async (message) => {
-  // Check if the message wasn't sent 
-  // by the bot or through a direct message
-  // channel
-  if(!message.author.bot && message.channel.type != 'dm') {
-    handleCommandIntent(client, message);
-  }
-})
+// client.on('message', async (message) => {
+//   // Check if the message wasn't sent 
+//   // by the bot or through a direct message
+//   // channel
+//   if(!message.author.bot && message.channel.type != 'dm') {
+//     handleCommandIntent(client, message);
+//   }
+// })
 
 // Loging the bot to the server
 client.login(process.env.TOKEN);
+
+    // _    ____ ___ 
+   // / \  |  _ \_ _|
+  // / _ \ | |_) | | 
+ // / ___ \|  __/| | 
+// /_/   \_\_|  |___|
+                  
+
+exports.client = client;
+
+const { app } = require('./api/index.js');
+app.listen(3000, () => {
+	console.log('API of Eventioner is online!');
+//	shareClient(client);
+})
