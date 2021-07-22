@@ -110,8 +110,11 @@ client.login(process.env.TOKEN);
 
 exports.client = client;
 
-const { app } = require('./api/index.js');
-app.listen(3000, () => {
-	console.log('API of Eventioner is online!');
-//	shareClient(client);
-})
+// API is imported after client initialization
+// in order to avoid get null client object.
+setTimeout(() => {
+	const { app } = require('./api/index.js');
+	app.listen(3000, () => {
+		console.log('API of Eventioner is online!');
+	})
+}, 3000);
