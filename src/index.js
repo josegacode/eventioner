@@ -117,4 +117,4 @@ setTimeout(() => {
 	app.listen(3000, () => {
 		console.log('API of Eventioner is online!');
 	})
-}, 3000);
+}, 500);
