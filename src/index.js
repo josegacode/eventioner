@@ -113,8 +113,8 @@ exports.client = client;
 // API is imported after client initialization
 // in order to avoid get null client object.
 setTimeout(() => {
-	const { app } = require('./api/index.js');
-	app.listen(3000, () => {
-		console.log('API of Eventioner is online!');
+	const { app } = require('./api');
+	app.listen(app.get('port'), () => {
+		console.log(`API of Eventioner is online on port -> ${app.get('port')}`);
 	})
 }, 500);
