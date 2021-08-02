@@ -2,8 +2,10 @@ const express = require("express");
 const app = express();
 const morgan = require('morgan');
 const swaggerUi = require('swagger-ui-express');
-const { Router } = require('express');
-const router = new Router();
+//const { Router } = require('express');
+//const router = new Router();
+const { client } = require('../index');
+const members = require('./routes/member');
 
 app.use(morgan('dev'));
 app.set('port', process.env.API_PORT || 3000);
@@ -32,16 +34,10 @@ const swaggerDocument = {
   "version": "1.0.0"
 } 
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-router.get('/', (request, response) => {
-  response.send(
-		{ 
-			gretting: "Hi, I'm Eventioner API :D"
-		}
-	);
-})
-
+// Users routing handler (actually works as a middleware)
+app.use('/api/members', members);
 
 exports.app = app;
 
